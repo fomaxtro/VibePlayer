@@ -1,3 +1,4 @@
+import extension.libraries
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 
 plugins {
@@ -6,5 +7,9 @@ plugins {
 }
 
 configure<KotlinJvmExtension> {
-    jvmToolchain(11)
+    jvmToolchain(21)
+}
+
+dependencies {
+    "implementation"(libraries.findLibrary("koin-core").get())
 }
