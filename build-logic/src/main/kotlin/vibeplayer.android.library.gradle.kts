@@ -1,5 +1,4 @@
 import com.android.build.api.dsl.LibraryExtension
-import extension.libraries
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 
 plugins {

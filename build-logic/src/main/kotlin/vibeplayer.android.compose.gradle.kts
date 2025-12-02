@@ -1,15 +1,5 @@
-import com.android.build.api.dsl.LibraryExtension
-import extension.libraries
-
 plugins {
-    id("vibeplayer.android.library")
     kotlin("plugin.compose")
-}
-
-configure<LibraryExtension> {
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -17,5 +7,7 @@ dependencies {
     "implementation"(libraries.findLibrary("androidx-compose-ui").get())
     "implementation"(libraries.findLibrary("androidx-compose-ui-graphics").get())
     "implementation"(libraries.findLibrary("androidx-compose-ui-tooling-preview").get())
+    "implementation"(libraries.findLibrary("androidx-compose-material3").get())
+    "implementation"(libraries.findLibrary("androidx-lifecycle-runtime-ktx").get())
     "debugImplementation"(libraries.findLibrary("androidx-compose-ui-tooling").get())
 }

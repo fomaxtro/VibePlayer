@@ -1,4 +1,3 @@
-import extension.libraries
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 
 plugins {

@@ -2,6 +2,9 @@
 appCompileSdk = "36"
 appMinSdk = "30"
 appTargetSdk = "36"
+appApplicationId = "com.fomaxtro.vibeplayer"
+appVersionName = "1.0"
+appVersionCode = "1"
 
 agp = "8.13.1"
 kotlin = "2.2.21"
@@ -28,9 +31,11 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kotlin-compose-compiler-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 timber =  { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
@@ -39,3 +44,8 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
+vibeplayer-jvm-library = { id = "vibeplayer.jvm.library" }
+vibeplayer-android-library = { id = "vibeplayer.android.library" }
+vibeplayer-android-compose = { id = "vibeplayer.android.compose" }
+vibeplayer-feature-ui = { id = "vibeplayer.feature.ui" }
+vibeplayer-android-application = { id = "vibeplayer.android.application" }
