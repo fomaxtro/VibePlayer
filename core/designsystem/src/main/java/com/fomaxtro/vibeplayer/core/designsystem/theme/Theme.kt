@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 
 val DarkColorScheme = darkColorScheme(
     primary = ButtonPrimary,
+    onPrimary = TextPrimary,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
     onSurfaceVariant = TextSecondary,
