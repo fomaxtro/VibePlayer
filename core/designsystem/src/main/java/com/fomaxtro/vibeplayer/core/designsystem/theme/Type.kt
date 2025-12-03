@@ -12,7 +12,19 @@ internal val HostGrotesk = FontFamily(
     Font(R.font.host_grotestk_variable)
 )
 
+private val BaseTextStyle = TextStyle(
+    fontFamily = HostGrotesk
+)
+
+private val DefaultTypography = Typography()
+
 internal val Typography = Typography(
+    displayLarge = DefaultTypography.displayLarge.merge(BaseTextStyle),
+    displayMedium = DefaultTypography.displayMedium.merge(BaseTextStyle),
+    displaySmall = DefaultTypography.displaySmall.merge(BaseTextStyle),
+    headlineLarge = DefaultTypography.headlineLarge.merge(BaseTextStyle),
+    headlineMedium = DefaultTypography.headlineMedium.merge(BaseTextStyle),
+    headlineSmall = DefaultTypography.headlineSmall.merge(BaseTextStyle),
     titleLarge = TextStyle(
         fontFamily = HostGrotesk,
         fontWeight = FontWeight.Medium,
@@ -25,6 +37,7 @@ internal val Typography = Typography(
         fontSize = 20.sp,
         lineHeight = 24.sp
     ),
+    titleSmall = DefaultTypography.titleSmall.merge(BaseTextStyle),
     bodyLarge = TextStyle(
         fontFamily = HostGrotesk,
         fontWeight = FontWeight.Normal,
@@ -37,10 +50,13 @@ internal val Typography = Typography(
         fontSize = 14.sp,
         lineHeight = 18.sp
     ),
+    bodySmall = DefaultTypography.bodySmall.merge(BaseTextStyle),
     labelLarge = TextStyle(
         fontFamily = HostGrotesk,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 22.sp
-    )
+    ),
+    labelMedium = DefaultTypography.labelMedium.merge(BaseTextStyle),
+    labelSmall = DefaultTypography.labelSmall.merge(BaseTextStyle)
 )
