@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.vibeplayer.android.compose) apply false
     alias(libs.plugins.vibeplayer.feature.ui) apply false
     alias(libs.plugins.vibeplayer.android.application) apply false
+    alias(libs.plugins.kotzilla) apply false
 }
