@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.core.designsystem.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 internal val ButtonPrimary = Color(0xFFDE84FF)
@@ -11,3 +12,10 @@ internal val TextDisabled = Color(0xFF4C647C)
 internal val SurfaceBg = Color(0xFF0A131D)
 internal val Accent = Color(0xFFF1FF95)
 internal val DropShadow = Color(0xFFC277FF).copy(alpha = 0.25f)
+
+internal val AccentGradient = Brush.verticalGradient(
+    colors = listOf(
+        Accent.copy(alpha = 0.2f),
+        Accent.copy(0f)
+    )
+)
