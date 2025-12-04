@@ -21,6 +21,9 @@ kotzilla = "1.4.0"
 splashscreen = "1.0.0"
 nav3Core = "1.0.0"
 kotlinxSerialization = "1.9.0"
+kotlinxCoroutines = "1.10.2"
+room = "2.8.4"
+ksp = "2.2.21-2.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,7 +52,19 @@ kotzilla-sdk-compose = { group = "io.kotzilla", name = "kotzilla-sdk-compose", v
 
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room"  }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room"  }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+[bundles]
+room = [
+    "androidx-room-runtime",
+    "androidx-room-ktx"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -65,3 +80,5 @@ vibeplayer-feature-ui = { id = "vibeplayer.feature.ui" }
 vibeplayer-android-application = { id = "vibeplayer.android.application" }
 
 kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
