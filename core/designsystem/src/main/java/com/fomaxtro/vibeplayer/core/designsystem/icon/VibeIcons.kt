@@ -22,4 +22,6 @@ object VibeIcons {
         @Composable get() = ImageVector.vectorResource(R.drawable.skip_next)
     val SkipPrevious: ImageVector
         @Composable get() = ImageVector.vectorResource(R.drawable.skip_previous)
+    val Logo: ImageVector
+        @Composable get() = ImageVector.vectorResource(R.drawable.logo)
 }

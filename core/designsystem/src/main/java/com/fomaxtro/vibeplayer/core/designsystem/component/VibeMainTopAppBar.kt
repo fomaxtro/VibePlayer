@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,6 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 @Composable
 fun VibeMainTopAppBar(
     actions: @Composable RowScope.() -> Unit,
-    text: String,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -39,7 +39,7 @@ fun VibeMainTopAppBar(
                 )
 
                 Text(
-                    text = text,
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -55,7 +55,6 @@ fun VibeMainTopAppBar(
 private fun VibeMainTopAppBarPreview() {
     VibePlayerTheme {
         VibeMainTopAppBar(
-            text = "VibePlayer",
             actions = {}
         )
     }

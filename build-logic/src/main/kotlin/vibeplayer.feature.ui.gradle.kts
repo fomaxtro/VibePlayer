@@ -15,4 +15,6 @@ configure<LibraryExtension> {
 dependencies {
     "implementation"(libraries.findLibrary("androidx-activity-compose").get())
     "implementation"(libraries.findLibrary("koin-androidx-compose").get())
+    "implementation"(project(":core:designsystem"))
+    "implementation"(project(":core:ui"))
 }

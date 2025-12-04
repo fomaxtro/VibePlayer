@@ -23,8 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun VibeSongCard(
@@ -32,7 +30,7 @@ fun VibeSongCard(
     image: @Composable () -> Unit,
     title: String,
     artist: String,
-    duration: Duration,
+    duration: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,11 +78,7 @@ fun VibeSongCard(
             }
 
             Text(
-                text = duration.toComponents { minutes, seconds, _ ->
-                    val paddedSeconds = seconds.toString().padStart(2, '0')
-
-                    "$minutes:$paddedSeconds"
-                },
+                text = duration,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -105,7 +99,7 @@ private fun VibeSongCardPreview() {
             },
             title = "505",
             artist = "Arctic Monkeys",
-            duration = 4.minutes,
+            duration = "4:20",
             onClick = {}
         )
     }

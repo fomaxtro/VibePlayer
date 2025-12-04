@@ -25,3 +25,5 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "VibePlayer"
 include(":app")
 include(":core:designsystem")
+include(":core:ui")
+include(":feature:scanner")
