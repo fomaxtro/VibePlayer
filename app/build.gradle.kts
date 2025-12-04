@@ -9,6 +9,8 @@ android {
 
 dependencies {
     implementation(libs.kotzilla.sdk.compose)
+    implementation(projects.core.designsystem)
+    implementation(libs.androidx.core.splashscreen)
 }
 
 kotzilla {
