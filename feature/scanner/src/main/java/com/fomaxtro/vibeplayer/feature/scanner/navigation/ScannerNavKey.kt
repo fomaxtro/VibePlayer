@@ -2,7 +2,7 @@ package com.fomaxtro.vibeplayer.feature.scanner.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.fomaxtro.vibeplayer.feature.scanner.PermissionScreen
+import com.fomaxtro.vibeplayer.feature.scanner.permission.PermissionScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

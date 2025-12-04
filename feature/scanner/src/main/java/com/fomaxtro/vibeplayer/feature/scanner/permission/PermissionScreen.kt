@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.scanner
+package com.fomaxtro.vibeplayer.feature.scanner.permission
 
 import android.Manifest
 import android.os.Build
@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,10 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
-import com.fomaxtro.vibeplayer.core.designsystem.icon.VibeIcons
+import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
+import com.fomaxtro.vibeplayer.feature.scanner.R
 
 @Composable
 internal fun PermissionScreen(
@@ -98,11 +99,12 @@ internal fun PermissionScreen(
 internal fun PermissionScreen(
     onAction: (PermissionAction) -> Unit = {}
 ) {
-    Scaffold { innerPadding ->
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
                 .padding(16.dp)
                 .then(
                     if (isWideScreen) {
@@ -125,7 +127,7 @@ internal fun PermissionScreen(
             )
 
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             Text(
                 text = stringResource(R.string.media_files_permission),
                 style = MaterialTheme.typography.bodyMedium,
