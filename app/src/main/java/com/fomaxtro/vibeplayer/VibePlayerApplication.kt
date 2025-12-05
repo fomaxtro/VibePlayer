@@ -2,6 +2,7 @@ package com.fomaxtro.vibeplayer
 
 import android.app.Application
 import com.fomaxtro.vibeplayer.core.data.di.dataModule
+import com.fomaxtro.vibeplayer.domain.di.domainModule
 import com.fomaxtro.vibeplayer.feature.library.di.libraryModule
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
@@ -24,6 +25,7 @@ class VibePlayerApplication : Application() {
 
             modules(
                 dataModule,
+                domainModule,
                 libraryModule
             )
         }
