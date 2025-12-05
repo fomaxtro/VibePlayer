@@ -16,6 +16,7 @@ configure<LibraryExtension> {
 dependencies {
     "implementation"(project(":core:designsystem"))
     "implementation"(project(":core:ui"))
+    "implementation"(project(":core:domain"))
     "implementation"(libraries.findLibrary("androidx-activity-compose").get())
     "implementation"(libraries.findLibrary("koin-androidx-compose").get())
     "implementation"(libraries.findLibrary("kotlinx-serialization-core").get())
