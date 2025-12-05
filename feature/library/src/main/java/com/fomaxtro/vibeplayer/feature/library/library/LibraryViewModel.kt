@@ -3,6 +3,7 @@ package com.fomaxtro.vibeplayer.feature.library.library
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
+import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
 import com.fomaxtro.vibeplayer.feature.library.mapper.toSongUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModel(
     autoScan: Boolean,
+    observeSongs: ObserveSongs,
     private val songRepository: SongRepository
 ) : ViewModel() {
     private val isScanning = MutableStateFlow(autoScan)
@@ -25,7 +27,9 @@ class LibraryViewModel(
             if (isScanning) {
                 flowOf(LibraryState.Loading)
             } else {
-                songRepository.getSongsStream()
+                observeSongs(
+                    scope = viewModelScope
+                )
                     .map { songs ->
                         if (songs.isEmpty()) {
                             LibraryState.Empty

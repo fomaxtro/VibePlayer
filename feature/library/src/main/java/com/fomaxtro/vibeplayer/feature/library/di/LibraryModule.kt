@@ -8,6 +8,7 @@ val libraryModule = module {
     viewModel<LibraryViewModel> { (autoScan: Boolean) ->
         LibraryViewModel(
             autoScan = autoScan,
+            observeSongs = get(),
             songRepository = get()
         )
     }
