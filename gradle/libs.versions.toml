@@ -25,6 +25,7 @@ kotlinxSerialization = "1.9.0"
 kotlinxCoroutines = "1.10.2"
 room = "2.8.4"
 ksp = "2.2.21-2.0.4"
+coil = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,10 +63,17 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room"  }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+
 [bundles]
 room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
+]
+coil = [
+    "coil",
+    "coil-okhttp"
 ]
 
 [plugins]

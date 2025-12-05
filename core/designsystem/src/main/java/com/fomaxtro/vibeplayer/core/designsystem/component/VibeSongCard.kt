@@ -37,9 +37,8 @@ fun VibeSongCard(
         modifier = modifier
             .height(IntrinsicSize.Max)
             .width(IntrinsicSize.Max)
-            .clickable(
-                onClick = onClick
-            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp)
     ) {
         Row(
             modifier = Modifier

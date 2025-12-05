@@ -26,7 +26,7 @@ rootProject.name = "VibePlayer"
 include(":app")
 include(":core:designsystem")
 include(":core:ui")
-include(":feature:scanner")
+include(":feature:library")
 include(":core:common")
 include(":core:domain")
 include(":core:database")
