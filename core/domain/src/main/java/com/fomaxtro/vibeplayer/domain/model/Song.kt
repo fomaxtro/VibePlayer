@@ -7,5 +7,5 @@ data class Song(
     val durationMillis: Long,
     val filePath: String,
     val sizeBytes: Long,
-    val albumArtUri: String?
+    val albumArtUri: String
 )
