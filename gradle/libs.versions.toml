@@ -20,6 +20,7 @@ timber= "5.0.1"
 kotzilla = "1.4.0"
 splashscreen = "1.0.0"
 nav3Core = "1.0.0"
+lifecycleViewmodelNav3 = "2.10.0"
 kotlinxSerialization = "1.9.0"
 kotlinxCoroutines = "1.10.2"
 room = "2.8.4"
@@ -52,6 +53,7 @@ kotzilla-sdk-compose = { group = "io.kotzilla", name = "kotzilla-sdk-compose", v
 
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
