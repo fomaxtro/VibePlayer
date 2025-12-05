@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface SongRepository {
     suspend fun scanSongs(minDurationSeconds: Long = 0, minSize: Long = 0)
     fun getSongsStream(): Flow<List<Song>>
+    suspend fun syncLibrary()
 }

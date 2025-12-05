@@ -7,7 +7,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val dataModule = module {
+val dataModule = module(createdAtStart = true) {
     includes(databaseModule)
     singleOf(::OfflineFirstSongRepository) bind SongRepository::class
 }

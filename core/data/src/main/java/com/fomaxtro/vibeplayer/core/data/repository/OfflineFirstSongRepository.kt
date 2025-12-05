@@ -11,8 +11,10 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class OfflineFirstSongRepository(
     private val songDao: SongDao,
@@ -87,5 +89,14 @@ class OfflineFirstSongRepository(
             .map { songs ->
                 songs.map { it.toSong() }
             }
+    }
+
+    override suspend fun syncLibrary() {
+        val songs = songDao.getAll().first()
+        val deleteSongs = withContext(Dispatchers.IO) {
+            songs.filterNot { File(it.filePath).exists() }
+        }
+
+        songDao.deleteAll(deleteSongs)
     }
 }

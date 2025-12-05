@@ -6,7 +6,7 @@ import com.fomaxtro.vibeplayer.core.database.dao.SongDao
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val databaseModule = module {
+val databaseModule = module(createdAtStart = true) {
     single<VibePlayerDatabase> {
         Room.databaseBuilder(
             androidContext(),

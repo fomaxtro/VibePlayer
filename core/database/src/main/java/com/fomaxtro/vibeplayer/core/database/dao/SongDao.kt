@@ -1,6 +1,7 @@
 package com.fomaxtro.vibeplayer.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.fomaxtro.vibeplayer.core.database.entity.SongEntity
@@ -13,4 +14,7 @@ interface SongDao {
 
     @Query("SELECT * FROM songs")
     fun getAll(): Flow<List<SongEntity>>
+
+    @Delete
+    fun deleteAll(songs: List<SongEntity>)
 }
