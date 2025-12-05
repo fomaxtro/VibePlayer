@@ -1,6 +1,7 @@
 package com.fomaxtro.vibeplayer
 
 import android.app.Application
+import com.fomaxtro.vibeplayer.core.data.di.dataModule
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,6 +20,10 @@ class VibePlayerApplication : Application() {
             androidContext(this@VibePlayerApplication)
             androidLogger()
             analytics()
+
+            modules(
+                dataModule
+            )
         }
     }
 }

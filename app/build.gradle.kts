@@ -8,13 +8,16 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.feature.scanner)
 
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }
 
 kotzilla {
