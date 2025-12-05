@@ -1,0 +1,63 @@
+package com.fomaxtro.vibeplayer.feature.library.library
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.domain.repository.SongRepository
+import com.fomaxtro.vibeplayer.feature.library.mapper.toSongUi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class LibraryViewModel(
+    autoScan: Boolean,
+    private val songRepository: SongRepository
+) : ViewModel() {
+    private val isScanning = MutableStateFlow(autoScan)
+    val state: StateFlow<LibraryState> = isScanning
+        .flatMapLatest { isScanning ->
+            if (isScanning) {
+                flowOf(LibraryState.Loading)
+            } else {
+                songRepository.getSongsStream()
+                    .map { songs ->
+                        if (songs.isEmpty()) {
+                            LibraryState.Empty
+                        } else {
+                            LibraryState.Success(
+                                songs = songs.map { it.toSongUi() }
+                            )
+                        }
+                    }
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            LibraryState.Loading
+        )
+
+    private fun scanSongs() = viewModelScope.launch {
+        isScanning.value = true
+        songRepository.scanSongs()
+        isScanning.value = false
+    }
+
+    init {
+        if (autoScan) {
+            scanSongs()
+        }
+    }
+
+    fun onAction(action: LibraryAction) {
+        when (action) {
+            LibraryAction.OnScanAgainClick -> scanSongs()
+        }
+    }
+}

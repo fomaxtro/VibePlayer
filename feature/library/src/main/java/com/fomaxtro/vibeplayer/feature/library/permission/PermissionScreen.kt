@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.scanner.permission
+package com.fomaxtro.vibeplayer.feature.library.permission
 
 import android.Manifest
 import android.os.Build
@@ -32,7 +32,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
-import com.fomaxtro.vibeplayer.feature.scanner.R
+import com.fomaxtro.vibeplayer.feature.library.R
 
 @Composable
 internal fun PermissionScreen(
