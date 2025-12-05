@@ -10,7 +10,7 @@ android {
 dependencies {
     implementation(projects.core.data)
     implementation(projects.core.designsystem)
-    implementation(projects.feature.scanner)
+    implementation(projects.feature.library)
 
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)
