@@ -21,11 +21,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeImages
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
 import com.fomaxtro.vibeplayer.feature.scanner.R
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+internal fun ScanMusicScreen(
+    minDurationSeconds: Long,
+    minSize: Long,
+    viewModel: ScanMusicViewModel = koinViewModel {
+        parametersOf(minDurationSeconds, minSize)
+    }
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ScanMusicScreen(
+        state = state
+    )
+}
 
 @Composable
 internal fun ScanMusicScreen(
