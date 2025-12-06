@@ -1,13 +1,23 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,8 +35,11 @@ fun VibeButton(
     modifier: Modifier = Modifier,
     shape: Shape = CircleShape,
     colors: VibeButtonColors = VibeButtonDefaults.colors(),
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    loading: Boolean = false
 ) {
+    val enabled = enabled && !loading
+
     Surface(
         modifier = modifier
             .clip(shape)
@@ -38,20 +51,42 @@ fun VibeButton(
                 interactionSource = null,
                 enabled = enabled
             )
-            .vibeShadow(shape),
+            .vibeShadow(shape)
+            .width(IntrinsicSize.Max),
         color = if (enabled) colors.containerColor else colors.disabledContainerColor,
         shape = shape
     ) {
-        Text(
-            text = text,
-            modifier = Modifier
-                .padding(
-                    horizontal = 24.dp,
-                    vertical = 11.dp
-                ),
-            style = MaterialTheme.typography.labelLarge,
-            color = if (enabled) colors.contentColor else colors.disabledContentColor
-        )
+        CompositionLocalProvider(
+            LocalContentColor provides if (enabled) {
+                colors.contentColor
+            } else {
+                colors.disabledContentColor
+            }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 24.dp,
+                        vertical = 11.dp
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = LocalContentColor.current,
+                        strokeWidth = 2.dp
+                    )
+                }
+
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
     }
 }
 
@@ -83,7 +118,9 @@ private fun VibeButtonPreview() {
     VibePlayerTheme {
         VibeButton(
             onClick = {},
-            text = "Button"
+            text = "Button",
+            loading = true,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

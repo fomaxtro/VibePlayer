@@ -11,4 +11,10 @@
     <string name="scan_again">Scan again</string>
     <string name="scroll_up">Scroll up</string>
     <string name="scan">Scan</string>
+    <string name="scan_music">Scan Music</string>
+    <string name="ignore_duration_less_than">Ignore duration less than</string>
+    <string name="seconds">%ds</string>
+    <string name="kb">%dKB</string>
+    <string name="ignore_size_less_than">Ignore size less than</string>
+    <string name="scanning">Scanning</string>
 </resources>
