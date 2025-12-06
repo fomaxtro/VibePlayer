@@ -22,19 +22,19 @@ class LibraryViewModel(
     private val songRepository: SongRepository
 ) : ViewModel() {
     private val isScanning = MutableStateFlow(autoScan)
-    val state: StateFlow<LibraryState> = isScanning
+    val state: StateFlow<LibraryUiState> = isScanning
         .flatMapLatest { isScanning ->
             if (isScanning) {
-                flowOf(LibraryState.Loading)
+                flowOf(LibraryUiState.Loading)
             } else {
                 observeSongs(
                     scope = viewModelScope
                 )
                     .map { songs ->
                         if (songs.isEmpty()) {
-                            LibraryState.Empty
+                            LibraryUiState.Empty
                         } else {
-                            LibraryState.Success(
+                            LibraryUiState.Success(
                                 songs = songs.map { it.toSongUi() }
                             )
                         }
@@ -44,7 +44,7 @@ class LibraryViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            LibraryState.Loading
+            LibraryUiState.Loading
         )
 
     private fun scanSongs() = viewModelScope.launch {

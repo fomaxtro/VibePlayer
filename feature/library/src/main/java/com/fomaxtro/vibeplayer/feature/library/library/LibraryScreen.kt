@@ -1,9 +1,14 @@
 package com.fomaxtro.vibeplayer.feature.library.library
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,13 +20,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -30,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
@@ -40,6 +50,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.preview.LibraryPreviewData
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -60,9 +71,17 @@ internal fun LibraryScreen(
 
 @Composable
 internal fun LibraryScreen(
-    state: LibraryState,
+    state: LibraryUiState,
     onAction: (LibraryAction) -> Unit = {}
 ) {
+    val songsListState = rememberLazyListState()
+    val isShowingScrollUp by remember {
+        derivedStateOf {
+            songsListState.firstVisibleItemIndex > 0
+        }
+    }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             VibeMainTopAppBar(
@@ -77,6 +96,34 @@ internal fun LibraryScreen(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            val animationSpec = spring<Float>(
+                stiffness = Spring.StiffnessMedium
+            )
+
+            AnimatedVisibility(
+                visible = isShowingScrollUp,
+                enter = scaleIn(
+                    animationSpec = animationSpec
+                ),
+                exit = scaleOut(
+                    animationSpec = animationSpec
+                )
+            ) {
+                VibeFloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            songsListState.animateScrollToItem(0)
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = VibeIcons.ArrowUp,
+                        contentDescription = stringResource(R.string.scroll_up)
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         Column(
@@ -87,7 +134,7 @@ internal fun LibraryScreen(
             verticalArrangement = Arrangement.Center
         ) {
             when (state) {
-                LibraryState.Loading -> {
+                LibraryUiState.Loading -> {
                     val infiniteTransition = rememberInfiniteTransition()
                     val rotationAnimation by infiniteTransition.animateFloat(
                         initialValue = 0f,
@@ -116,7 +163,7 @@ internal fun LibraryScreen(
                     )
                 }
 
-                LibraryState.Empty -> {
+                LibraryUiState.Empty -> {
                     Text(
                         text = stringResource(R.string.no_music_found),
                         style = MaterialTheme.typography.titleLarge
@@ -140,11 +187,12 @@ internal fun LibraryScreen(
                     )
                 }
 
-                is LibraryState.Success -> {
+                is LibraryUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
+                        state = songsListState
                     ) {
-                        items(state.songs) { song ->
+                        items(state.songs, key = { it.id }) { song ->
                             VibeSongCard(
                                 onClick = {},
                                 title = song.title,
@@ -159,7 +207,9 @@ internal fun LibraryScreen(
                                         }
                                     )
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem()
                             )
                         }
                     }
@@ -175,8 +225,12 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                state = LibraryState.Success(
-                    songs = LibraryPreviewData.songs
+                state = LibraryUiState.Success(
+                    songs = (1..10).map {
+                        LibraryPreviewData.createSong(
+                            id = it.toLong()
+                        )
+                    }
                 )
             )
         }
