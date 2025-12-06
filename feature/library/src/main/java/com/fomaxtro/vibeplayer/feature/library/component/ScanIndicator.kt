@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.core.designsystem.component
+package com.fomaxtro.vibeplayer.feature.library.component
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -18,12 +18,12 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeImages
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
 @Composable
-fun VibeScanIndicator(
-    refreshing: Boolean,
+fun ScanIndicator(
+    scanning: Boolean,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition()
-    val rotationAnimation by if (refreshing) {
+    val rotationAnimation by if (scanning) {
         infiniteTransition.animateFloat(
             initialValue = 0f,
             targetValue = 360f,
@@ -48,10 +48,10 @@ fun VibeScanIndicator(
 
 @Preview
 @Composable
-private fun VibeScanIndicatorPreview() {
+private fun ScanIndicatorPreview() {
     VibePlayerTheme {
-        VibeScanIndicator(
-            refreshing = false
+        ScanIndicator(
+            scanning = false
         )
     }
 }

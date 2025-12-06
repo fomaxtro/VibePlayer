@@ -35,7 +35,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIndicator
+import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -127,8 +127,8 @@ internal fun LibraryScreen(
         ) {
             when (state) {
                 LibraryUiState.Loading -> {
-                    VibeScanIndicator(
-                        refreshing = true
+                    ScanIndicator(
+                        scanning = true
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
