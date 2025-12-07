@@ -11,6 +11,8 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.core.designsystem)
+    implementation(projects.core.ui)
+
     implementation(projects.feature.library)
 
     implementation(libs.kotzilla.sdk.compose)
