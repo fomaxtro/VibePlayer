@@ -18,8 +18,7 @@ dependencies {
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.bundles.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }
 

@@ -19,6 +19,5 @@ dependencies {
     "implementation"(project(":core:domain"))
     "implementation"(libraries.findLibrary("androidx-activity-compose").get())
     "implementation"(libraries.findLibrary("koin-androidx-compose").get())
-    "implementation"(libraries.findLibrary("kotlinx-serialization-core").get())
-    "implementation"(libraries.findLibrary("androidx-navigation3-runtime").get())
+    "implementation"(libraries.findBundle("navigation3").get())
 }

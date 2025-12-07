@@ -3,28 +3,33 @@ package com.fomaxtro.vibeplayer.feature.library.navigation
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.fomaxtro.vibeplayer.feature.library.permission.PermissionScreen
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
+import com.fomaxtro.vibeplayer.feature.library.scan_music.ScanMusicScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object LibraryNavKey : NavKey
 
-@Serializable
-internal data object Permission : NavKey
+private sealed interface LibraryRoute : NavKey {
+    @Serializable
+    data object Permission : LibraryRoute
 
-@Serializable
-internal data class Library(val shouldScan: Boolean = false) : NavKey
+    @Serializable
+    data class Library(val shouldScan: Boolean = false) : LibraryRoute
 
-fun EntryProviderScope<NavKey>.scanner(
-    backStack: NavBackStack<NavKey>
-) {
+    @Serializable
+    data object ScanMusic : LibraryRoute
+}
+
+fun EntryProviderScope<NavKey>.library() {
     entry<LibraryNavKey> {
         val context = LocalContext.current
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -38,28 +43,47 @@ fun EntryProviderScope<NavKey>.scanner(
             permission
         ) == PackageManager.PERMISSION_GRANTED
 
-        LaunchedEffect(Unit) {
-            if (hasMediaPermission) {
-                backStack[backStack.lastIndex] = Library()
-            } else {
-                backStack[backStack.lastIndex] = Permission
-            }
-        }
-    }
+        val backStack = rememberNavBackStack(
+            if (hasMediaPermission) LibraryRoute.Library() else LibraryRoute.Permission
+        )
 
-    entry<Permission> {
-        PermissionScreen(
-            onPermissionGranted = {
-                if (backStack.last() is Permission) {
-                    backStack[backStack.lastIndex] = Library(shouldScan = true)
+        NavDisplay(
+            backStack = backStack,
+            onBack = {
+                backStack.removeLastOrNull()
+            },
+            entryProvider = entryProvider {
+                entry<LibraryRoute.Permission> {
+                    PermissionScreen(
+                        onPermissionGranted = {
+                            if (backStack.lastOrNull() is LibraryRoute.Permission) {
+                                backStack[backStack.lastIndex] = LibraryRoute.Library(shouldScan = true)
+                            }
+                        }
+                    )
+                }
+
+                entry<LibraryRoute.Library> {
+                    LibraryScreen(
+                        autoScan = it.shouldScan,
+                        onScanMusic = {
+                            if (backStack.lastOrNull() is LibraryRoute.Library) {
+                                backStack.add(LibraryRoute.ScanMusic)
+                            }
+                        }
+                    )
+                }
+
+                entry<LibraryRoute.ScanMusic> {
+                    ScanMusicScreen(
+                        onNavigateBackClick = {
+                            if (backStack.lastOrNull() is LibraryRoute.ScanMusic) {
+                                backStack.removeLastOrNull()
+                            }
+                        }
+                    )
                 }
             }
-        )
-    }
-
-    entry<Library> {
-        LibraryScreen(
-            autoScan = it.shouldScan
         )
     }
 }

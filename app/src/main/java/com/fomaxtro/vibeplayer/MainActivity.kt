@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -25,7 +26,7 @@ import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.library.navigation.LibraryNavKey
-import com.fomaxtro.vibeplayer.feature.library.navigation.scanner
+import com.fomaxtro.vibeplayer.feature.library.navigation.library
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
@@ -66,11 +67,11 @@ class MainActivity : ComponentActivity() {
                             rememberViewModelStoreNavEntryDecorator()
                         ),
                         entryProvider = entryProvider {
-                            scanner(
-                                backStack = backStack
-                            )
+                            library()
                         },
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
                     )
                 }
             }

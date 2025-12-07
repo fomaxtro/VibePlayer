@@ -75,6 +75,11 @@ coil = [
     "coil",
     "coil-okhttp"
 ]
+navigation3 = [
+    "androidx-navigation3-runtime",
+    "androidx-navigation3-ui",
+    "androidx-lifecycle-viewmodel-navigation3"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
