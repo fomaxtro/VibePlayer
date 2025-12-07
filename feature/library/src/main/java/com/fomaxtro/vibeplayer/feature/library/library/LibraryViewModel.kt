@@ -62,6 +62,7 @@ class LibraryViewModel(
     fun onAction(action: LibraryAction) {
         when (action) {
             LibraryAction.OnScanAgainClick -> scanSongs()
+            else -> Unit
         }
     }
 }

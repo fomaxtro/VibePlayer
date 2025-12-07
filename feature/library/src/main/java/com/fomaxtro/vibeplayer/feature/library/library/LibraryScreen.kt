@@ -49,6 +49,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 internal fun LibraryScreen(
     autoScan: Boolean,
+    onScanMusic: () -> Unit,
     viewModel: LibraryViewModel = koinViewModel {
         parametersOf(autoScan)
     }
@@ -57,12 +58,17 @@ internal fun LibraryScreen(
 
     LibraryScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                LibraryAction.OnScanMusicClick -> onScanMusic()
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
 @Composable
-internal fun LibraryScreen(
+private fun LibraryScreen(
     state: LibraryUiState,
     onAction: (LibraryAction) -> Unit = {}
 ) {
@@ -79,7 +85,9 @@ internal fun LibraryScreen(
             VibeMainTopAppBar(
                 actions = {
                     VibeIconButton(
-                        onClick = {}
+                        onClick = {
+                            onAction(LibraryAction.OnScanMusicClick)
+                        }
                     ) {
                         Icon(
                             imageVector = VibeIcons.Scan,

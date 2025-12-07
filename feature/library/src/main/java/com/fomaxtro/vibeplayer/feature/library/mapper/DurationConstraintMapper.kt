@@ -7,5 +7,5 @@ import com.fomaxtro.vibeplayer.feature.library.model.DurationConstraint
 
 @Composable
 fun DurationConstraint.getLabel(): String {
-    return stringResource(R.string.seconds, durationMillis / 1000L)
+    return stringResource(R.string.seconds, durationSeconds)
 }
