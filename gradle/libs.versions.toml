@@ -67,10 +67,6 @@ coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [bundles]
-room = [
-    "androidx-room-runtime",
-    "androidx-room-ktx"
-]
 coil = [
     "coil",
     "coil-okhttp"
