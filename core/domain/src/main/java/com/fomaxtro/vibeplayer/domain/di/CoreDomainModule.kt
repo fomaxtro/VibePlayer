@@ -4,6 +4,6 @@ import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-val domainModule = module {
+val coreDomainModule = module {
     factoryOf(::ObserveSongs)
 }

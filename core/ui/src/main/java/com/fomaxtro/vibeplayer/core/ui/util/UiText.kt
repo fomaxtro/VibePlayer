@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.core.ui
+package com.fomaxtro.vibeplayer.core.ui.util
 
 import android.content.Context
 import androidx.annotation.StringRes
