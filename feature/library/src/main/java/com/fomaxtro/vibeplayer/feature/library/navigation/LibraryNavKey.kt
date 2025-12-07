@@ -5,10 +5,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.fomaxtro.vibeplayer.feature.library.permission.PermissionScreen
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
@@ -52,6 +54,10 @@ fun EntryProviderScope<NavKey>.library() {
             onBack = {
                 backStack.removeLastOrNull()
             },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
             entryProvider = entryProvider {
                 entry<LibraryRoute.Permission> {
                     PermissionScreen(
