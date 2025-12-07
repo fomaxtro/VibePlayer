@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
-import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.component.OutlinedRadioButton
 import com.fomaxtro.vibeplayer.feature.library.component.RadioGroup

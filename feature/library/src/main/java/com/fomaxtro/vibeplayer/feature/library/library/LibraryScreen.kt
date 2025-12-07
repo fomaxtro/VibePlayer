@@ -40,7 +40,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
-import com.fomaxtro.vibeplayer.core.ui.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.feature.library.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
