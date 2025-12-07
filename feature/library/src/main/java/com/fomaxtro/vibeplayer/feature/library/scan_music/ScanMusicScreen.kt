@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.component.OutlinedRadioButton
@@ -24,15 +27,44 @@ import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
 import com.fomaxtro.vibeplayer.feature.library.mapper.getLabel
 import com.fomaxtro.vibeplayer.feature.library.model.DurationConstraint
 import com.fomaxtro.vibeplayer.feature.library.model.SizeConstraint
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ScanMusicScreen(
-    state: ScanMusicUiState
+    onNavigateBackClick: () -> Unit,
+    viewModel: ScanMusicViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            ScanMusicEvent.NavigateBack -> onNavigateBackClick()
+        }
+    }
+
+    ScanMusicScreen(
+        state = state,
+        onAction = { action ->
+            when (action) {
+                ScanMusicAction.OnNavigateBackClick -> onNavigateBackClick()
+                else -> viewModel.onAction(action)
+            }
+        }
+    )
+}
+
+@Composable
+private fun ScanMusicScreen(
+    state: ScanMusicUiState,
+    onAction: (ScanMusicAction) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             VibeInnerTopAppBar(
-                title = stringResource(R.string.scan_music)
+                title = stringResource(R.string.scan_music),
+                onNavigateBackClick = {
+                    onAction(ScanMusicAction.OnNavigateBackClick)
+                }
             )
         }
     ) { innerPadding ->
@@ -56,7 +88,13 @@ fun ScanMusicScreen(
                 DurationConstraint.entries.forEach { constraint ->
                     OutlinedRadioButton(
                         selected = state.selectedDurationConstraint == constraint,
-                        onClick = {},
+                        onClick = {
+                            onAction(
+                                ScanMusicAction.OnDurationConstraintSelected(
+                                    durationConstraint = constraint
+                                )
+                            )
+                        },
                         text = constraint.getLabel(),
                         modifier = Modifier.weight(1f)
                     )
@@ -71,7 +109,13 @@ fun ScanMusicScreen(
                 SizeConstraint.entries.forEach { constraint ->
                     OutlinedRadioButton(
                         selected = state.selectedSizeConstraint == constraint,
-                        onClick = {},
+                        onClick = {
+                            onAction(
+                                ScanMusicAction.OnSizeConstraintSelected(
+                                    sizeConstraint = constraint
+                                )
+                            )
+                        },
                         text = constraint.getLabel(),
                         modifier = Modifier.weight(1f)
                     )
@@ -81,7 +125,9 @@ fun ScanMusicScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             VibeButton(
-                onClick = {},
+                onClick = {
+                    onAction(ScanMusicAction.OnScanClick)
+                },
                 text = if (state.isScanning) {
                     stringResource(R.string.scanning)
                 } else {

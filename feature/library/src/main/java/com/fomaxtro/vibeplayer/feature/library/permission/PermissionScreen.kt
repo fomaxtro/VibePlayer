@@ -96,7 +96,7 @@ internal fun PermissionScreen(
 }
 
 @Composable
-internal fun PermissionScreen(
+private fun PermissionScreen(
     onAction: (PermissionAction) -> Unit = {}
 ) {
     Surface(
