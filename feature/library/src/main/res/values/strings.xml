@@ -17,4 +17,5 @@
     <string name="kb">%dKB</string>
     <string name="ignore_size_less_than">Ignore size less than</string>
     <string name="scanning">Scanning</string>
+    <string name="scan_complete">Scan complete — %d songs found.</string>
 </resources>
