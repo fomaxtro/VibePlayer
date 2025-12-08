@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.library.component
 
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -28,7 +29,10 @@ fun ScanIndicator(
             initialValue = 0f,
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000)
+                animation = tween(
+                    durationMillis = 2000,
+                    easing = LinearEasing
+                )
             )
         )
     } else {
@@ -51,7 +55,7 @@ fun ScanIndicator(
 private fun ScanIndicatorPreview() {
     VibePlayerTheme {
         ScanIndicator(
-            scanning = false
+            scanning = true
         )
     }
 }
