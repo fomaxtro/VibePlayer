@@ -55,5 +55,6 @@ class ExoPlayerMusicPlayer(
 
     override fun release() {
         player.removeListener(playerListener)
+        player.release()
     }
 }

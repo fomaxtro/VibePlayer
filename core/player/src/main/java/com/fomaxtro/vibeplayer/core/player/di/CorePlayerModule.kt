@@ -6,12 +6,12 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.fomaxtro.vibeplayer.core.player.ExoPlayerMusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val corePlayerModule = module {
-    single<ExoPlayer> {
+    factory<ExoPlayer> {
         ExoPlayer.Builder(androidContext())
             .setAudioAttributes(
                 AudioAttributes.Builder()
@@ -24,5 +24,5 @@ val corePlayerModule = module {
             .build()
     }
 
-    singleOf(::ExoPlayerMusicPlayer) bind MusicPlayer::class
+    factoryOf(::ExoPlayerMusicPlayer) bind MusicPlayer::class
 }
