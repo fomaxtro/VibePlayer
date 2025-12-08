@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
-import com.fomaxtro.vibeplayer.feature.library.mapper.toSongUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +34,7 @@ class LibraryViewModel(
                             LibraryUiState.Empty
                         } else {
                             LibraryUiState.Success(
-                                songs = songs.map { it.toSongUi() }
+                                songs = songs
                             )
                         }
                     }

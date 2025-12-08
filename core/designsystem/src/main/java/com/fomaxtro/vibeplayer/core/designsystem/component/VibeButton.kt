@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -74,10 +73,8 @@ fun VibeButton(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        color = LocalContentColor.current,
-                        strokeWidth = 2.dp
+                    VibeCircularProgressIndicator(
+                        modifier = Modifier.size(16.dp)
                     )
                 }
 

@@ -13,15 +13,17 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 @Composable
 fun VibeInnerTopAppBar(
     onNavigateBackClick: () -> Unit,
-    title: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String? = null
 ) {
     CenterAlignedTopAppBar(
         title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelLarge
-            )
+            if (title != null) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
         },
         navigationIcon = {
             VibeNavigationButton(
