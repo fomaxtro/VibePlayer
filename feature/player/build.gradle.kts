@@ -7,5 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.player)
+
     implementation(libs.bundles.coil)
 }

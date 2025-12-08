@@ -25,6 +25,8 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackControls
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun PlayerScreen(
@@ -56,9 +58,9 @@ fun PlayerScreen(
                         VibeCircularProgressIndicator()
                     }
 
-                    is PlayerUiState.Success -> {
+                    is PlayerUiState.Success if state.playingSong != null -> {
                         SubcomposeAsyncImage(
-                            model = state.song.albumArtUri,
+                            model = state.playingSong.albumArtUri,
                             contentDescription = null,
                             error = {
                                 VibeSongDefaultImage()
@@ -73,32 +75,37 @@ fun PlayerScreen(
                         Spacer(modifier = Modifier.height(20.dp))
 
                         Text(
-                            text = state.song.title,
+                            text = state.playingSong.title,
                             style = MaterialTheme.typography.titleLarge
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = state.song.artist,
+                            text = state.playingSong.artist,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                     }
+
+                    else -> Unit
                 }
             }
 
+            val successState = state as? PlayerUiState.Success
+            val isPlaying = successState?.isPlaying ?: false
+
             PlaybackControls(
-                progress = 0.5f,
-                playing = true,
+                progress = successState?.currentSongProgress ?: 0f,
+                playing = isPlaying,
                 onPlayPauseToggle = {},
                 onSkipPreviousClick = {},
                 onSkipNextClick = {},
                 modifier = Modifier.fillMaxWidth(),
-                canSkipPrevious = state !is PlayerUiState.Loading,
-                canSkipNext = state !is PlayerUiState.Loading,
-                canPlayPause = state !is PlayerUiState.Loading
+                canSkipPrevious = successState?.canSkipPrevious ?: false,
+                canSkipNext = successState?.canSkipNext ?: false,
+                canPlayPause = successState != null
             )
         }
     }
@@ -110,15 +117,16 @@ private fun PLayerScreenPreview() {
     VibePlayerTheme {
         PlayerScreen(
             state = PlayerUiState.Success(
-                song = Song(
+                playingSong = Song(
                     id = 1,
                     title = "505",
                     artist = "Arctic Monkeys",
-                    durationMillis = 180000,
+                    duration = 2.minutes,
                     filePath = "",
                     sizeBytes = 100 * 1024,
                     albumArtUri = ""
-                )
+                ),
+                currentPosition = 30.seconds
             )
         )
     }

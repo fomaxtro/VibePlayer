@@ -2,6 +2,8 @@ package com.fomaxtro.vibeplayer.feature.library.scan_music
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.core.common.Result
+import com.fomaxtro.vibeplayer.core.ui.mapper.toUiText
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
@@ -44,21 +46,33 @@ class ScanMusicViewModel(
         _state.update { it.copy(isScanning = true) }
 
         try {
-            val soundsCount = with(_state.value) {
-                songRepository.scanSongs(
-                    minDurationSeconds = selectedDurationConstraint.durationSeconds,
-                    minSize = selectedSizeConstraint.size,
-                )
+            when (
+                val soundsCount = with(_state.value) {
+                    songRepository.scanSongs(
+                        minDurationSeconds = selectedDurationConstraint.durationSeconds,
+                        minSize = selectedSizeConstraint.size,
+                    )
+                }
+            ) {
+                is Result.Error -> {
+                    eventChannel.send(
+                        ScanMusicEvent.ShowMessage(
+                            message = soundsCount.error.toUiText()
+                        )
+                    )
+                }
+
+                is Result.Success -> {
+                    snackbarController.showSnackbar(
+                        message = UiText.StringResource(
+                            resId = R.string.scan_complete,
+                            args = listOf(soundsCount.data)
+                        )
+                    )
+
+                    eventChannel.send(ScanMusicEvent.NavigateBack)
+                }
             }
-
-            snackbarController.showSnackbar(
-                message = UiText.StringResource(
-                    resId = R.string.scan_complete,
-                    args = listOf(soundsCount)
-                )
-            )
-
-            eventChannel.send(ScanMusicEvent.NavigateBack)
         } finally {
             _state.update { it.copy(isScanning = false) }
         }

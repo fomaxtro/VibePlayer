@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,6 +27,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.component.OutlinedRadioButton
 import com.fomaxtro.vibeplayer.feature.library.component.RadioGroup
@@ -38,10 +43,19 @@ fun ScanMusicScreen(
     viewModel: ScanMusicViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ScanMusicEvent.NavigateBack -> onNavigateBackClick()
+            is ScanMusicEvent.ShowMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = event.message.asString(context)
+                )
+            }
         }
     }
 
@@ -52,14 +66,16 @@ fun ScanMusicScreen(
                 ScanMusicAction.OnNavigateBackClick -> onNavigateBackClick()
                 else -> viewModel.onAction(action)
             }
-        }
+        },
+        snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
 private fun ScanMusicScreen(
     state: ScanMusicUiState,
-    onAction: (ScanMusicAction) -> Unit = {}
+    onAction: (ScanMusicAction) -> Unit = {},
+    snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
         topBar = {
@@ -69,6 +85,9 @@ private fun ScanMusicScreen(
                     onAction(ScanMusicAction.OnNavigateBackClick)
                 }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
         }
     ) { innerPadding ->
         Column(
@@ -157,7 +176,8 @@ private fun ScanMusicScreenPreview() {
         ScanMusicScreen(
             state = ScanMusicUiState(
                 isScanning = true
-            )
+            ),
+            snackbarHostState = SnackbarHostState()
         )
     }
 }

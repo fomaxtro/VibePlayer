@@ -12,8 +12,10 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.designsystem)
     implementation(projects.core.ui)
+    implementation(projects.core.player)
 
     implementation(projects.feature.library)
+    implementation(projects.feature.player)
 
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)

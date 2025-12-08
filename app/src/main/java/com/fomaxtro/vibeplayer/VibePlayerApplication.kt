@@ -2,9 +2,11 @@ package com.fomaxtro.vibeplayer
 
 import android.app.Application
 import com.fomaxtro.vibeplayer.core.data.di.coreDataModule
+import com.fomaxtro.vibeplayer.core.player.di.corePlayerModule
 import com.fomaxtro.vibeplayer.core.ui.di.coreUiModule
 import com.fomaxtro.vibeplayer.domain.di.coreDomainModule
 import com.fomaxtro.vibeplayer.feature.library.di.featureLibraryModule
+import com.fomaxtro.vibeplayer.feature.player.di.featurePlayerModule
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -28,7 +30,9 @@ class VibePlayerApplication : Application() {
                 coreDataModule,
                 coreDomainModule,
                 coreUiModule,
-                featureLibraryModule
+                corePlayerModule,
+                featureLibraryModule,
+                featurePlayerModule
             )
         }
     }

@@ -183,7 +183,7 @@ private fun LibraryScreen(
                                 onClick = {},
                                 title = song.title,
                                 artist = song.artist,
-                                duration = song.durationMillis.formatDuration(),
+                                duration = song.duration.formatDuration(),
                                 image = {
                                     SubcomposeAsyncImage(
                                         model = song.albumArtUri,
