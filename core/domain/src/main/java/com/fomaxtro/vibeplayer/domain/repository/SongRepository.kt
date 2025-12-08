@@ -1,5 +1,7 @@
 package com.fomaxtro.vibeplayer.domain.repository
 
+import com.fomaxtro.vibeplayer.core.common.Result
+import com.fomaxtro.vibeplayer.domain.error.DataError
 import com.fomaxtro.vibeplayer.domain.model.Song
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +16,11 @@ interface SongRepository {
      * @param minSize The minimum file size in bytes for a song to be included. Defaults to 0.
      * @return The total number of new songs found and added to the library.
      */
-    suspend fun scanSongs(minDurationSeconds: Int = 0, minSize: Long = 0): Int
+    suspend fun scanSongs(
+        minDurationSeconds: Int = 0,
+        minSize: Long = 0
+    ): Result<Int, DataError>
     fun getSongsStream(): Flow<List<Song>>
     suspend fun syncLibrary()
+    suspend fun getSongById(id: Long): Song?
 }

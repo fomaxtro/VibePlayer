@@ -5,10 +5,14 @@ import android.content.Context
 import android.provider.MediaStore
 import androidx.core.net.toUri
 import androidx.room.withTransaction
+import com.fomaxtro.vibeplayer.core.common.Result
+import com.fomaxtro.vibeplayer.core.common.map
 import com.fomaxtro.vibeplayer.core.data.mapper.toSong
+import com.fomaxtro.vibeplayer.core.data.util.safeDatabaseCall
 import com.fomaxtro.vibeplayer.core.database.VibePlayerDatabase
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
 import com.fomaxtro.vibeplayer.core.database.entity.SongEntity
+import com.fomaxtro.vibeplayer.domain.error.DataError
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import kotlinx.coroutines.Dispatchers
@@ -91,7 +95,10 @@ class OfflineFirstSongRepository(
         }
     }
 
-    override suspend fun scanSongs(minDurationSeconds: Int, minSize: Long): Int {
+    override suspend fun scanSongs(
+        minDurationSeconds:Int,
+        minSize: Long
+    ): Result<Int, DataError> {
         val existingSongs = songDao.getAll().first()
         val newSongs = getSongsQueryResult(
             minDurationSeconds = minDurationSeconds,
@@ -101,17 +108,17 @@ class OfflineFirstSongRepository(
         val newSongsId = newSongs.map { it.id }.toHashSet()
         val deleteSongs = existingSongs.filterNot { it.id in newSongsId }
 
-        database.withTransaction {
-            newSongs.chunked(1000).forEach { batch ->
-                songDao.upsertAll(batch)
-            }
+        return safeDatabaseCall {
+            database.withTransaction {
+                newSongs.chunked(1000).forEach { batch ->
+                    songDao.upsertAll(batch)
+                }
 
-            deleteSongs.chunked(1000).forEach { batch ->
-                songDao.deleteAll(batch)
+                deleteSongs.chunked(1000).forEach { batch ->
+                    songDao.deleteAll(batch)
+                }
             }
-        }
-
-        return newSongs.size
+        }.map { newSongs.size }
     }
 
     override fun getSongsStream(): Flow<List<Song>> {
@@ -128,5 +135,9 @@ class OfflineFirstSongRepository(
         }
 
         songDao.deleteAll(deleteSongs)
+    }
+
+    override suspend fun getSongById(id: Long): Song? {
+        return songDao.findById(id)?.toSong()
     }
 }

@@ -17,4 +17,7 @@ interface SongDao {
 
     @Delete
     fun deleteAll(songs: List<SongEntity>)
+
+    @Query("SELECT * FROM songs WHERE id = :id")
+    suspend fun findById(id: Long): SongEntity?
 }
