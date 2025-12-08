@@ -8,34 +8,64 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCircularProgressIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackControls
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun PlayerScreen(
-    state: PlayerUiState
+internal fun PlayerScreen(
+    songId: Long,
+    onNavigateBack: () -> Unit,
+    viewModel: PlayerViewModel = koinViewModel {
+        parametersOf(songId)
+    }
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    PlayerScreen(
+        state = state,
+        onAction = { action -> 
+            when (action) {
+                PlayerAction.OnNavigateBackClick -> onNavigateBack()
+            }
+        }
+    )
+}
+
+@Composable
+private fun PlayerScreen(
+    state: PlayerUiState,
+    onAction: (PlayerAction) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             VibeInnerTopAppBar(
-                onNavigateBackClick = {}
+                onNavigateBackClick = {
+                    onAction(PlayerAction.OnNavigateBackClick)
+                }
             )
         }
     ) { innerPadding ->
@@ -58,18 +88,25 @@ fun PlayerScreen(
                         VibeCircularProgressIndicator()
                     }
 
-                    is PlayerUiState.Success if state.playingSong != null -> {
+                    is PlayerUiState.Success -> {
                         SubcomposeAsyncImage(
                             model = state.playingSong.albumArtUri,
                             contentDescription = null,
+                            modifier = Modifier
+                                .then(
+                                    if (isWideScreen) {
+                                        Modifier.size(320.dp)
+                                    } else {
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 30.dp)
+                                            .aspectRatio(1f)
+                                    }
+                                )
+                                .clip(RoundedCornerShape(10.dp)),
                             error = {
                                 VibeSongDefaultImage()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 30.dp)
-                                .aspectRatio(1f)
-                                .clip(RoundedCornerShape(10.dp))
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -89,7 +126,12 @@ fun PlayerScreen(
 
                     }
 
-                    else -> Unit
+                    is PlayerUiState.Error -> {
+                        Text(
+                            text = state.error.asString(),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
                 }
             }
 

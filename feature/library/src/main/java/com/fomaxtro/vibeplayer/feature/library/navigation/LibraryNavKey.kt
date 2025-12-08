@@ -31,7 +31,9 @@ private sealed interface LibraryRoute : NavKey {
     data object ScanMusic : LibraryRoute
 }
 
-fun EntryProviderScope<NavKey>.library() {
+fun EntryProviderScope<NavKey>.library(
+    onSongClick: (songId: Long) -> Unit
+) {
     entry<LibraryNavKey> {
         val context = LocalContext.current
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -76,7 +78,8 @@ fun EntryProviderScope<NavKey>.library() {
                             if (backStack.lastOrNull() is LibraryRoute.Library) {
                                 backStack.add(LibraryRoute.ScanMusic)
                             }
-                        }
+                        },
+                        onSongClick = onSongClick
                     )
                 }
 

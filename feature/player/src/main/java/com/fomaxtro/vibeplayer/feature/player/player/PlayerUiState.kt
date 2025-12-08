@@ -1,6 +1,7 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
 import androidx.compose.runtime.Immutable
+import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.domain.model.Song
 import kotlin.time.Duration
 
@@ -10,15 +11,14 @@ sealed interface PlayerUiState {
 
     data class Success(
         val songs: List<Song> = emptyList(),
-        val playingSong: Song? = null,
+        val playingSong: Song,
         val isPlaying: Boolean = false,
         val currentPosition: Duration = Duration.ZERO
     ) : PlayerUiState {
-        val currentSongProgress: Float = if (playingSong != null) {
-            (currentPosition / playingSong.duration).toFloat()
-        } else 0f
-
+        val currentSongProgress: Float = (currentPosition / playingSong.duration).toFloat()
         val canSkipPrevious: Boolean = songs.isNotEmpty() && songs.indexOf(playingSong) > 0
         val canSkipNext: Boolean = songs.isNotEmpty() && songs.indexOf(playingSong) < songs.lastIndex
     }
+
+    data class Error(val error: UiText) : PlayerUiState
 }

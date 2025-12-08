@@ -27,6 +27,8 @@ import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.library.navigation.LibraryNavKey
 import com.fomaxtro.vibeplayer.feature.library.navigation.library
+import com.fomaxtro.vibeplayer.feature.player.navigation.PlayerNavKey
+import com.fomaxtro.vibeplayer.feature.player.navigation.player
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
@@ -67,7 +69,19 @@ class MainActivity : ComponentActivity() {
                             rememberViewModelStoreNavEntryDecorator()
                         ),
                         entryProvider = entryProvider {
-                            library()
+                            library(
+                                onSongClick = { songId ->
+                                    backStack.add(
+                                        PlayerNavKey(
+                                            songId = songId
+                                        )
+                                    )
+                                }
+                            )
+
+                            player(
+                                backStack = backStack
+                            )
                         },
                         modifier = Modifier
                             .padding(innerPadding)

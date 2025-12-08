@@ -35,7 +35,6 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
-import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -43,6 +42,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
+import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -51,6 +51,7 @@ import org.koin.core.parameter.parametersOf
 internal fun LibraryScreen(
     autoScan: Boolean,
     onScanMusic: () -> Unit,
+    onSongClick: (songId: Long) -> Unit,
     viewModel: LibraryViewModel = koinViewModel {
         parametersOf(autoScan)
     }
@@ -62,6 +63,7 @@ internal fun LibraryScreen(
         onAction = { action ->
             when (action) {
                 LibraryAction.OnScanMusicClick -> onScanMusic()
+                is LibraryAction.OnSongClick -> onSongClick(action.songId)
                 else -> viewModel.onAction(action)
             }
         }
@@ -180,7 +182,9 @@ private fun LibraryScreen(
                     ) {
                         items(state.songs, key = { it.id }) { song ->
                             VibeSongCard(
-                                onClick = {},
+                                onClick = {
+                                    onAction(LibraryAction.OnSongClick(song.id))
+                                },
                                 title = song.title,
                                 artist = song.artist,
                                 duration = song.duration.formatDuration(),
