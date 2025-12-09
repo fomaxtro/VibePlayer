@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.model
+package com.fomaxtro.vibeplayer.feature.scanner.model
 
 enum class DurationConstraint(val durationSeconds: Int) {
     THIRTY_SECONDS(30),

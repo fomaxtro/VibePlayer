@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.scan_music
+package com.fomaxtro.vibeplayer.feature.scanner.scan_options
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,9 +7,9 @@ import com.fomaxtro.vibeplayer.core.ui.mapper.toUiText
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
-import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.model.DurationConstraint
-import com.fomaxtro.vibeplayer.feature.library.model.SizeConstraint
+import com.fomaxtro.vibeplayer.feature.scanner.R
+import com.fomaxtro.vibeplayer.feature.scanner.model.DurationConstraint
+import com.fomaxtro.vibeplayer.feature.scanner.model.SizeConstraint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,25 +17,25 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ScanMusicViewModel(
+class ScanOptionsViewModel(
     private val songRepository: SongRepository,
     private val snackbarController: SnackbarController
 ) : ViewModel() {
-    private val eventChannel = Channel<ScanMusicEvent>()
+    private val eventChannel = Channel<ScanOptionsEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val _state = MutableStateFlow(ScanMusicUiState())
+    private val _state = MutableStateFlow(ScanOptionsUiState())
     val state = _state.asStateFlow()
 
-    fun onAction(action: ScanMusicAction) {
+    fun onAction(action: ScanOptionsAction) {
         when (action) {
-            is ScanMusicAction.OnDurationConstraintSelected -> {
+            is ScanOptionsAction.OnDurationConstraintSelected -> {
                 onDurationConstraintSelected(action.durationConstraint)
             }
 
-            ScanMusicAction.OnScanClick -> onScanClick()
+            ScanOptionsAction.OnScanClick -> onScanClick()
 
-            is ScanMusicAction.OnSizeConstraintSelected -> {
+            is ScanOptionsAction.OnSizeConstraintSelected -> {
                 onSizeConstraintSelected(action.sizeConstraint)
             }
             else -> Unit
@@ -56,21 +56,21 @@ class ScanMusicViewModel(
             ) {
                 is Result.Error -> {
                     eventChannel.send(
-                        ScanMusicEvent.ShowMessage(
+                        ScanOptionsEvent.ShowMessage(
                             message = soundsCount.error.toUiText()
                         )
                     )
                 }
 
                 is Result.Success -> {
+                    eventChannel.send(ScanOptionsEvent.NavigateBack)
+
                     snackbarController.showSnackbar(
                         message = UiText.StringResource(
                             resId = R.string.scan_complete,
                             args = listOf(soundsCount.data)
                         )
                     )
-
-                    eventChannel.send(ScanMusicEvent.NavigateBack)
                 }
             }
         } finally {
