@@ -10,7 +10,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val corePlayerModule = module {
+val corePlayerModule = module(createdAtStart = true) {
     single<ExoPlayer> {
         ExoPlayer.Builder(androidContext())
             .setAudioAttributes(
