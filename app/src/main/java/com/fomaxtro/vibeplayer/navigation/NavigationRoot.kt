@@ -56,7 +56,6 @@ fun NavigationRoot() {
             )
 
             home(
-                hasMediaPermission = hasMediaPermission,
                 onScanMusic = {
                     backStack.add(ScanOptionsNavKey)
                 },

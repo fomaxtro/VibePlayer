@@ -37,14 +37,12 @@ data object HomeNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.home(
     onScanMusic: () -> Unit,
-    onSongClick: (songIndex: Int) -> Unit,
-    hasMediaPermission: Boolean
+    onSongClick: (songIndex: Int) -> Unit
 ) {
     entry<HomeNavKey> {
         HomeScreen(
             onScanMusic = onScanMusic,
-            onSongClick = onSongClick,
-            hasMediaPermission = hasMediaPermission
+            onSongClick = onSongClick
         )
     }
 }
@@ -52,8 +50,7 @@ fun EntryProviderScope<NavKey>.home(
 @Composable
 private fun HomeScreen(
     onScanMusic: () -> Unit,
-    onSongClick: (songIndex: Int) -> Unit,
-    hasMediaPermission: Boolean
+    onSongClick: (songIndex: Int) -> Unit
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -61,9 +58,7 @@ private fun HomeScreen(
     val snackbarController = koinInject<SnackbarController>()
     val context = LocalContext.current
 
-    val backStack = rememberNavBackStack(
-        if (hasMediaPermission) LibraryNavKey else ScanProgressNavKey
-    )
+    val backStack = rememberNavBackStack(LibraryNavKey)
 
     ObserveAsEvents(snackbarController.events) { event ->
         snackbarHostState.showSnackbar(
