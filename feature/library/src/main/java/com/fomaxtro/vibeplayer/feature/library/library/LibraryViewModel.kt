@@ -2,6 +2,7 @@ package com.fomaxtro.vibeplayer.feature.library.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,7 +20,8 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     autoScan: Boolean,
     observeSongs: ObserveSongs,
-    private val songRepository: SongRepository
+    private val songRepository: SongRepository,
+    private val player: MusicPlayer
 ) : ViewModel() {
     private val isScanning = MutableStateFlow(autoScan)
     val state: StateFlow<LibraryUiState> = isScanning
@@ -38,6 +41,11 @@ class LibraryViewModel(
                             )
                         }
                     }
+            }
+        }
+        .onEach { state ->
+            if (state is LibraryUiState.Success) {
+                player.setPlaylist(state.songs)
             }
         }
         .stateIn(
@@ -63,5 +71,11 @@ class LibraryViewModel(
             LibraryAction.OnScanAgainClick -> scanSongs()
             else -> Unit
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        player.clearPlaylist()
     }
 }

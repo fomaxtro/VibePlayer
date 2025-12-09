@@ -32,7 +32,7 @@ private sealed interface LibraryRoute : NavKey {
 }
 
 fun EntryProviderScope<NavKey>.library(
-    onSongClick: (songId: Long) -> Unit
+    onSongClick: (songIndex: Int) -> Unit
 ) {
     entry<LibraryNavKey> {
         val context = LocalContext.current

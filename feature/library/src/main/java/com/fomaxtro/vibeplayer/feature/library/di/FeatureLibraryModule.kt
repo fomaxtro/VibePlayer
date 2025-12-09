@@ -11,7 +11,8 @@ val featureLibraryModule = module {
         LibraryViewModel(
             autoScan = autoScan,
             observeSongs = get(),
-            songRepository = get()
+            songRepository = get(),
+            player = get()
         )
     }
     viewModelOf(::ScanMusicViewModel)

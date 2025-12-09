@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +50,7 @@ import org.koin.core.parameter.parametersOf
 internal fun LibraryScreen(
     autoScan: Boolean,
     onScanMusic: () -> Unit,
-    onSongClick: (songId: Long) -> Unit,
+    onSongClick: (songIndex: Int) -> Unit,
     viewModel: LibraryViewModel = koinViewModel {
         parametersOf(autoScan)
     }
@@ -63,7 +62,7 @@ internal fun LibraryScreen(
         onAction = { action ->
             when (action) {
                 LibraryAction.OnScanMusicClick -> onScanMusic()
-                is LibraryAction.OnSongClick -> onSongClick(action.songId)
+                is LibraryAction.OnSongClick -> onSongClick(action.songIndex)
                 else -> viewModel.onAction(action)
             }
         }
@@ -180,10 +179,12 @@ private fun LibraryScreen(
                         modifier = Modifier.fillMaxSize(),
                         state = songsListState
                     ) {
-                        items(state.songs, key = { it.id }) { song ->
+                        items(state.songs.size) { index ->
+                            val song = state.songs[index]
+
                             VibeSongCard(
                                 onClick = {
-                                    onAction(LibraryAction.OnSongClick(song.id))
+                                    onAction(LibraryAction.OnSongClick(index))
                                 },
                                 title = song.title,
                                 artist = song.artist,

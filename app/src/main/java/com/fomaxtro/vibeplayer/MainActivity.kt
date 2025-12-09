@@ -70,10 +70,10 @@ class MainActivity : ComponentActivity() {
                         ),
                         entryProvider = entryProvider {
                             library(
-                                onSongClick = { songId ->
+                                onSongClick = { songIndex ->
                                     backStack.add(
                                         PlayerNavKey(
-                                            songId = songId
+                                            songIndex = songIndex
                                         )
                                     )
                                 }
