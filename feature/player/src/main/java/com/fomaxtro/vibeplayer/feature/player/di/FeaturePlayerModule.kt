@@ -5,11 +5,10 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val featurePlayerModule = module {
-    viewModel<PlayerViewModel> { (songId: Long) ->
+    viewModel<PlayerViewModel> { (songIndex: Int) ->
         PlayerViewModel(
-            songId = songId,
-            musicPlayer = get(),
-            songRepository = get()
+            songIndex = songIndex,
+            player = get()
         )
     }
 }

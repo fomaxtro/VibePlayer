@@ -7,14 +7,14 @@ import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PlayerNavKey(val songId: Long) : NavKey
+data class PlayerNavKey(val songIndex: Int) : NavKey
 
 fun EntryProviderScope<NavKey>.player(
     backStack: NavBackStack<NavKey>
 ) {
     entry<PlayerNavKey> {
         PlayerScreen(
-            songId = it.songId,
+            songIndex = it.songIndex,
             onNavigateBack = {
                 backStack.removeLastOrNull()
             }
