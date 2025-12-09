@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="media_files_permission">VibePlayer needs access to your music files to build\nyour library and play songs</string>
+    <string name="allow_access">Allow Access</string>
+    <string name="audio_permission_rationale">VibePlayer needs access to your music files to\nfunction properly. Without this permission, the app cannot build your music library or play\nsongs.</string>
+    <string name="try_again">Try Again</string>
+    <string name="ok">OK</string>
+</resources>

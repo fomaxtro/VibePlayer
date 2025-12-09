@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.permission
+package com.fomaxtro.vibeplayer.feature.onboarding.permission
 
 import android.Manifest
 import android.os.Build
@@ -32,7 +32,8 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
-import com.fomaxtro.vibeplayer.feature.library.R
+import com.fomaxtro.vibeplayer.feature.onboarding.R
+import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
 internal fun PermissionScreen(
@@ -122,7 +123,7 @@ private fun PermissionScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = stringResource(com.fomaxtro.vibeplayer.core.designsystem.R.string.app_name),
+                text = stringResource(DesignR.string.app_name),
                 style = MaterialTheme.typography.titleLarge
             )
 

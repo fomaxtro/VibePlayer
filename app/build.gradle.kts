@@ -14,6 +14,7 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.core.player)
 
+    implementation(projects.feature.onboarding)
     implementation(projects.feature.library)
     implementation(projects.feature.player)
 

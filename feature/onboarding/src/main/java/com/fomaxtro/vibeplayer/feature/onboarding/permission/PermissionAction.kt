@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.permission
+package com.fomaxtro.vibeplayer.feature.onboarding.permission
 
 sealed interface PermissionAction {
     data object OnAllowAccessClick : PermissionAction

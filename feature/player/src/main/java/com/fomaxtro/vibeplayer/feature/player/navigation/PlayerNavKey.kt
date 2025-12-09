@@ -1,7 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.player.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import kotlinx.serialization.Serializable
@@ -10,14 +9,12 @@ import kotlinx.serialization.Serializable
 data class PlayerNavKey(val songIndex: Int) : NavKey
 
 fun EntryProviderScope<NavKey>.player(
-    backStack: NavBackStack<NavKey>
+    onNavigateBack: () -> Unit
 ) {
     entry<PlayerNavKey> {
         PlayerScreen(
             songIndex = it.songIndex,
-            onNavigateBack = {
-                backStack.removeLastOrNull()
-            }
+            onNavigateBack = onNavigateBack
         )
     }
 }
