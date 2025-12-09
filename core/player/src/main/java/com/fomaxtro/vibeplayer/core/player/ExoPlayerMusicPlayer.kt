@@ -33,10 +33,38 @@ class ExoPlayerMusicPlayer(
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             _playerState.update { it.copy(isPlaying = isPlaying) }
         }
+
+        override fun onMediaItemTransition(
+            mediaItem: MediaItem?,
+            reason: Int
+        ) {
+            if (mediaItem != null && _playerState.value.playlist.isNotEmpty()) {
+                _playerState.update {
+                    it.copy(
+                        currentSong = _playerState.value.playlist[player.currentMediaItemIndex]
+                    )
+                }
+            } else {
+                _playerState.update {
+                    it.copy(
+                        currentSong = null
+                    )
+                }
+            }
+        }
     }
 
     init {
         player.addListener(playerListener)
+    }
+
+    private fun updateControlsState() {
+        _playerState.update {
+            it.copy(
+                canSkipPrevious = player.currentMediaItemIndex - 1 >= 0,
+                canSkipNext = player.currentMediaItemIndex + 1 <= it.playlist.lastIndex
+            )
+        }
     }
 
     override fun play(index: Int) {
@@ -49,13 +77,8 @@ class ExoPlayerMusicPlayer(
             player.prepare()
             player.play()
 
-            _playerState.update {
-                it.copy(
-                    currentSong = it.playlist[index],
-                    canSkipPrevious = index - 1 >= 0,
-                    canSkipNext = index + 1 <= it.playlist.lastIndex
-                )
-            }
+            _playerState.update { it.copy(currentSong = it.playlist[index],) }
+            updateControlsState()
         }
     }
 
@@ -81,8 +104,6 @@ class ExoPlayerMusicPlayer(
 
     override fun stop() {
         player.stop()
-
-        _playerState.update { it.copy(currentSong = null) }
     }
 
     override fun setPlaylist(playlist: List<Song>) {
@@ -94,12 +115,7 @@ class ExoPlayerMusicPlayer(
         player.clearMediaItems()
         player.addMediaItems(mediaItems)
 
-        _playerState.update {
-            it.copy(
-                currentSong = null,
-                playlist = playlist
-            )
-        }
+        _playerState.update { it.copy(playlist = playlist) }
     }
 
     override fun clearPlaylist() {
@@ -108,27 +124,18 @@ class ExoPlayerMusicPlayer(
 
         _playerState.update {
             it.copy(
-                currentSong = null,
                 playlist = emptyList()
             )
         }
     }
 
-    private fun getSongIndex(): Int {
-        return _playerState.value.currentSong?.let { currentSong ->
-            _playerState.value.playlist.indexOf(currentSong)
-        } ?: -1
-    }
-
     override fun skipNext() {
-        if (_playerState.value.canSkipNext) {
-            play(getSongIndex() + 1)
-        }
+        player.seekToNext()
+        updateControlsState()
     }
 
     override fun skipPrevious() {
-        if (_playerState.value.canSkipPrevious) {
-            play(getSongIndex() - 1)
-        }
+        player.seekToPrevious()
+        updateControlsState()
     }
 }
