@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.core.ui
+package com.fomaxtro.vibeplayer.core.ui.util
 
 import androidx.compose.ui.tooling.preview.Preview
 

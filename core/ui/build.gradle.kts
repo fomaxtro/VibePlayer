@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.fomaxtro.vibeplayer.core.ui"
 }
+
+dependencies {
+    implementation(projects.core.domain)
+}

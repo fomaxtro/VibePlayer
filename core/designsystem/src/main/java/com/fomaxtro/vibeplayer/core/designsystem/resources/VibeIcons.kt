@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.core.designsystem.icon
+package com.fomaxtro.vibeplayer.core.designsystem.resources
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector

@@ -28,6 +28,9 @@ val ColorScheme.buttonHover: Color
 val ColorScheme.accentGradient: Brush
     get() = AccentGradient
 
+val ColorScheme.surfaceOutline: Color
+    get() = SurfaceOutline
+
 @Composable
 fun VibePlayerTheme(
     content: @Composable () -> Unit

@@ -11,4 +11,5 @@ configure<KotlinJvmExtension> {
 
 dependencies {
     "implementation"(libraries.findLibrary("koin-core").get())
+    "implementation"(libraries.findLibrary("kotlinx-coroutines-core").get())
 }

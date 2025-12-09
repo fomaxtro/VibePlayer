@@ -4,6 +4,7 @@ import org.gradle.kotlin.dsl.configure
 plugins {
     id("vibeplayer.android.library")
     id("vibeplayer.android.compose")
+    kotlin("plugin.serialization")
 }
 
 configure<LibraryExtension> {
@@ -13,8 +14,10 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    "implementation"(libraries.findLibrary("androidx-activity-compose").get())
-    "implementation"(libraries.findLibrary("koin-androidx-compose").get())
     "implementation"(project(":core:designsystem"))
     "implementation"(project(":core:ui"))
+    "implementation"(project(":core:domain"))
+    "implementation"(libraries.findLibrary("androidx-activity-compose").get())
+    "implementation"(libraries.findLibrary("koin-androidx-compose").get())
+    "implementation"(libraries.findBundle("navigation3").get())
 }

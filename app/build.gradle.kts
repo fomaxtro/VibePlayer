@@ -8,9 +8,20 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotzilla.sdk.compose)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
     implementation(projects.core.designsystem)
+    implementation(projects.core.ui)
+    implementation(projects.core.player)
+
+    implementation(projects.feature.library)
+    implementation(projects.feature.player)
+
+    implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.bundles.navigation3)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }
 
 kotzilla {

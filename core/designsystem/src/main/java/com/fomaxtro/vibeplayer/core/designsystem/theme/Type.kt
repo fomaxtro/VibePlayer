@@ -28,8 +28,8 @@ internal val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = HostGrotesk,
         fontWeight = FontWeight.Medium,
-        fontSize = 24.sp,
-        lineHeight = 28.sp
+        fontSize = 28.sp,
+        lineHeight = 32.sp
     ),
     titleMedium = TextStyle(
         fontFamily = HostGrotesk,

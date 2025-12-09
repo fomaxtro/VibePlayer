@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fomaxtro.vibeplayer.core.designsystem.R
-import com.fomaxtro.vibeplayer.core.designsystem.icon.VibeIcons
+import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
 @Composable
