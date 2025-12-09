@@ -6,30 +6,32 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
+import com.fomaxtro.vibeplayer.domain.player.PlayerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class ExoPlayerMusicPlayer(
     private val player: ExoPlayer
 ) : MusicPlayer {
-    private var _isPlaying = MutableStateFlow(false)
-    override val isPlaying: Flow<Boolean> = _isPlaying.asStateFlow()
+    private val _playerState = MutableStateFlow(PlayerState())
+    override val playerState: Flow<PlayerState> = _playerState.asStateFlow()
 
-    private val playerListener = object : Player.Listener {
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            _isPlaying.value = isPlaying
-        }
-    }
-
-    override val currentPosition: Flow<Duration> = flow {
+    override val playbackPosition: Flow<Duration> = flow {
         while (true) {
             emit(player.currentPosition.milliseconds)
             delay(if (player.isPlaying) 200L else 1000L)
+        }
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            _playerState.update { it.copy(isPlaying = isPlaying) }
         }
     }
 
@@ -37,24 +39,96 @@ class ExoPlayerMusicPlayer(
         player.addListener(playerListener)
     }
 
-    override fun play(song: Song) {
-        val mediaItem = MediaItem.fromUri(song.filePath.toUri())
+    override fun play(index: Int) {
+        if (index >= 0 && index <= _playerState.value.playlist.lastIndex) {
+            if (player.isPlaying) {
+                player.stop()
+            }
 
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
+            player.seekTo(index, 0)
+            player.prepare()
+            player.play()
+
+            _playerState.update {
+                it.copy(
+                    currentSong = it.playlist[index],
+                    canSkipPrevious = index - 1 >= 0,
+                    canSkipNext = index + 1 <= it.playlist.lastIndex
+                )
+            }
+        }
     }
 
     override fun pause() {
-        player.pause()
+        if (player.isPlaying) {
+            player.pause()
+        }
+    }
+
+    override fun togglePlayPause() {
+        if (player.isPlaying) {
+            player.pause()
+        } else {
+            player.play()
+        }
     }
 
     override fun resume() {
-        player.play()
+        if (!player.isPlaying && player.playbackState != Player.STATE_IDLE) {
+            player.play()
+        }
     }
 
-    override fun release() {
-        player.removeListener(playerListener)
-        player.release()
+    override fun stop() {
+        player.stop()
+
+        _playerState.update { it.copy(currentSong = null) }
+    }
+
+    override fun setPlaylist(playlist: List<Song>) {
+        val mediaItems = playlist.map {
+            MediaItem.fromUri(it.filePath.toUri())
+        }
+
+        player.stop()
+        player.clearMediaItems()
+        player.addMediaItems(mediaItems)
+
+        _playerState.update {
+            it.copy(
+                currentSong = null,
+                playlist = playlist
+            )
+        }
+    }
+
+    override fun clearPlaylist() {
+        player.stop()
+        player.clearMediaItems()
+
+        _playerState.update {
+            it.copy(
+                currentSong = null,
+                playlist = emptyList()
+            )
+        }
+    }
+
+    private fun getSongIndex(): Int {
+        return _playerState.value.currentSong?.let { currentSong ->
+            _playerState.value.playlist.indexOf(currentSong)
+        } ?: -1
+    }
+
+    override fun skipNext() {
+        if (_playerState.value.canSkipNext) {
+            play(getSongIndex() + 1)
+        }
+    }
+
+    override fun skipPrevious() {
+        if (_playerState.value.canSkipPrevious) {
+            play(getSongIndex() - 1)
+        }
     }
 }

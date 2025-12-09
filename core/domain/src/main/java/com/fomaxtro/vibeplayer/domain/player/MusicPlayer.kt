@@ -5,11 +5,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 
 interface MusicPlayer {
-    val currentPosition: Flow<Duration>
-    val isPlaying: Flow<Boolean>
+    val playerState: Flow<PlayerState>
+    val playbackPosition: Flow<Duration>
 
-    fun play(song: Song)
+    fun play(index: Int)
     fun pause()
     fun resume()
-    fun release()
+    fun togglePlayPause()
+    fun stop()
+    fun setPlaylist(playlist: List<Song>)
+    fun clearPlaylist()
+    fun skipNext()
+    fun skipPrevious()
 }
