@@ -26,6 +26,8 @@ This application is developed for "Mobile Dev Campus".
 - core/ui — UI utilities, mappers, and resources
 - feature/library — Library and music scanning feature (UI and logic)
 - feature/player — Player feature (UI and logic)
+- feature/onboarding — Onboarding feature (UI and logic)
+- feature/scanner — Media scanner feature (UI and logic)
 - build-logic — Gradle convention plugins
 
 ## Tech Stack
