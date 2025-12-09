@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.component
+package com.fomaxtro.vibeplayer.feature.scanner.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

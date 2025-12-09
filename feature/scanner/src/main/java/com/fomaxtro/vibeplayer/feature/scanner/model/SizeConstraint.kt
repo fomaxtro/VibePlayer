@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.model
+package com.fomaxtro.vibeplayer.feature.scanner.model
 
 enum class SizeConstraint(val size: Long) {
     ONE_HUNDRED_KB(100 * 1024),

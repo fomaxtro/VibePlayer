@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.component
+package com.fomaxtro.vibeplayer.core.designsystem.component
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -19,7 +19,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeImages
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
 @Composable
-fun ScanIndicator(
+fun VibeScanIndicator(
     scanning: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -52,9 +52,9 @@ fun ScanIndicator(
 
 @Preview
 @Composable
-private fun ScanIndicatorPreview() {
+private fun VibeScanIndicatorPreview() {
     VibePlayerTheme {
-        ScanIndicator(
+        VibeScanIndicator(
             scanning = true
         )
     }

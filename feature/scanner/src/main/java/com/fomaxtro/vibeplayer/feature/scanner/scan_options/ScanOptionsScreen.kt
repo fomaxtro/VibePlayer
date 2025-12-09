@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.library.scan_music
+package com.fomaxtro.vibeplayer.feature.scanner.scan_options
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,24 +23,25 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.asString
-import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.component.OutlinedRadioButton
-import com.fomaxtro.vibeplayer.feature.library.component.RadioGroup
-import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
-import com.fomaxtro.vibeplayer.feature.library.mapper.getLabel
-import com.fomaxtro.vibeplayer.feature.library.model.DurationConstraint
-import com.fomaxtro.vibeplayer.feature.library.model.SizeConstraint
+import com.fomaxtro.vibeplayer.feature.scanner.R
+import com.fomaxtro.vibeplayer.feature.scanner.component.OutlinedRadioButton
+import com.fomaxtro.vibeplayer.feature.scanner.component.RadioGroup
+import com.fomaxtro.vibeplayer.feature.scanner.mapper.getLabel
+import com.fomaxtro.vibeplayer.feature.scanner.model.DurationConstraint
+import com.fomaxtro.vibeplayer.feature.scanner.model.SizeConstraint
 import org.koin.androidx.compose.koinViewModel
+import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
-fun ScanMusicScreen(
-    onNavigateBackClick: () -> Unit,
-    viewModel: ScanMusicViewModel = koinViewModel()
+fun ScanOptionsScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: ScanOptionsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember {
@@ -50,8 +51,8 @@ fun ScanMusicScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            ScanMusicEvent.NavigateBack -> onNavigateBackClick()
-            is ScanMusicEvent.ShowMessage -> {
+            ScanOptionsEvent.NavigateBack -> onNavigateBack()
+            is ScanOptionsEvent.ShowMessage -> {
                 snackbarHostState.showSnackbar(
                     message = event.message.asString(context)
                 )
@@ -59,11 +60,11 @@ fun ScanMusicScreen(
         }
     }
 
-    ScanMusicScreen(
+    ScanOptionsScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                ScanMusicAction.OnNavigateBackClick -> onNavigateBackClick()
+                ScanOptionsAction.OnNavigateBackClick -> onNavigateBack()
                 else -> viewModel.onAction(action)
             }
         },
@@ -72,9 +73,9 @@ fun ScanMusicScreen(
 }
 
 @Composable
-private fun ScanMusicScreen(
-    state: ScanMusicUiState,
-    onAction: (ScanMusicAction) -> Unit = {},
+private fun ScanOptionsScreen(
+    state: ScanOptionsUiState,
+    onAction: (ScanOptionsAction) -> Unit = {},
     snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
@@ -82,7 +83,7 @@ private fun ScanMusicScreen(
             VibeInnerTopAppBar(
                 title = stringResource(R.string.scan_music),
                 onNavigateBackClick = {
-                    onAction(ScanMusicAction.OnNavigateBackClick)
+                    onAction(ScanOptionsAction.OnNavigateBackClick)
                 }
             )
         },
@@ -105,7 +106,7 @@ private fun ScanMusicScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            ScanIndicator(
+            VibeScanIndicator(
                 scanning = state.isScanning
             )
 
@@ -119,7 +120,7 @@ private fun ScanMusicScreen(
                         selected = state.selectedDurationConstraint == constraint,
                         onClick = {
                             onAction(
-                                ScanMusicAction.OnDurationConstraintSelected(
+                                ScanOptionsAction.OnDurationConstraintSelected(
                                     durationConstraint = constraint
                                 )
                             )
@@ -140,7 +141,7 @@ private fun ScanMusicScreen(
                         selected = state.selectedSizeConstraint == constraint,
                         onClick = {
                             onAction(
-                                ScanMusicAction.OnSizeConstraintSelected(
+                                ScanOptionsAction.OnSizeConstraintSelected(
                                     sizeConstraint = constraint
                                 )
                             )
@@ -155,12 +156,12 @@ private fun ScanMusicScreen(
 
             VibeButton(
                 onClick = {
-                    onAction(ScanMusicAction.OnScanClick)
+                    onAction(ScanOptionsAction.OnScanClick)
                 },
                 text = if (state.isScanning) {
                     stringResource(R.string.scanning)
                 } else {
-                    stringResource(R.string.scan)
+                    stringResource(DesignR.string.scan)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 loading = state.isScanning
@@ -171,10 +172,10 @@ private fun ScanMusicScreen(
 
 @DevicePreviews
 @Composable
-private fun ScanMusicScreenPreview() {
+private fun ScanOptionsScreenPreview() {
     VibePlayerTheme {
-        ScanMusicScreen(
-            state = ScanMusicUiState(
+        ScanOptionsScreen(
+            state = ScanOptionsUiState(
                 isScanning = true
             ),
             snackbarHostState = SnackbarHostState()

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.vibeplayer.android.application)
     alias(libs.plugins.kotzilla)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -17,12 +18,14 @@ dependencies {
     implementation(projects.feature.onboarding)
     implementation(projects.feature.library)
     implementation(projects.feature.player)
+    implementation(projects.feature.scanner)
 
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.bundles.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.kotlinx.serialization.core)
 }
 
 kotzilla {
