@@ -32,8 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -41,19 +39,14 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.component.ScanIndicator
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 internal fun LibraryScreen(
-    autoScan: Boolean,
-    onScanMusic: () -> Unit,
     onSongClick: (songIndex: Int) -> Unit,
-    viewModel: LibraryViewModel = koinViewModel {
-        parametersOf(autoScan)
-    }
+    onScanAgain: () -> Unit,
+    viewModel: LibraryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -61,9 +54,8 @@ internal fun LibraryScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                LibraryAction.OnScanMusicClick -> onScanMusic()
                 is LibraryAction.OnSongClick -> onSongClick(action.songIndex)
-                else -> viewModel.onAction(action)
+                is LibraryAction.OnScanAgainClick -> onScanAgain()
             }
         }
     )
@@ -83,22 +75,6 @@ private fun LibraryScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = {
-            VibeMainTopAppBar(
-                actions = {
-                    VibeIconButton(
-                        onClick = {
-                            onAction(LibraryAction.OnScanMusicClick)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = VibeIcons.Scan,
-                            contentDescription = stringResource(R.string.scan)
-                        )
-                    }
-                }
-            )
-        },
         floatingActionButton = {
             val animationSpec = spring<Float>(
                 stiffness = Spring.StiffnessMedium
@@ -136,19 +112,7 @@ private fun LibraryScreen(
             verticalArrangement = Arrangement.Center
         ) {
             when (state) {
-                LibraryUiState.Loading -> {
-                    ScanIndicator(
-                        scanning = true
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Text(
-                        text = stringResource(R.string.scanning_music),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                LibraryUiState.Loading -> Unit
 
                 LibraryUiState.Empty -> {
                     Text(
