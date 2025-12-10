@@ -38,9 +38,11 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
+import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 internal fun LibraryScreen(
@@ -180,7 +182,19 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                state = LibraryUiState.Loading
+                state = LibraryUiState.Success(
+                    songs = listOf(
+                        Song(
+                            id = 0,
+                            title = "505",
+                            artist = "Arctic Monkeys",
+                            duration = 3.minutes,
+                            filePath = "",
+                            sizeBytes = 500,
+                            albumArtUri = ""
+                        )
+                    )
+                )
             )
         }
     }
