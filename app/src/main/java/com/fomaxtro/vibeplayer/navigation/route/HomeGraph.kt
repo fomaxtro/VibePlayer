@@ -33,7 +33,7 @@ import org.koin.compose.koinInject
 import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Serializable
-data object HomeNavKey : NavKey
+data class HomeNavKey(val shouldScanMusic: Boolean = false) : NavKey
 
 fun EntryProviderScope<NavKey>.home(
     onScanMusic: () -> Unit,
@@ -42,7 +42,8 @@ fun EntryProviderScope<NavKey>.home(
     entry<HomeNavKey> {
         HomeScreen(
             onScanMusic = onScanMusic,
-            onSongClick = onSongClick
+            onSongClick = onSongClick,
+            shouldScanMusic = it.shouldScanMusic
         )
     }
 }
@@ -50,7 +51,8 @@ fun EntryProviderScope<NavKey>.home(
 @Composable
 private fun HomeScreen(
     onScanMusic: () -> Unit,
-    onSongClick: (songIndex: Int) -> Unit
+    onSongClick: (songIndex: Int) -> Unit,
+    shouldScanMusic: Boolean
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -58,7 +60,9 @@ private fun HomeScreen(
     val snackbarController = koinInject<SnackbarController>()
     val context = LocalContext.current
 
-    val backStack = rememberNavBackStack(LibraryNavKey)
+    val backStack = rememberNavBackStack(
+        if (shouldScanMusic) ScanProgressNavKey else LibraryNavKey
+    )
 
     ObserveAsEvents(snackbarController.events) { event ->
         snackbarHostState.showSnackbar(

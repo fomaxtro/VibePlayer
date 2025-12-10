@@ -36,7 +36,7 @@ fun NavigationRoot() {
     ) == PackageManager.PERMISSION_GRANTED
 
     val backStack = rememberNavBackStack(
-        if (hasMediaPermission) HomeNavKey else OnboardingNavKey
+        if (hasMediaPermission) HomeNavKey() else OnboardingNavKey
     )
 
     NavDisplay(
@@ -51,7 +51,7 @@ fun NavigationRoot() {
         entryProvider = entryProvider {
             onboarding(
                 onPermissionGranted = {
-                    backStack[backStack.lastIndex] = HomeNavKey
+                    backStack[backStack.lastIndex] = HomeNavKey(shouldScanMusic = true)
                 }
             )
 
