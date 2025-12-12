@@ -37,8 +37,6 @@ class LibraryViewModel(
         )
 
     override fun onCleared() {
-        super.onCleared()
-
         player.clearPlaylist()
     }
 }

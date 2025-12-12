@@ -57,8 +57,6 @@ class PlayerViewModel(
     }
 
     override fun onCleared() {
-        super.onCleared()
-
         player.stop()
     }
 }
