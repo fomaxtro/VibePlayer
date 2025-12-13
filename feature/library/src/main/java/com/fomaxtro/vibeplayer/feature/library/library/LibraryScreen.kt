@@ -113,34 +113,8 @@ private fun LibraryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            when (state) {
-                LibraryUiState.Loading -> Unit
-
-                LibraryUiState.Empty -> {
-                    Text(
-                        text = stringResource(R.string.no_music_found),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = stringResource(R.string.no_music_found_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    VibeButton(
-                        onClick = {
-                            onAction(LibraryAction.OnScanAgainClick)
-                        },
-                        text = stringResource(R.string.scan_again)
-                    )
-                }
-
-                is LibraryUiState.Success -> {
+            if (state is LibraryUiState.Success) {
+                if (state.songs.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = songsListState
@@ -170,6 +144,28 @@ private fun LibraryScreen(
                             )
                         }
                     }
+                } else {
+                    Text(
+                        text = stringResource(R.string.no_music_found),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = stringResource(R.string.no_music_found_description),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    VibeButton(
+                        onClick = {
+                            onAction(LibraryAction.OnScanAgainClick)
+                        },
+                        text = stringResource(R.string.scan_again)
+                    )
                 }
             }
         }

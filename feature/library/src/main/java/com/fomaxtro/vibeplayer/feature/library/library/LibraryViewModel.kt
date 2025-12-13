@@ -17,18 +17,10 @@ class LibraryViewModel(
 ) : ViewModel() {
     val state = observeSongs(viewModelScope)
         .map { songs ->
-            if (songs.isEmpty()) {
-                LibraryUiState.Empty
-            } else {
-                LibraryUiState.Success(
-                    songs = songs
-                )
-            }
+            LibraryUiState.Success(songs = songs)
         }
         .onEach { state ->
-            if (state is LibraryUiState.Success) {
-                player.setPlaylist(state.songs)
-            }
+            player.setPlaylist(state.songs)
         }
         .stateIn(
             viewModelScope,
