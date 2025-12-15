@@ -20,6 +20,6 @@ inline fun <D> safeDatabaseCall(
 
         Timber.tag("safeDatabaseCall").e(e)
 
-        Result.Error(DataError.Local.DISK_FULL)
+        Result.Error(DataError.Local.UNKNOWN)
     }
 }
