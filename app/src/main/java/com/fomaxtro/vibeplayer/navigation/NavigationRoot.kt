@@ -16,7 +16,8 @@ import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
 import com.fomaxtro.vibeplayer.feature.player.navigation.PlayerNavKey
 import com.fomaxtro.vibeplayer.feature.player.navigation.player
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
-import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanOptions
+import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanProgressNavKey
+import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanner
 import com.fomaxtro.vibeplayer.navigation.route.HomeNavKey
 import com.fomaxtro.vibeplayer.navigation.route.home
 
@@ -51,7 +52,7 @@ fun NavigationRoot() {
         entryProvider = entryProvider {
             onboarding(
                 onPermissionGranted = {
-                    backStack[backStack.lastIndex] = HomeNavKey
+                    backStack[backStack.lastIndex] = ScanProgressNavKey
                 }
             )
 
@@ -68,9 +69,28 @@ fun NavigationRoot() {
                 }
             )
 
-            scanOptions(
+            scanner(
+                onScanFinish = {
+                    backStack[backStack.lastIndex] = HomeNavKey
+                },
+                onScanOptionsClick = {
+                    backStack.add(ScanOptionsNavKey)
+                },
                 onNavigateBack = {
                     backStack.removeLastOrNull()
+                },
+                onScanFilteredResult = { songsCount ->
+                    val previousRoute = backStack.getOrNull(backStack.lastIndex - 1)
+
+                    when {
+                        songsCount == 0 && previousRoute is ScanProgressNavKey -> {
+                            backStack.removeLastOrNull()
+                        }
+
+                        previousRoute is HomeNavKey -> backStack.removeLastOrNull()
+
+                        else -> backStack[backStack.lastIndex] = HomeNavKey
+                    }
                 }
             )
 
