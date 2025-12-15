@@ -63,8 +63,7 @@ class ScanOptionsViewModel(
                 }
 
                 is Result.Success -> {
-                    eventChannel.send(ScanOptionsEvent.NavigateBack)
-
+                    eventChannel.send(ScanOptionsEvent.OnScanResult(soundsCount.data))
                     snackbarController.showSnackbar(
                         message = UiText.StringResource(
                             resId = R.string.scan_complete,
