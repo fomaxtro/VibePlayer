@@ -10,6 +10,4 @@ sealed interface LibraryUiState {
     data class Success(
         val songs: List<Song> = emptyList()
     ) : LibraryUiState
-
-    data object Empty : LibraryUiState
 }

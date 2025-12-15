@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="no_music_found">No music found</string>
-    <string name="no_music_found_description">Try scanning again or check your folders.</string>
-    <string name="scan_again">Scan again</string>
     <string name="scroll_up">Scroll up</string>
 </resources>
