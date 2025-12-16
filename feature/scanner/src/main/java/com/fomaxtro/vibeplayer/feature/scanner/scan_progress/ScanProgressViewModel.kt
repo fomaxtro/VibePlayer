@@ -7,10 +7,8 @@ import com.fomaxtro.vibeplayer.core.ui.mapper.toUiText
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -20,40 +18,28 @@ class ScanProgressViewModel(
     private val eventChannel = Channel<ScanProgressEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val isScanning = MutableStateFlow(true)
-    val state = isScanning
-        .map { isScanning ->
-            if (isScanning) {
-                ScanProgressUiState.Scanning
-            } else {
-                ScanProgressUiState.Empty
-            }
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            ScanProgressUiState.Scanning
-        )
+    private val _state = MutableStateFlow<ScanProgressUiState>(ScanProgressUiState.Scanning)
+    val state = _state.asStateFlow()
 
     private fun scanSongs() = viewModelScope.launch {
-        isScanning.update { true }
+        _state.update { ScanProgressUiState.Scanning }
 
-        try {
-            when (val result = songRepository.scanSongs()) {
-                is Result.Error -> {
-                    eventChannel.send(
-                        ScanProgressEvent.ShoMessage(result.error.toUiText())
-                    )
-                }
+        when (val result = songRepository.scanSongs()) {
+            is Result.Error -> {
+                eventChannel.send(
+                    ScanProgressEvent.ShoMessage(result.error.toUiText())
+                )
 
-                is Result.Success -> {
-                    if (result.data > 0) {
-                        eventChannel.send(ScanProgressEvent.ScanFinish)
-                    }
+                _state.update { ScanProgressUiState.Empty }
+            }
+
+            is Result.Success -> {
+                if (result.data > 0) {
+                    eventChannel.send(ScanProgressEvent.ScanFinish)
+                } else {
+                    _state.update { ScanProgressUiState.Empty }
                 }
             }
-        } finally {
-            isScanning.update { false }
         }
     }
 
