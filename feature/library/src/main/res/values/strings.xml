@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="scroll_up">Scroll up</string>
+    <string name="shuffle">Shuffle</string>
+    <plurals name="songs_available">
+        <item quantity="one">%d Song</item>
+        <item quantity="other">%d Songs</item>
+    </plurals>
 </resources>
