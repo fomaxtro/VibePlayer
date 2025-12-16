@@ -1,6 +1,7 @@
 package com.fomaxtro.vibeplayer
 
 import android.app.Application
+import com.fomaxtro.vibeplayer.app.di.appModule
 import com.fomaxtro.vibeplayer.core.data.di.coreDataModule
 import com.fomaxtro.vibeplayer.core.player.di.corePlayerModule
 import com.fomaxtro.vibeplayer.core.ui.di.coreUiModule
@@ -28,6 +29,7 @@ class VibePlayerApplication : Application() {
             analytics()
 
             modules(
+                appModule,
                 coreDataModule,
                 coreDomainModule,
                 coreUiModule,

@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.navigation.route
+package com.fomaxtro.vibeplayer.app.navigation.route
 
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding

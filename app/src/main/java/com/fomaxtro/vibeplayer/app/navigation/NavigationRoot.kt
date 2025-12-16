@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.navigation
+package com.fomaxtro.vibeplayer.app.navigation
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -18,11 +18,13 @@ import com.fomaxtro.vibeplayer.feature.player.navigation.player
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanProgressNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanner
-import com.fomaxtro.vibeplayer.navigation.route.HomeNavKey
-import com.fomaxtro.vibeplayer.navigation.route.home
+import com.fomaxtro.vibeplayer.app.navigation.route.HomeNavKey
+import com.fomaxtro.vibeplayer.app.navigation.route.home
 
 @Composable
-fun NavigationRoot() {
+fun NavigationRoot(
+    hasSongs: Boolean
+) {
     val context = LocalContext.current
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -37,7 +39,11 @@ fun NavigationRoot() {
     ) == PackageManager.PERMISSION_GRANTED
 
     val backStack = rememberNavBackStack(
-        if (hasMediaPermission) HomeNavKey else OnboardingNavKey
+        when {
+            !hasMediaPermission -> OnboardingNavKey
+            hasSongs -> HomeNavKey
+            else -> ScanProgressNavKey
+        }
     )
 
     NavDisplay(
