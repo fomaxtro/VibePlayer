@@ -56,7 +56,7 @@ private fun VibeFloatingActionButtonPreview() {
             onClick = {}
         ) {
             Icon(
-                imageVector = VibeIcons.Play,
+                imageVector = VibeIcons.Filled.Play,
                 contentDescription = null
             )
         }

@@ -3,4 +3,5 @@
     <string name="navigate_back">Navigate Back</string>
     <string name="app_name">VibePlayer</string>
     <string name="scan">Scan</string>
+    <string name="play">Play</string>
 </resources>

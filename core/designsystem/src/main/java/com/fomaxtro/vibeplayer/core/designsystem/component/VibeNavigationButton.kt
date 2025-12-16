@@ -19,7 +19,7 @@ fun VibeNavigationButton(
         modifier = modifier
     ) {
         Icon(
-            imageVector = VibeIcons.ArrowLeft,
+            imageVector = VibeIcons.Filled.ArrowLeft,
             contentDescription = stringResource(R.string.navigate_back)
         )
     }

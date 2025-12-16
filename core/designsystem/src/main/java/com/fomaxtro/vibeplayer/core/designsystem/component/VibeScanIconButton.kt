@@ -19,7 +19,7 @@ fun VibeScanIconButton(
         modifier = modifier
     ) {
         Icon(
-            imageVector = VibeIcons.Scan,
+            imageVector = VibeIcons.Outlined.Scan,
             contentDescription = stringResource(R.string.scan)
         )
     }
