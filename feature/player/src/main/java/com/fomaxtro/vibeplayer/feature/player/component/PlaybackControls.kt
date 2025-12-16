@@ -22,6 +22,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefault
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.feature.player.R
+import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
 fun PlaybackControls(
@@ -58,7 +59,7 @@ fun PlaybackControls(
                 enabled = canSkipPrevious
             ) {
                 Icon(
-                    imageVector = VibeIcons.SkipPrevious,
+                    imageVector = VibeIcons.Filled.SkipPrevious,
                     contentDescription = stringResource(R.string.skip_previous),
                     modifier = Modifier.size(16.dp)
                 )
@@ -75,14 +76,14 @@ fun PlaybackControls(
             ) {
                 Icon(
                     imageVector = if (playing) {
-                        VibeIcons.Pause
+                        VibeIcons.Filled.Pause
                     } else {
-                        VibeIcons.Play
+                        VibeIcons.Filled.Play
                     },
                     contentDescription = if (playing) {
                         stringResource(R.string.pause)
                     } else {
-                        stringResource(R.string.play)
+                        stringResource(DesignR.string.play)
                     },
                     modifier = Modifier.size(24.dp)
                 )
@@ -94,7 +95,7 @@ fun PlaybackControls(
                 enabled = canSkipNext
             ) {
                 Icon(
-                    imageVector = VibeIcons.SkipNext,
+                    imageVector = VibeIcons.Filled.SkipNext,
                     contentDescription = stringResource(R.string.skip_next),
                     modifier = Modifier.size(16.dp)
                 )
