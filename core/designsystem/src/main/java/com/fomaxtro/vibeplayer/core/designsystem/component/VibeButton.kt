@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fomaxtro.vibeplayer.core.designsystem.extension.vibeShadow
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
+import com.fomaxtro.vibeplayer.core.designsystem.theme.textDisabled
 
 @Composable
 fun VibeButton(
@@ -50,39 +48,35 @@ fun VibeButton(
                 interactionSource = null,
                 enabled = enabled
             )
-            .vibeShadow(shape)
             .width(IntrinsicSize.Max),
         color = if (enabled) colors.containerColor else colors.disabledContainerColor,
+        contentColor = if (enabled) {
+            colors.contentColor
+        } else {
+            colors.disabledContentColor
+        },
         shape = shape
     ) {
-        CompositionLocalProvider(
-            LocalContentColor provides if (enabled) {
-                colors.contentColor
-            } else {
-                colors.disabledContentColor
-            }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 24.dp,
+                    vertical = 11.dp
+                ),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 24.dp,
-                        vertical = 11.dp
-                    ),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (loading) {
-                    VibeCircularProgressIndicator(
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.labelLarge
+            if (loading) {
+                VibeCircularProgressIndicator(
+                    modifier = Modifier.size(16.dp)
                 )
             }
+
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }
@@ -100,7 +94,7 @@ object VibeButtonDefaults {
         containerColor: Color = MaterialTheme.colorScheme.primary,
         contentColor: Color = MaterialTheme.colorScheme.onPrimary,
         disabledContainerColor: Color = MaterialTheme.colorScheme.buttonHover,
-        disabledContentColor: Color = MaterialTheme.colorScheme.outline
+        disabledContentColor: Color = MaterialTheme.colorScheme.textDisabled
     ) = VibeButtonColors(
         containerColor = containerColor,
         contentColor = contentColor,

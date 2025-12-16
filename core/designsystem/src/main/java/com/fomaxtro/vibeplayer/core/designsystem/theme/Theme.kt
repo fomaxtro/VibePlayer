@@ -11,9 +11,9 @@ val DarkColorScheme = darkColorScheme(
     primary = ButtonPrimary,
     onPrimary = TextPrimary,
     onBackground = TextPrimary,
-    onSurface = TextPrimary,
+    onSurface = OnSurface,
     onSurfaceVariant = TextSecondary,
-    outline = TextDisabled,
+    outline = Outline,
     secondary = Accent,
     background = SurfaceBg,
     surface = SurfaceBg
@@ -30,6 +30,12 @@ val ColorScheme.accentGradient: Brush
 
 val ColorScheme.surfaceOutline: Color
     get() = SurfaceOutline
+
+val ColorScheme.surfaceHigher: Color
+    get() = SurfaceHigher
+
+val ColorScheme.textDisabled: Color
+    get() = TextDisabled
 
 @Composable
 fun VibePlayerTheme(

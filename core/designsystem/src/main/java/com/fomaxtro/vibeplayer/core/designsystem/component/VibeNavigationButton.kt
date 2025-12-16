@@ -11,8 +11,8 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
 @Composable
 fun VibeNavigationButton(
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     VibeIconButton(
         onClick = onClick,
