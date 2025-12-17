@@ -2,6 +2,9 @@
 <resources>
     <string name="scroll_up">Scroll up</string>
     <string name="shuffle">Shuffle</string>
+    <string name="search">Search</string>
+    <string name="close">Close</string>
+    <string name="cancel">Cancel</string>
     <plurals name="songs_available">
         <item quantity="one">%d Song</item>
         <item quantity="other">%d Songs</item>

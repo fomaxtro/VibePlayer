@@ -8,6 +8,12 @@ sealed interface LibraryUiState {
     data object Loading : LibraryUiState
 
     data class Success(
+        val songs: List<Song> = emptyList(),
+        val isSearching: Boolean = false
+    ) : LibraryUiState
+
+    data class Search(
+        val query: String = "",
         val songs: List<Song> = emptyList()
     ) : LibraryUiState
 }
