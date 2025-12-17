@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -34,6 +37,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
+import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryTopBar
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -53,6 +57,7 @@ fun LibraryScreen(
             when (action) {
                 is LibraryAction.OnSongClick -> onSongClick(action.songIndex)
                 is LibraryAction.OnScanMusicClick -> onScanMusic()
+                else -> viewModel.onAction(action)
             }
         },
         modifier = modifier
@@ -76,7 +81,25 @@ private fun LibraryScreen(
 
     Scaffold(
         topBar = {
-
+            LibraryTopBar(
+                searchQuery = state.query,
+                onSearchQueryChange = {
+                    onAction(LibraryAction.OnSearchQueryChange(it))
+                },
+                onScanMusicClick = {
+                    onAction(LibraryAction.OnScanMusicClick)
+                },
+                onSearchClick = {
+                    onAction(LibraryAction.OnSearchClick)
+                },
+                onClearClick = {
+                    onAction(LibraryAction.OnClearClick)
+                },
+                onCancelClick = {
+                    onAction(LibraryAction.OnCancelClick)
+                },
+                search = state.isSearching
+            )
         },
         floatingActionButton = {
             val animationSpec = spring<Float>(
@@ -108,52 +131,61 @@ private fun LibraryScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        when (state) {
-            LibraryUiState.Loading -> Unit
-
-            is LibraryUiState.Search -> Unit
-
-            is LibraryUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    state = songsListState
-                ) {
+        if (state.canShowResulMessage) {
+            Text(
+                text = stringResource(R.string.no_results_found),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth()
+                    .padding(innerPadding),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                state = songsListState
+            ) {
+                if (!state.isSearching) {
                     item {
                         PlaybackControls(
-                            onShuffleClick = {},
-                            onPlayClick = {},
+                            onShuffleClick = {
+                                onAction(LibraryAction.OnShuffleClick)
+                            },
+                            onPlayClick = {
+                                onAction(LibraryAction.OnPlayClick)
+                            },
                             songsCount = state.songs.size,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
+                }
 
-                    items(state.songs.size) { index ->
-                        val song = state.songs[index]
+                items(state.songs.size) { index ->
+                    val song = state.songs[index]
 
-                        VibeSongCard(
-                            onClick = {
-                                onAction(LibraryAction.OnSongClick(index))
-                            },
-                            title = song.title,
-                            artist = song.artist,
-                            duration = song.duration.formatDuration(),
-                            image = {
-                                SubcomposeAsyncImage(
-                                    model = song.albumArtUri,
-                                    contentDescription = null,
-                                    error = {
-                                        VibeSongDefaultImage()
-                                    }
-                                )
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem(),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        )
-                    }
+                    VibeSongCard(
+                        onClick = {
+                            onAction(LibraryAction.OnSongClick(index))
+                        },
+                        title = song.title,
+                        artist = song.artist,
+                        duration = song.duration.formatDuration(),
+                        image = {
+                            SubcomposeAsyncImage(
+                                model = song.albumArtUri,
+                                contentDescription = null,
+                                error = {
+                                    VibeSongDefaultImage()
+                                }
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    )
                 }
             }
         }
@@ -166,7 +198,10 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                state = LibraryUiState.Search()
+                state = LibraryUiState(
+                    query = "Test",
+                    isSearching = true
+                )
             )
         }
     }

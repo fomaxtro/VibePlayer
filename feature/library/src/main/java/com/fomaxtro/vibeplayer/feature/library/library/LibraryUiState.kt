@@ -4,16 +4,10 @@ import androidx.compose.runtime.Immutable
 import com.fomaxtro.vibeplayer.domain.model.Song
 
 @Immutable
-sealed interface LibraryUiState {
-    data object Loading : LibraryUiState
-
-    data class Success(
-        val songs: List<Song> = emptyList(),
-        val isSearching: Boolean = false
-    ) : LibraryUiState
-
-    data class Search(
-        val query: String = "",
-        val songs: List<Song> = emptyList()
-    ) : LibraryUiState
+data class LibraryUiState(
+    val songs: List<Song> = emptyList(),
+    val isSearching: Boolean = false,
+    val query: String = ""
+) {
+    val canShowResulMessage: Boolean = isSearching && query.isNotBlank()
 }

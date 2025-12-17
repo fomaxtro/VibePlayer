@@ -146,7 +146,7 @@ private fun LibraryTopBarPreview() {
             onSearchClick = {},
             onClearClick = {},
             onCancelClick = {},
-            searchQuery = "",
+            searchQuery = "sdsd",
             onSearchQueryChange = {}
         )
     }
