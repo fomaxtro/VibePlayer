@@ -23,6 +23,8 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.skip_previous)
         val Logo: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.logo)
+        val Close: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.close)
     }
 
     object Outlined {
@@ -32,5 +34,7 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.repeat)
         val Scan: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.scan)
+        val Search: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.search)
     }
 }
