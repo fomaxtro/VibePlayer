@@ -9,14 +9,13 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class ObserveSongs(
-    private val songRepository: SongRepository
+    private val songRepository: SongRepository,
+    private val applicationScope: CoroutineScope
 ) {
-    operator fun invoke(
-        scope: CoroutineScope
-    ): Flow<List<Song>> {
+    operator fun invoke(): Flow<List<Song>> {
         return songRepository.getSongsStream()
             .onStart {
-                scope.launch(Dispatchers.IO) {
+                applicationScope.launch(Dispatchers.IO) {
                     songRepository.syncLibrary()
                 }
             }

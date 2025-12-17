@@ -91,29 +91,12 @@ fun VibeOutlinedTextField(
             }
         },
         modifier = modifier.height(44.dp),
-        textStyle = textStyle,
+        textStyle = textStyle.merge(
+            color = colors.textColor
+        ),
         cursorBrush = SolidColor(colors.textColor),
         singleLine = singleLine
     )
-    /*OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier.height(44.dp),
-        shape = shape,
-        colors = colors,
-        textStyle = textStyle,
-        placeholder = placeholder?.let { placeholder ->
-            @Composable {
-                Text(
-                    text = placeholder,
-                    style = textStyle
-                )
-            }
-        },
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        singleLine = singleLine
-    )*/
 }
 
 data class VibeTextFieldColors(
@@ -150,7 +133,7 @@ private fun VibeOutlinedTextFieldPreview() {
     VibePlayerTheme {
         VibeOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "",
+            value = "sdsd",
             onValueChange = {},
             placeholder = "Search",
             leadingIcon = {
