@@ -9,5 +9,5 @@ data class LibraryUiState(
     val isSearching: Boolean = false,
     val query: String = ""
 ) {
-    val canShowResulMessage: Boolean = isSearching && query.isNotBlank()
+    val isEmptyQuery: Boolean = isSearching && query.isBlank()
 }

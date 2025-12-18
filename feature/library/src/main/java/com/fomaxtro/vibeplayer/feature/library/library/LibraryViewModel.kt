@@ -72,8 +72,29 @@ class LibraryViewModel(
 
     fun onAction(action: LibraryAction) {
         when (action) {
+            LibraryAction.OnSearchClick -> onSearchClick()
+            is LibraryAction.OnSearchQueryChange -> onSearchQueryChange(action.query)
+            LibraryAction.OnCancelClick -> onCancelClick()
+            LibraryAction.OnClearClick -> onClearClick()
             else -> Unit
         }
+    }
+
+    private fun onClearClick() {
+        query.value = ""
+    }
+
+    private fun onCancelClick() {
+        query.value = ""
+        isSearching.value = false
+    }
+
+    private fun onSearchQueryChange(query: String) {
+        this.query.value = query
+    }
+
+    private fun onSearchClick() {
+        isSearching.value = true
     }
 
     override fun onCleared() {

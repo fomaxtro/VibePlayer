@@ -131,7 +131,7 @@ private fun LibraryScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        if (state.canShowResulMessage) {
+        if (state.isEmptyQuery) {
             Text(
                 text = stringResource(R.string.no_results_found),
                 modifier = Modifier
