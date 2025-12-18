@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,11 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefaults
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibePlayPauseButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.feature.player.R
-import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
 fun PlaybackControls(
@@ -65,29 +63,12 @@ fun PlaybackControls(
                 )
             }
 
-            VibeIconButton(
+            VibePlayPauseButton(
                 onClick = onPlayPauseToggle,
+                playing = playing,
                 modifier = Modifier.size(60.dp),
-                colors = VibeIconButtonDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                    contentColor = MaterialTheme.colorScheme.background
-                ),
                 enabled = canPlayPause
-            ) {
-                Icon(
-                    imageVector = if (playing) {
-                        VibeIcons.Filled.Pause
-                    } else {
-                        VibeIcons.Filled.Play
-                    },
-                    contentDescription = if (playing) {
-                        stringResource(R.string.pause)
-                    } else {
-                        stringResource(DesignR.string.play)
-                    },
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            )
 
             VibeIconButton(
                 onClick = onSkipNextClick,

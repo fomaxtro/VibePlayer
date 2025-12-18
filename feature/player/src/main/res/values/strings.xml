@@ -2,6 +2,5 @@
 <resources>
     <string name="skip_previous">Skip Previous</string>
     <string name="skip_next">Skip Next</string>
-    <string name="pause">Pause</string>
     <string name="song_not_found">Could not find this file.</string>
 </resources>
