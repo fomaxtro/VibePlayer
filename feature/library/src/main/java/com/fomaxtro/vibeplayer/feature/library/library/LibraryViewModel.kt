@@ -3,16 +3,21 @@ package com.fomaxtro.vibeplayer.feature.library.library
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModel(
@@ -27,6 +32,9 @@ class LibraryViewModel(
 
     private val isSearching = saveStateHandle.getMutableStateFlow(IS_SEARCHING_KEY, false)
     private val query = saveStateHandle.getMutableStateFlow(QUERY_KEY, "")
+
+    private val eventChannel = Channel<LibraryEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     private val songs = observeSongs()
         .onEach { songs ->
@@ -74,9 +82,22 @@ class LibraryViewModel(
         when (action) {
             LibraryAction.OnSearchClick -> onSearchClick()
             is LibraryAction.OnSearchQueryChange -> onSearchQueryChange(action.query)
-            LibraryAction.OnCancelClick -> onCancelClick()
+            LibraryAction.OnCancelClick -> cancelSearch()
             LibraryAction.OnClearClick -> onClearClick()
+            is LibraryAction.OnSongClick -> onSongClick(action.song)
             else -> Unit
+        }
+    }
+
+    private fun onSongClick(song: Song) = viewModelScope.launch {
+        val songIndex = songs.value.indexOf(song)
+
+        if (songIndex != -1) {
+            eventChannel.send(LibraryEvent.PlaySong(songIndex))
+
+            // Prevent Flashy UI
+            delay(500)
+            cancelSearch()
         }
     }
 
@@ -84,7 +105,7 @@ class LibraryViewModel(
         query.value = ""
     }
 
-    private fun onCancelClick() {
+    private fun cancelSearch() {
         query.value = ""
         isSearching.value = false
     }

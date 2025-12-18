@@ -76,9 +76,9 @@ fun VibeOutlinedTextField(
                                 style = textStyle,
                                 color = colors.placeholderColor
                             )
-                        } else {
-                            innerTextField()
                         }
+
+                        innerTextField()
                     }
 
                     if (trailingIcon != null) {

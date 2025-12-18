@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +35,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
@@ -51,11 +53,16 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is LibraryEvent.PlaySong -> onSongClick(event.songIndex)
+        }
+    }
+
     LibraryScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                is LibraryAction.OnSongClick -> onSongClick(action.songIndex)
                 is LibraryAction.OnScanMusicClick -> onScanMusic()
                 else -> viewModel.onAction(action)
             }
@@ -162,12 +169,10 @@ private fun LibraryScreen(
                     }
                 }
 
-                items(state.songs.size) { index ->
-                    val song = state.songs[index]
-
+                items(state.songs) { song ->
                     VibeSongCard(
                         onClick = {
-                            onAction(LibraryAction.OnSongClick(index))
+                            onAction(LibraryAction.OnSongClick(song))
                         },
                         title = song.title,
                         artist = song.artist,

@@ -21,8 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAppTitle
@@ -48,6 +52,13 @@ fun LibraryTopBar(
         search,
         label = "Search transition"
     )
+    val searchFocusRequester = remember { FocusRequester() }
+
+    if (searchingTransition.currentState == searchingTransition.targetState && search) {
+        LaunchedEffect(Unit) {
+            searchFocusRequester.requestFocus()
+        }
+    }
 
     TopAppBar(
         title = {
@@ -77,7 +88,9 @@ fun LibraryTopBar(
                     VibeOutlinedTextField(
                         value = searchQuery,
                         onValueChange = onSearchQueryChange,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(searchFocusRequester),
                         leadingIcon = {
                             Icon(
                                 imageVector = VibeIcons.Outlined.Search,
