@@ -17,6 +17,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.R
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.theme.accentGradient
 
+@Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
 @Composable
 fun VibeSongDefaultImage(
     modifier: Modifier = Modifier

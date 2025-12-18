@@ -10,4 +10,5 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.material3.adaptive)
+    implementation(libs.bundles.coil)
 }
