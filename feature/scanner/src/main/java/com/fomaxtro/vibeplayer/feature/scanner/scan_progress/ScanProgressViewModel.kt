@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ScanProgressViewModel(
@@ -22,7 +21,7 @@ class ScanProgressViewModel(
     val state = _state.asStateFlow()
 
     private fun scanSongs() = viewModelScope.launch {
-        _state.update { ScanProgressUiState.Scanning }
+        _state.value = ScanProgressUiState.Scanning
 
         when (val result = songRepository.scanSongs()) {
             is Result.Error -> {
@@ -30,14 +29,14 @@ class ScanProgressViewModel(
                     ScanProgressEvent.ShoMessage(result.error.toUiText())
                 )
 
-                _state.update { ScanProgressUiState.Empty }
+                _state.value = ScanProgressUiState.Empty
             }
 
             is Result.Success -> {
                 if (result.data > 0) {
                     eventChannel.send(ScanProgressEvent.ScanFinish)
                 } else {
-                    _state.update { ScanProgressUiState.Empty }
+                    _state.value = ScanProgressUiState.Empty
                 }
             }
         }

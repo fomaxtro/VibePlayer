@@ -21,12 +21,12 @@ class LibraryViewModel(
     private val player: MusicPlayer
 ) : ViewModel() {
     private companion object {
-        const val QUERY = "QUERY"
-        const val IS_SEARCHING = "IS_SEARCHING"
+        const val QUERY_KEY = "QUERY"
+        const val IS_SEARCHING_KEY = "IS_SEARCHING"
     }
 
-    private val isSearching = saveStateHandle.getMutableStateFlow(IS_SEARCHING, false)
-    private val query = saveStateHandle.getMutableStateFlow(QUERY, "")
+    private val isSearching = saveStateHandle.getMutableStateFlow(IS_SEARCHING_KEY, false)
+    private val query = saveStateHandle.getMutableStateFlow(QUERY_KEY, "")
 
     private val songs = observeSongs()
         .onEach { songs ->
