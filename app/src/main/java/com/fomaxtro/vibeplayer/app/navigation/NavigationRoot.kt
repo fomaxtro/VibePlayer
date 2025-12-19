@@ -11,15 +11,13 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.fomaxtro.vibeplayer.app.navigation.route.HomeNavKey
+import com.fomaxtro.vibeplayer.app.navigation.route.home
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.OnboardingNavKey
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
-import com.fomaxtro.vibeplayer.feature.player.navigation.PlayerNavKey
-import com.fomaxtro.vibeplayer.feature.player.navigation.player
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanProgressNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanner
-import com.fomaxtro.vibeplayer.app.navigation.route.HomeNavKey
-import com.fomaxtro.vibeplayer.app.navigation.route.home
 
 @Composable
 fun NavigationRoot(
@@ -65,13 +63,6 @@ fun NavigationRoot(
             home(
                 onScanMusic = {
                     backStack.add(ScanOptionsNavKey)
-                },
-                onSongClick = { songIndex ->
-                    backStack.add(
-                        PlayerNavKey(
-                            songIndex = songIndex
-                        )
-                    )
                 }
             )
 
@@ -97,12 +88,6 @@ fun NavigationRoot(
 
                         else -> backStack[backStack.lastIndex] = HomeNavKey
                     }
-                }
-            )
-
-            player(
-                onNavigateBack = {
-                    backStack.removeLastOrNull()
                 }
             )
         }
