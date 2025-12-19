@@ -1,6 +1,9 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
-import androidx.annotation.FloatRange
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -21,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,97 +37,124 @@ import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
 
 @Composable
 fun MiniPlayer(
-    albumArt: String?,
-    title: String,
-    artist: String,
-    @FloatRange(from = 0.0, to = 1.0) playbackProgress: Float,
-    onPlayPauseToggle: () -> Unit,
-    onSkipNextClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(
-        topStart = 12.dp,
-        topEnd = 12.dp
-    )
+    state: PlayerUiState,
+    onAction: (PlayerAction) -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier
-            .height(IntrinsicSize.Max),
-        color = MaterialTheme.colorScheme.surfaceHigher,
-        shape = shape
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(
-                    top = 16.dp,
-                    bottom = 8.dp
-                ),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            VibeAlbumArt(
-                imageUrl = albumArt,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp)
+    with(sharedTransitionScope) {
+        Surface(
+            modifier = modifier.height(IntrinsicSize.Max),
+            color = MaterialTheme.colorScheme.surfaceHigher,
+            shape = RoundedCornerShape(
+                topStart = 12.dp,
+                topEnd = 12.dp
             )
-
-            Column(
+        ) {
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(
+                VibeAlbumArt(
+                    imageUrl = state.playingSong?.albumArtUri,
+                    contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .size(64.dp)
+                        .sharedElement(
+                            rememberSharedContentState("album_art"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
                         .weight(1f)
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-
-                        Text(
-                            text = artist,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
                     ) {
-                        VibePlayPauseButton(
-                            onClick = onPlayPauseToggle,
-                            playing = false,
-                            modifier = Modifier.size(44.dp)
-                        )
-
-                        IconButton(
-                            onClick = onSkipNextClick,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
-                            modifier = Modifier.size(44.dp)
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Icon(
-                                imageVector = VibeIcons.Filled.SkipNext,
-                                contentDescription = stringResource(R.string.skip_next),
-                                modifier = Modifier.size(16.dp)
+                            Text(
+                                text = state.playingSong?.title ?: "",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.sharedElement(
+                                    rememberSharedContentState("song_title"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            )
+
+                            Text(
+                                text = state.playingSong?.artist ?: "",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.sharedElement(
+                                    rememberSharedContentState("song_artist"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
                             )
                         }
-                    }
-                }
 
-                PlaybackSlider(
-                    value = playbackProgress,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            VibePlayPauseButton(
+                                onClick = {
+                                    onAction(PlayerAction.OnPlayPauseToggle)
+                                },
+                                playing = state.isPlaying,
+                                modifier = Modifier.size(44.dp)
+                            )
+
+                            IconButton(
+                                onClick = {
+                                    onAction(PlayerAction.OnSkipNextClick)
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .sharedElement(
+                                        rememberSharedContentState("play_pause"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
+                            ) {
+                                Icon(
+                                    imageVector = VibeIcons.Filled.SkipNext,
+                                    contentDescription = stringResource(R.string.skip_next),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .sharedElement(
+                                            rememberSharedContentState("skip_next"),
+                                            animatedVisibilityScope = animatedVisibilityScope
+                                        )
+                                )
+                            }
+                        }
+                    }
+
+                    PlaybackSlider(
+                        value = state.currentSongProgress,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .sharedElement(
+                                rememberSharedContentState("song_progress"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            ),
+                        containerColor = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
@@ -135,14 +164,17 @@ fun MiniPlayer(
 @Composable
 private fun MiniPlayerPreview() {
     VibePlayerTheme {
-        MiniPlayer(
-            albumArt = null,
-            modifier = Modifier.fillMaxWidth(),
-            title = "505",
-            artist = "Artic Monkeys",
-            playbackProgress = 0.75f,
-            onPlayPauseToggle = {},
-            onSkipNextClick = {}
-        )
+        SharedTransitionLayout {
+            AnimatedContent(
+                targetState = true
+            ) {
+                MiniPlayer(
+                    state = PlayerUiState(),
+                    modifier = Modifier.fillMaxWidth(),
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@AnimatedContent
+                )
+            }
+        }
     }
 }

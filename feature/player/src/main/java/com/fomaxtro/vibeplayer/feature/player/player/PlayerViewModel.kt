@@ -9,13 +9,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class PlayerViewModel(
-    songIndex: Int,
     private val player: MusicPlayer
 ) : ViewModel() {
-    init {
-        player.play(songIndex)
-    }
-
     val state: StateFlow<PlayerUiState> = combine(
         player.playerState,
         player.playbackPosition
@@ -40,8 +35,12 @@ class PlayerViewModel(
             PlayerAction.OnPlayPauseToggle -> onPlayPauseToggle()
             PlayerAction.OnSkipNextClick -> onSkipNextClick()
             PlayerAction.OnSkipPreviousClick -> onSkipPreviousClick()
-            else -> Unit
+            is PlayerAction.PlaySong -> playSong(action.songIndex)
         }
+    }
+
+    private fun playSong(songIndex: Int) {
+        player.play(songIndex)
     }
 
     private fun onSkipPreviousClick() {
@@ -54,11 +53,5 @@ class PlayerViewModel(
 
     private fun onPlayPauseToggle() {
         player.togglePlayPause()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        player.stop()
     }
 }
