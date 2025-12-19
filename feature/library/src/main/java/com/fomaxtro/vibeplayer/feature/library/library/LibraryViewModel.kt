@@ -96,7 +96,7 @@ class LibraryViewModel(
             eventChannel.send(LibraryEvent.PlaySong(songIndex))
 
             // Prevent Flashy UI
-            delay(500)
+            delay(150)
             cancelSearch()
         }
     }
@@ -119,8 +119,6 @@ class LibraryViewModel(
     }
 
     override fun onCleared() {
-        super.onCleared()
-
         player.clearPlaylist()
     }
 }

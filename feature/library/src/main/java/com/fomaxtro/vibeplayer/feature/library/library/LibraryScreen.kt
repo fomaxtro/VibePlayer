@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LibraryScreen(
     onSongClick: (songIndex: Int) -> Unit,
     onScanMusic: () -> Unit,
+    songsListState: LazyListState,
     modifier: Modifier = Modifier,
     viewModel: LibraryViewModel = koinViewModel()
 ) {
@@ -67,7 +69,8 @@ fun LibraryScreen(
                 else -> viewModel.onAction(action)
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        songsListState = songsListState
     )
 }
 
@@ -76,9 +79,9 @@ fun LibraryScreen(
 private fun LibraryScreen(
     state: LibraryUiState,
     modifier: Modifier = Modifier,
-    onAction: (LibraryAction) -> Unit = {}
+    onAction: (LibraryAction) -> Unit = {},
+    songsListState: LazyListState
 ) {
-    val songsListState = rememberLazyListState()
     val isShowingScrollUp by remember {
         derivedStateOf {
             songsListState.firstVisibleItemIndex > 10
@@ -206,7 +209,8 @@ private fun ScanMusicScreenPreview() {
                 state = LibraryUiState(
                     query = "Test",
                     isSearching = true
-                )
+                ),
+                songsListState = rememberLazyListState()
             )
         }
     }
