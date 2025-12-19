@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.app.navigation.route
+package com.fomaxtro.vibeplayer.feature.home.home
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -31,8 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavKey
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
@@ -43,25 +41,11 @@ import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
-@Serializable
-data object HomeNavKey : NavKey
-
-fun EntryProviderScope<NavKey>.home(
-    onScanMusic: () -> Unit
-) {
-    entry<HomeNavKey> {
-        HomeScreen(
-            onScanMusic = onScanMusic
-        )
-    }
-}
-
 @Composable
-private fun HomeScreen(
+internal fun HomeScreen(
     onScanMusic: () -> Unit
 ) {
     val context = LocalContext.current
