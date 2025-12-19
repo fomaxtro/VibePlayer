@@ -11,8 +11,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.fomaxtro.vibeplayer.app.navigation.route.HomeNavKey
-import com.fomaxtro.vibeplayer.app.navigation.route.home
+import com.fomaxtro.vibeplayer.feature.home.navigation.HomeNavKey
+import com.fomaxtro.vibeplayer.feature.home.navigation.home
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.OnboardingNavKey
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
