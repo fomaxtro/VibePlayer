@@ -38,16 +38,14 @@ class ExoPlayerMusicPlayer(
             mediaItem: MediaItem?,
             reason: Int
         ) {
-            if (mediaItem != null && _playerState.value.playlist.isNotEmpty()) {
+            if (
+                mediaItem != null
+                && _playerState.value.playlist.isNotEmpty()
+                && reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK
+            ) {
                 _playerState.update {
                     it.copy(
                         currentSong = _playerState.value.playlist[player.currentMediaItemIndex]
-                    )
-                }
-            } else {
-                _playerState.update {
-                    it.copy(
-                        currentSong = null
                     )
                 }
             }
@@ -77,7 +75,7 @@ class ExoPlayerMusicPlayer(
             player.prepare()
             player.play()
 
-            _playerState.update { it.copy(currentSong = it.playlist[index],) }
+            _playerState.update { it.copy(currentSong = it.playlist[index]) }
             updateControlsState()
         }
     }
