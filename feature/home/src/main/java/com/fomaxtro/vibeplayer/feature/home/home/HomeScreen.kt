@@ -8,12 +8,11 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,8 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
@@ -48,7 +45,8 @@ import org.koin.compose.koinInject
 
 @Composable
 internal fun HomeScreen(
-    onScanMusic: () -> Unit
+    onScanMusic: () -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -63,9 +61,6 @@ internal fun HomeScreen(
 
     var nowPlaying by rememberSaveable { mutableStateOf(false) }
     val songsListState = rememberLazyListState()
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
 
     ObserveAsEvents(snackbarController.events) { event ->
         snackbarHostState.showSnackbar(
@@ -100,23 +95,25 @@ internal fun HomeScreen(
                     Column(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        LibraryScreen(
-                            onSongClick = { songIndex ->
-                                val delay = if (isImeVisible) 500L else 150L
-
-                                keyboardController?.hide()
-                                viewModel.onAction(PlayerAction.PlaySong(songIndex))
-
-                                scope.launch {
-                                    // Make sure Keyboard is Hide and MiniPlayer displayed
-                                    delay(delay)
-                                    nowPlaying = true
-                                }
-                            },
-                            onScanMusic = onScanMusic,
+                        Box(
                             modifier = Modifier.weight(1f),
-                            songsListState = songsListState
-                        )
+                            propagateMinConstraints = true
+                        ) {
+                            LibraryScreen(
+                                onSongClick = { songIndex ->
+                                    viewModel.onAction(PlayerAction.PlaySong(songIndex))
+
+                                    scope.launch {
+                                        // Make sure MiniPlayer was displayed
+                                        delay(150)
+                                        nowPlaying = true
+                                    }
+                                },
+                                songsListState = songsListState,
+                                onScanMusic = onScanMusic,
+                                onSearchClick = onSearchClick
+                            )
+                        }
 
                         AnimatedVisibility(
                             visible = state.playingSong != null,

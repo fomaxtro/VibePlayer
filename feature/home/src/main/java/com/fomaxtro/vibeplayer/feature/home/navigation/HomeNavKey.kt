@@ -9,11 +9,13 @@ import kotlinx.serialization.Serializable
 data object HomeNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.home(
-    onScanMusic: () -> Unit
+    onScanMusic: () -> Unit,
+    onSearchClick: () -> Unit
 ) {
     entry<HomeNavKey> {
         HomeScreen(
-            onScanMusic = onScanMusic
+            onScanMusic = onScanMusic,
+            onSearchClick = onSearchClick
         )
     }
 }

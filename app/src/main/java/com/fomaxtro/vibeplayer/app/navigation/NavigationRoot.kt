@@ -13,6 +13,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.fomaxtro.vibeplayer.feature.home.navigation.HomeNavKey
 import com.fomaxtro.vibeplayer.feature.home.navigation.home
+import com.fomaxtro.vibeplayer.feature.library.navigation.SearchNavKey
+import com.fomaxtro.vibeplayer.feature.library.navigation.library
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.OnboardingNavKey
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
@@ -63,6 +65,9 @@ fun NavigationRoot(
             home(
                 onScanMusic = {
                     backStack.add(ScanOptionsNavKey)
+                },
+                onSearchClick = {
+                    backStack.add(SearchNavKey)
                 }
             )
 
@@ -88,6 +93,12 @@ fun NavigationRoot(
 
                         else -> backStack[backStack.lastIndex] = HomeNavKey
                     }
+                }
+            )
+
+            library(
+                onCancelClick = {
+                    backStack.removeLastOrNull()
                 }
             )
         }
