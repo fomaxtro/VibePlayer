@@ -10,6 +10,8 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,21 +67,21 @@ fun LibraryTopBar(
             searchingTransition.AnimatedContent(
                 transitionSpec = {
                     if (targetState) {
-                        expandHorizontally(
+                        (slideInHorizontally(
                             animationSpec = tween()
-                        ) togetherWith fadeOut(
-                            animationSpec = tween(
-                                delayMillis = 300
-                            )
-                        )
+                        ) + expandHorizontally(
+                            animationSpec = tween()
+                        )) togetherWith fadeOut()
                     } else {
                         fadeIn(
                             animationSpec = tween(
                                 delayMillis = 300
                             )
-                        ) togetherWith shrinkHorizontally(
+                        ) togetherWith (slideOutHorizontally(
                             animationSpec = tween()
-                        )
+                        ) + shrinkHorizontally(
+                            animationSpec = tween()
+                        ))
                     }
                 },
                 contentAlignment = Alignment.CenterStart
