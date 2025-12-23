@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -40,7 +43,6 @@ import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryTopBar
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -49,8 +51,8 @@ import org.koin.androidx.compose.koinViewModel
 fun LibraryScreen(
     onSongClick: (songIndex: Int) -> Unit,
     onScanMusic: () -> Unit,
+    onSearchClick: () -> Unit,
     songsListState: LazyListState,
-    modifier: Modifier = Modifier,
     viewModel: LibraryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -65,11 +67,11 @@ fun LibraryScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                is LibraryAction.OnScanMusicClick -> onScanMusic()
+                LibraryAction.OnScanMusicClick -> onScanMusic()
+                LibraryAction.OnSearchClick -> onSearchClick()
                 else -> viewModel.onAction(action)
             }
         },
-        modifier = modifier,
         songsListState = songsListState
     )
 }
@@ -78,7 +80,6 @@ fun LibraryScreen(
 @Composable
 private fun LibraryScreen(
     state: LibraryUiState,
-    modifier: Modifier = Modifier,
     onAction: (LibraryAction) -> Unit = {},
     songsListState: LazyListState
 ) {
@@ -91,24 +92,25 @@ private fun LibraryScreen(
 
     Scaffold(
         topBar = {
-            LibraryTopBar(
-                searchQuery = state.query,
-                onSearchQueryChange = {
-                    onAction(LibraryAction.OnSearchQueryChange(it))
-                },
-                onScanMusicClick = {
-                    onAction(LibraryAction.OnScanMusicClick)
-                },
-                onSearchClick = {
-                    onAction(LibraryAction.OnSearchClick)
-                },
-                onClearClick = {
-                    onAction(LibraryAction.OnClearClick)
-                },
-                onCancelClick = {
-                    onAction(LibraryAction.OnCancelClick)
-                },
-                search = state.isSearching
+            VibeMainTopAppBar(
+                actions = {
+                    VibeScanIconButton(
+                        onClick = {
+                            onAction(LibraryAction.OnScanMusicClick)
+                        }
+                    )
+
+                    VibeIconButton(
+                        onClick = {
+                            onAction(LibraryAction.OnSearchClick)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Outlined.Search,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -138,8 +140,7 @@ private fun LibraryScreen(
                     )
                 }
             }
-        },
-        modifier = modifier
+        }
     ) { innerPadding ->
         if (state.isEmptyQuery) {
             Text(
