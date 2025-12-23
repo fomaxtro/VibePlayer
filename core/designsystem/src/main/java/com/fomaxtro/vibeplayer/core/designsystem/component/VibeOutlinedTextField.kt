@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -32,8 +34,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.textDisabled
 
 @Composable
 fun VibeOutlinedTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    state: TextFieldState,
     modifier: Modifier = Modifier,
     shape: Shape = CircleShape,
     placeholder: String? = null,
@@ -41,12 +42,11 @@ fun VibeOutlinedTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     colors: VibeTextFieldColors = VibeOutlinedTextFieldDefaults.colors(),
-    singleLine: Boolean = false
+    lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine
 ) {
     BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        decorationBox = { innerTextField ->
+        state = state,
+        decorator = { innerTextField ->
             Surface(
                 shape = shape,
                 border = BorderStroke(
@@ -70,7 +70,7 @@ fun VibeOutlinedTextField(
                         modifier = Modifier.weight(1f),
                         propagateMinConstraints = true
                     ) {
-                        if (placeholder != null && value.isEmpty()) {
+                        if (placeholder != null && state.text.isEmpty()) {
                             Text(
                                 text = placeholder,
                                 style = textStyle,
@@ -95,7 +95,7 @@ fun VibeOutlinedTextField(
             color = colors.textColor
         ),
         cursorBrush = SolidColor(colors.textColor),
-        singleLine = singleLine
+        lineLimits = lineLimits
     )
 }
 
@@ -133,8 +133,7 @@ private fun VibeOutlinedTextFieldPreview() {
     VibePlayerTheme {
         VibeOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "sdsd",
-            onValueChange = {},
+            state = TextFieldState(),
             placeholder = "Search",
             leadingIcon = {
                 Icon(
