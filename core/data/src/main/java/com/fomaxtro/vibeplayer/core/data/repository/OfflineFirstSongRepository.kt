@@ -84,7 +84,7 @@ class OfflineFirstSongRepository(
                             artist = cursor.getString(artistCol),
                             durationMillis = cursor.getLong(durationCol),
                             filePath = cursor.getString(pathCol),
-                            albumArtUri = albumArtUri.toString(),
+                            albumArtUri = albumArtUri.toString().takeIf { it.isNotEmpty() },
                             sizeBytes = cursor.getLong(sizeCol)
                         )
                     )
@@ -139,5 +139,10 @@ class OfflineFirstSongRepository(
 
     override suspend fun getSongById(id: Long): Song? {
         return songDao.findById(id)?.toSong()
+    }
+
+    override suspend fun findSongsByTitleOrArtist(query: String): List<Song> {
+        return songDao.findByTitleOrArtist(query)
+            .map { it.toSong() }
     }
 }

@@ -23,4 +23,5 @@ interface SongRepository {
     fun getSongsStream(): Flow<List<Song>>
     suspend fun syncLibrary()
     suspend fun getSongById(id: Long): Song?
+    suspend fun findSongsByTitleOrArtist(query: String): List<Song>
 }

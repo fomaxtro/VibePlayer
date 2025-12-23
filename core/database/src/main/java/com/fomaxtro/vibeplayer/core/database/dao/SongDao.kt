@@ -20,4 +20,7 @@ interface SongDao {
 
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun findById(id: Long): SongEntity?
+
+    @Query("SELECT * FROM songs WHERE title LIKE '%' || :query || '%' OR artist LIKE '%' || :query || '%'")
+    suspend fun findByTitleOrArtist(query: String): List<SongEntity>
 }
