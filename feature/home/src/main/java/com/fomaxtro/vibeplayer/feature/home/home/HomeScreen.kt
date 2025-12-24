@@ -46,7 +46,7 @@ import org.koin.compose.koinInject
 @Composable
 internal fun HomeScreen(
     onScanMusic: () -> Unit,
-    onSearchClick: () -> Unit
+    onSearch: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -100,7 +100,7 @@ internal fun HomeScreen(
                             propagateMinConstraints = true
                         ) {
                             LibraryScreen(
-                                onSongClick = { songIndex ->
+                                onPlaySong = { songIndex ->
                                     viewModel.onAction(PlayerAction.PlaySong(songIndex))
 
                                     scope.launch {
@@ -111,7 +111,7 @@ internal fun HomeScreen(
                                 },
                                 songsListState = songsListState,
                                 onScanMusic = onScanMusic,
-                                onSearchClick = onSearchClick
+                                onSearch = onSearch
                             )
                         }
 

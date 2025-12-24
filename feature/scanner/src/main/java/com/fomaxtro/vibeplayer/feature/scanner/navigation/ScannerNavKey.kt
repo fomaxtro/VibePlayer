@@ -14,14 +14,14 @@ data object ScanOptionsNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.scanner(
     onScanFinish: () -> Unit,
-    onScanOptionsClick: () -> Unit,
+    onScanOptions: () -> Unit,
     onNavigateBack: () -> Unit,
     onScanFilteredResult: (songsCount: Int) -> Unit
 ) {
     entry<ScanProgressNavKey> {
         ScanProgressScreen(
             onScanFinish = onScanFinish,
-            onScanOptionsClick = onScanOptionsClick
+            onScanOptions = onScanOptions
         )
     }
 

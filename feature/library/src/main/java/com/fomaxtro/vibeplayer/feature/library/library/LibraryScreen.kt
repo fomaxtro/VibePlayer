@@ -49,9 +49,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LibraryScreen(
-    onSongClick: (songIndex: Int) -> Unit,
+    onPlaySong: (songIndex: Int) -> Unit,
     onScanMusic: () -> Unit,
-    onSearchClick: () -> Unit,
+    onSearch: () -> Unit,
     songsListState: LazyListState,
     viewModel: LibraryViewModel = koinViewModel()
 ) {
@@ -59,7 +59,7 @@ fun LibraryScreen(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is LibraryEvent.PlaySong -> onSongClick(event.songIndex)
+            is LibraryEvent.PlaySong -> onPlaySong(event.songIndex)
         }
     }
 
@@ -68,7 +68,7 @@ fun LibraryScreen(
         onAction = { action ->
             when (action) {
                 LibraryAction.OnScanMusicClick -> onScanMusic()
-                LibraryAction.OnSearchClick -> onSearchClick()
+                LibraryAction.OnSearchClick -> onSearch()
                 else -> viewModel.onAction(action)
             }
         },

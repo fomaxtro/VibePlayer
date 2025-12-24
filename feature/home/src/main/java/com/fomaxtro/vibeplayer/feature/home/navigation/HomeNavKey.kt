@@ -10,12 +10,12 @@ data object HomeNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.home(
     onScanMusic: () -> Unit,
-    onSearchClick: () -> Unit
+    onSearch: () -> Unit
 ) {
     entry<HomeNavKey> {
         HomeScreen(
             onScanMusic = onScanMusic,
-            onSearchClick = onSearchClick
+            onSearch = onSearch
         )
     }
 }

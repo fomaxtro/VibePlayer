@@ -66,7 +66,7 @@ fun NavigationRoot(
                 onScanMusic = {
                     backStack.add(ScanOptionsNavKey)
                 },
-                onSearchClick = {
+                onSearch = {
                     backStack.add(SearchNavKey)
                 }
             )
@@ -75,7 +75,7 @@ fun NavigationRoot(
                 onScanFinish = {
                     backStack[backStack.lastIndex] = HomeNavKey
                 },
-                onScanOptionsClick = {
+                onScanOptions = {
                     backStack.add(ScanOptionsNavKey)
                 },
                 onNavigateBack = {
@@ -97,10 +97,10 @@ fun NavigationRoot(
             )
 
             library(
-                onCancelClick = {
+                onCancel = {
                     backStack.removeLastOrNull()
                 },
-                onPlaysongClick = {
+                onPlaySong = {
                     backStack.removeLastOrNull()
                 }
             )

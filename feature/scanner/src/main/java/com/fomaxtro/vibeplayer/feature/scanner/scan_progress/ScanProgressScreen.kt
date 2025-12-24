@@ -34,7 +34,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun ScanProgressScreen(
     onScanFinish: () -> Unit,
-    onScanOptionsClick: () -> Unit,
+    onScanOptions: () -> Unit,
     viewModel: ScanProgressViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,7 +58,7 @@ internal fun ScanProgressScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                ScanProgressAction.OnScanOptionsClick -> onScanOptionsClick()
+                ScanProgressAction.OnScanOptionsClick -> onScanOptions()
                 else -> viewModel.onAction(action)
             }
         },

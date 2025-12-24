@@ -48,15 +48,15 @@ import kotlin.time.Duration.Companion.minutes
 
 @Composable
 internal fun SearchScreen(
-    onCancelClick: () -> Unit,
-    onPlaysongClick: () -> Unit,
+    onCancel: () -> Unit,
+    onPlaySong: () -> Unit,
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            SearchEvent.PlaySong -> onPlaysongClick()
+            SearchEvent.PlaySong -> onPlaySong()
         }
     }
 
@@ -64,7 +64,7 @@ internal fun SearchScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                SearchAction.OnCancelClick -> onCancelClick()
+                SearchAction.OnCancelClick -> onCancel()
                 else -> viewModel.onAction(action)
             }
         }
