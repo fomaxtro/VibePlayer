@@ -9,11 +9,13 @@ import kotlinx.serialization.Serializable
 data object SearchNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.library(
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
+    onPlaysongClick: () -> Unit
 ) {
     entry<SearchNavKey> {
         SearchScreen(
-            onCancelClick = onCancelClick
+            onCancelClick = onCancelClick,
+            onPlaysongClick = onPlaysongClick
         )
     }
 }

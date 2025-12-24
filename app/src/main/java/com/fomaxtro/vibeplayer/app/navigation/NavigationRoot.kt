@@ -99,6 +99,9 @@ fun NavigationRoot(
             library(
                 onCancelClick = {
                     backStack.removeLastOrNull()
+                },
+                onPlaysongClick = {
+                    backStack.removeLastOrNull()
                 }
             )
         }

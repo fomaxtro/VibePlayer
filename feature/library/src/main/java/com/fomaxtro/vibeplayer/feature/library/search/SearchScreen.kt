@@ -38,6 +38,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
@@ -48,9 +49,16 @@ import kotlin.time.Duration.Companion.minutes
 @Composable
 internal fun SearchScreen(
     onCancelClick: () -> Unit,
+    onPlaysongClick: () -> Unit,
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            SearchEvent.PlaySong -> onPlaysongClick()
+        }
+    }
 
     SearchScreen(
         state = state,
@@ -150,7 +158,10 @@ private fun SearchScreen(
                         ) {
                             items(songs.data) { song ->
                                 VibeSongCard(
-                                    onClick = {},
+                                    onClick = {
+                                        keyboardController?.hide()
+                                        onAction(SearchAction.OnSongClick(song))
+                                    },
                                     title = song.title,
                                     artist = song.artist,
                                     duration = song.duration.formatDuration(),

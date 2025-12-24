@@ -7,23 +7,41 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.getTextFieldState
+import com.fomaxtro.vibeplayer.domain.model.Song
+import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     savedStateHandle: SavedStateHandle,
-    songRepository: SongRepository
+    songRepository: SongRepository,
+    private val musicPlayer: MusicPlayer
 ) : ViewModel() {
     private companion object {
         const val SEARCH_QUERY_KEY = "search_query"
     }
+
+    private val eventChannel = Channel<SearchEvent>()
+    val events = eventChannel.receiveAsFlow()
+
+    private val playlist = musicPlayer.playerState
+        .map { it.playlist }
+        .distinctUntilChanged()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            emptyList()
+        )
 
     private val searchQuery = savedStateHandle.getTextFieldState(
         scope = viewModelScope,
@@ -66,7 +84,17 @@ class SearchViewModel(
     fun onAction(action: SearchAction) {
         when (action) {
             SearchAction.OnClearClick -> onClearClick()
+            is SearchAction.OnSongClick -> onSongClick(action.song)
             else -> Unit
+        }
+    }
+
+    private fun onSongClick(song: Song) = viewModelScope.launch {
+        val songIndex = playlist.value.indexOf(song)
+
+        if (songIndex != -1) {
+            musicPlayer.play(songIndex)
+            eventChannel.send(SearchEvent.PlaySong)
         }
     }
 
