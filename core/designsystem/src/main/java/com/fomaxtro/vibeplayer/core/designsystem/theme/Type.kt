@@ -50,7 +50,12 @@ internal val Typography = Typography(
         fontSize = 14.sp,
         lineHeight = 18.sp
     ),
-    bodySmall = DefaultTypography.bodySmall.merge(BaseTextStyle),
+    bodySmall = TextStyle(
+        fontFamily = HostGrotesk,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp
+    ),
     labelLarge = TextStyle(
         fontFamily = HostGrotesk,
         fontWeight = FontWeight.Medium,

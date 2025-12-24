@@ -37,6 +37,9 @@ val ColorScheme.surfaceHigher: Color
 val ColorScheme.textDisabled: Color
     get() = TextDisabled
 
+val ColorScheme.surfaceBg30: Color
+    get() = SurfaceBg.copy(alpha = 0.3f)
+
 @Composable
 fun VibePlayerTheme(
     content: @Composable () -> Unit
