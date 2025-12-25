@@ -20,10 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,8 +38,6 @@ import com.fomaxtro.vibeplayer.feature.player.player.MiniPlayer
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerAction
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -49,7 +47,6 @@ internal fun HomeScreen(
     onSearch: () -> Unit
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -66,6 +63,12 @@ internal fun HomeScreen(
         snackbarHostState.showSnackbar(
             message = event.asString(context)
         )
+    }
+
+    LaunchedEffect(state.isPlaying, state.playingSong) {
+        if (state.isPlaying && !nowPlaying) {
+            nowPlaying = true
+        }
     }
 
     Scaffold(
@@ -102,12 +105,6 @@ internal fun HomeScreen(
                             LibraryScreen(
                                 onPlaySong = { songIndex ->
                                     viewModel.onAction(PlayerAction.PlaySong(songIndex))
-
-                                    scope.launch {
-                                        // Make sure MiniPlayer was displayed
-                                        delay(150)
-                                        nowPlaying = true
-                                    }
                                 },
                                 songsListState = songsListState,
                                 onScanMusic = onScanMusic,
