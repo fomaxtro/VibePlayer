@@ -4,6 +4,7 @@ import android.graphics.RectF
 import androidx.annotation.FloatRange
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -61,6 +62,7 @@ fun PlaybackSlider(
     Canvas(
         modifier = modifier
             .heightIn(min = 4.dp)
+            .defaultMinSize(minWidth = 4.dp)
             .then(
                 if (progressTextResultDp != null) {
                     Modifier.height(progressTextResultDp)

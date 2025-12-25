@@ -19,7 +19,7 @@ class PlayerViewModel(
             playlist = playerState.playlist,
             playingSong = playerState.currentSong,
             isPlaying = playerState.isPlaying,
-            currentPosition = playbackPosition,
+            playingSongPosition = playbackPosition,
             canSkipPrevious = playerState.canSkipPrevious,
             canSkipNext = playerState.canSkipNext
         )

@@ -38,11 +38,7 @@ class ExoPlayerMusicPlayer(
             mediaItem: MediaItem?,
             reason: Int
         ) {
-            if (
-                mediaItem != null
-                && _playerState.value.playlist.isNotEmpty()
-                && reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK
-            ) {
+            if (mediaItem != null && _playerState.value.playlist.isNotEmpty()) {
                 _playerState.update {
                     it.copy(
                         currentSong = _playerState.value.playlist[player.currentMediaItemIndex]

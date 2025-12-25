@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
@@ -38,10 +39,10 @@ import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
 @Composable
 fun MiniPlayer(
     state: PlayerUiState,
-    onAction: (PlayerAction) -> Unit = {},
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAction: (PlayerAction) -> Unit = {}
 ) {
     with(sharedTransitionScope) {
         Surface(
@@ -145,9 +146,10 @@ fun MiniPlayer(
                     }
 
                     PlaybackSlider(
-                        value = state.currentSongProgress,
+                        value = state.playingSongProgress,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(4.dp)
                             .sharedElement(
                                 rememberSharedContentState("song_progress"),
                                 animatedVisibilityScope = animatedVisibilityScope
@@ -160,6 +162,7 @@ fun MiniPlayer(
     }
 }
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Preview
 @Composable
 private fun MiniPlayerPreview() {

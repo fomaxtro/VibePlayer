@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
@@ -119,14 +120,15 @@ fun PlayerScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlaybackSlider(
-                        value = state.currentSongProgress,
+                        value = state.playingSongProgress,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 5.dp)
                             .sharedElement(
                                 rememberSharedContentState("song_progress"),
                                 animatedVisibilityScope = animatedVisibilityScope
-                            )
+                            ),
+                        progressText = { state.playingSongLabel }
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -183,34 +185,12 @@ fun PlayerScreen(
                         }
                     }
                 }
-
-                /*PlaybackControls(
-                    progress = state.currentSongProgress,
-                    playing = state.isPlaying,
-                    onPlayPauseToggle = {
-                        onAction(PlayerAction.OnPlayPauseToggle)
-                    },
-                    onSkipPreviousClick = {
-                        onAction(PlayerAction.OnSkipPreviousClick)
-                    },
-                    onSkipNextClick = {
-                        onAction(PlayerAction.OnSkipNextClick)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .sharedElement(
-                            rememberSharedContentState("playback_controls"),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        ),
-                    canSkipPrevious = state.canSkipPrevious,
-                    canSkipNext = state.canSkipNext,
-                    canPlayPause = state.playingSong != null
-                )*/
             }
         }
     }
 }
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @DevicePreviews
 @Composable
 private fun PLayerScreenPreview() {
@@ -230,7 +210,7 @@ private fun PLayerScreenPreview() {
                             sizeBytes = 100 * 1024,
                             albumArtUri = ""
                         ),
-                        currentPosition = 30.seconds
+                        playingSongPosition = 30.seconds
                     ),
                     onNavigateBack = {},
                     sharedTransitionScope = this@SharedTransitionLayout,
