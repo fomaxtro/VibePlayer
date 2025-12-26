@@ -41,15 +41,31 @@ class OfflineFirstSongRepository(
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.SIZE
             )
+
+            val allowedMimeTypes = listOf(
+                "audio/mpeg",
+                "audio/flac",
+                "audio/wav",
+                "audio/x-wav"
+            )
+            val allowedMimeTypesQuery = allowedMimeTypes.joinToString(",") { "?" }
+
             val selection = """
                 ${MediaStore.Audio.Media.IS_MUSIC} = 1 AND
+                ${MediaStore.Audio.Media.IS_ALARM} = 0 AND
+                ${MediaStore.Audio.Media.IS_NOTIFICATION} = 0 AND
+                ${MediaStore.Audio.Media.IS_RINGTONE} = 0 AND
+                ${MediaStore.Audio.Media.IS_PODCAST} = 0 AND
+                ${MediaStore.Audio.Media.IS_AUDIOBOOK} = 0 AND
                 ${MediaStore.Audio.Media.DURATION} >= ? AND
-                ${MediaStore.Audio.Media.SIZE} >= ?
+                ${MediaStore.Audio.Media.SIZE} >= ? AND
+                ${MediaStore.Audio.Media.MIME_TYPE} IN ($allowedMimeTypesQuery)
             """.trimIndent()
 
             val selectionArgs = arrayOf(
                 (minDurationSeconds * 1000L).toString(),
-                minSize.toString()
+                minSize.toString(),
+                *allowedMimeTypes.toTypedArray()
             )
 
             val query = context.contentResolver.query(
@@ -58,6 +74,19 @@ class OfflineFirstSongRepository(
                 selection,
                 selectionArgs,
                 null
+            )
+
+            val pathBlacklist = listOf(
+                "WhatsApp",
+                "Truecaller",
+                "Telegram",
+                "Facebook",
+                "Instagram",
+                "Recorder",
+                "Voice Note",
+                "Call Record",
+                "Samsung/Voice",
+                "MIUI/sound_recorder"
             )
 
             query?.use { cursor ->
@@ -74,6 +103,15 @@ class OfflineFirstSongRepository(
                 val songs = mutableListOf<SongEntity>()
 
                 while (cursor.moveToNext()) {
+                    val filePath = cursor.getString(pathCol)
+                    val isJunk = pathBlacklist.any { keyword ->
+                        filePath.contains(keyword, ignoreCase = true)
+                    }
+
+                    if (isJunk) {
+                        continue
+                    }
+
                     val albumId = cursor.getLong(albumIdCol)
                     val albumArtUri = ContentUris.withAppendedId(artworkUriBase, albumId)
 
@@ -83,7 +121,7 @@ class OfflineFirstSongRepository(
                             title = cursor.getString(titleCol),
                             artist = cursor.getString(artistCol),
                             durationMillis = cursor.getLong(durationCol),
-                            filePath = cursor.getString(pathCol),
+                            filePath = filePath,
                             albumArtUri = albumArtUri.toString().takeIf { it.isNotEmpty() },
                             sizeBytes = cursor.getLong(sizeCol)
                         )

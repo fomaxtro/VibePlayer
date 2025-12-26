@@ -6,9 +6,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ShuffleOrder
+import com.fomaxtro.vibeplayer.core.player.mapper.toExoPlayerRepeatMode
+import com.fomaxtro.vibeplayer.core.player.mapper.toRepeatMode
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.PlayerState
+import com.fomaxtro.vibeplayer.domain.player.RepeatMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,24 +46,25 @@ class ExoPlayerMusicPlayer(
             if (mediaItem != null && _playerState.value.playlist.isNotEmpty()) {
                 _playerState.update {
                     it.copy(
-                        currentSong = _playerState.value.playlist[player.currentMediaItemIndex]
+                        currentSong = _playerState.value.playlist[player.currentMediaItemIndex],
+                        canSkipPrevious = player.hasPreviousMediaItem(),
+                        canSkipNext = player.hasNextMediaItem()
                     )
                 }
             }
+        }
+
+        override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+            _playerState.update { it.copy(isShuffleEnabled = shuffleModeEnabled) }
+        }
+
+        override fun onRepeatModeChanged(repeatMode: Int) {
+            _playerState.update { it.copy(repeatMode = repeatMode.toRepeatMode()) }
         }
     }
 
     init {
         player.addListener(playerListener)
-    }
-
-    private fun updateControlsState() {
-        _playerState.update {
-            it.copy(
-                canSkipPrevious = player.hasPreviousMediaItem(),
-                canSkipNext = player.hasNextMediaItem()
-            )
-        }
     }
 
     override fun play(index: Int) {
@@ -72,9 +76,6 @@ class ExoPlayerMusicPlayer(
             player.seekTo(index, 0)
             player.prepare()
             player.play()
-
-            _playerState.update { it.copy(currentSong = it.playlist[index]) }
-            updateControlsState()
         }
     }
 
@@ -126,21 +127,15 @@ class ExoPlayerMusicPlayer(
         player.stop()
         player.clearMediaItems()
 
-        _playerState.update {
-            it.copy(
-                playlist = emptyList()
-            )
-        }
+        _playerState.update { it.copy(playlist = emptyList()) }
     }
 
     override fun skipNext() {
         player.seekToNext()
-        updateControlsState()
     }
 
     override fun skipPrevious() {
         player.seekToPrevious()
-        updateControlsState()
     }
 
     override fun seekTo(duration: Duration) {
@@ -169,5 +164,13 @@ class ExoPlayerMusicPlayer(
                 play(shuffledIndex)
             }
         }
+    }
+
+    override fun setRepeatMode(repeatMode: RepeatMode) {
+        player.repeatMode = repeatMode.toExoPlayerRepeatMode()
+    }
+
+    override fun toggleShuffle() {
+        player.shuffleModeEnabled = !player.shuffleModeEnabled
     }
 }

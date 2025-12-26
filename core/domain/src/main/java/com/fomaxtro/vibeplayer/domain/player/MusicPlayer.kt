@@ -21,4 +21,6 @@ interface MusicPlayer {
     fun seekTo(duration: Duration)
     fun setShuffleModeEnabled(isEnabled: Boolean)
     fun playFirstShuffled()
+    fun setRepeatMode(repeatMode: RepeatMode)
+    fun toggleShuffle()
 }

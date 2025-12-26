@@ -7,5 +7,7 @@ data class PlayerState(
     val currentSong: Song? = null,
     val playlist: List<Song> = emptyList(),
     val canSkipNext: Boolean = false,
-    val canSkipPrevious: Boolean = false
+    val canSkipPrevious: Boolean = false,
+    val isShuffleEnabled: Boolean = false,
+    val repeatMode: RepeatMode = RepeatMode.OFF
 )
