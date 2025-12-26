@@ -39,7 +39,7 @@ fun PlaybackControls(
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
-                    imageVector = VibeIcons.Outlined.Repeat,
+                    imageVector = VibeIcons.Outlined.RepeatAll,
                     contentDescription = stringResource(R.string.shuffle)
                 )
 

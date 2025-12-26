@@ -21,17 +21,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAlbumArt
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefaults
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibePlayPauseButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
+import com.fomaxtro.vibeplayer.domain.player.RepeatMode
 import com.fomaxtro.vibeplayer.feature.player.R
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
 import kotlin.math.roundToInt
@@ -157,52 +161,106 @@ fun PlayerScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         VibeIconButton(
                             onClick = {
-                                onAction(PlayerAction.OnSkipPreviousClick)
+                                onAction(PlayerAction.OnToggleShuffleClick)
                             },
                             modifier = Modifier.size(44.dp),
-                            enabled = state.canSkipPrevious
+                            colors = VibeIconButtonDefaults.colors(
+                                containerColor = if (state.isShuffleEnabled) {
+                                    MaterialTheme.colorScheme.buttonHover
+                                } else {
+                                    Color.Transparent
+                                }
+                            )
                         ) {
                             Icon(
-                                imageVector = VibeIcons.Filled.SkipPrevious,
-                                contentDescription = stringResource(R.string.skip_previous),
+                                imageVector = VibeIcons.Outlined.Shuffle,
+                                contentDescription = stringResource(R.string.shuffle),
                                 modifier = Modifier.size(16.dp)
                             )
                         }
 
-                        VibePlayPauseButton(
-                            onClick = {
-                                onAction(PlayerAction.OnPlayPauseToggle)
-                            },
-                            playing = state.isPlaying,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .sharedElement(
-                                    rememberSharedContentState("play_pause"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                ),
-                            enabled = state.playingSong != null
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            VibeIconButton(
+                                onClick = {
+                                    onAction(PlayerAction.OnSkipPreviousClick)
+                                },
+                                modifier = Modifier.size(44.dp),
+                                enabled = state.canSkipPrevious
+                            ) {
+                                Icon(
+                                    imageVector = VibeIcons.Filled.SkipPrevious,
+                                    contentDescription = stringResource(R.string.skip_previous),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+
+                            VibePlayPauseButton(
+                                onClick = {
+                                    onAction(PlayerAction.OnPlayPauseToggle)
+                                },
+                                playing = state.isPlaying,
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .sharedElement(
+                                        rememberSharedContentState("play_pause"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    ),
+                                enabled = state.playingSong != null
+                            )
+
+                            VibeIconButton(
+                                onClick = {
+                                    onAction(PlayerAction.OnSkipNextClick)
+                                },
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .sharedElement(
+                                        rememberSharedContentState("skip_next"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    ),
+                                enabled = state.canSkipNext
+                            ) {
+                                Icon(
+                                    imageVector = VibeIcons.Filled.SkipNext,
+                                    contentDescription = stringResource(R.string.skip_next),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
 
                         VibeIconButton(
                             onClick = {
-                                onAction(PlayerAction.OnSkipNextClick)
+                                onAction(PlayerAction.OnRepeatModeClick)
                             },
-                            modifier = Modifier
-                                .size(44.dp)
-                                .sharedElement(
-                                    rememberSharedContentState("skip_next"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                ),
-                            enabled = state.canSkipNext
+                            modifier = Modifier.size(44.dp),
+                            colors = VibeIconButtonDefaults.colors(
+                                containerColor = if (state.repeatMode == RepeatMode.OFF) {
+                                    Color.Transparent
+                                } else {
+                                    MaterialTheme.colorScheme.buttonHover
+                                }
+                            )
                         ) {
                             Icon(
-                                imageVector = VibeIcons.Filled.SkipNext,
-                                contentDescription = stringResource(R.string.skip_next),
+                                imageVector = when (state.repeatMode) {
+                                    RepeatMode.OFF -> VibeIcons.Outlined.RepeatOff
+                                    RepeatMode.ALL -> VibeIcons.Outlined.RepeatAll
+                                    RepeatMode.ONE -> VibeIcons.Outlined.RepeatOne
+                                },
+                                contentDescription = when (state.repeatMode) {
+                                    RepeatMode.OFF -> stringResource(R.string.repeat_off)
+                                    RepeatMode.ALL -> stringResource(R.string.repeat_all)
+                                    RepeatMode.ONE -> stringResource(R.string.repeat_one)
+                                },
                                 modifier = Modifier.size(16.dp)
                             )
                         }

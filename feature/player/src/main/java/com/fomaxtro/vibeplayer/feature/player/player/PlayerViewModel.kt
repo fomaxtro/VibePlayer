@@ -2,7 +2,12 @@ package com.fomaxtro.vibeplayer.feature.player.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
+import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
+import com.fomaxtro.vibeplayer.domain.player.PlayerState
+import com.fomaxtro.vibeplayer.domain.player.RepeatMode
+import com.fomaxtro.vibeplayer.feature.player.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,12 +19,19 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 class PlayerViewModel(
-    private val player: MusicPlayer
+    private val player: MusicPlayer,
+    private val snackbarController: SnackbarController
 ) : ViewModel() {
     private val isSeeking = MutableStateFlow(false)
+    private val playerState = player.playerState
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            PlayerState()
+        )
 
     val state: StateFlow<PlayerUiState> = combine(
-        player.playerState,
+        playerState,
         player.playbackPosition,
         isSeeking
     ) { playerState, playbackPosition, isSeeking ->
@@ -30,7 +42,9 @@ class PlayerViewModel(
             playingSongPosition = playbackPosition,
             canSkipPrevious = playerState.canSkipPrevious,
             canSkipNext = playerState.canSkipNext,
-            isSeeking = isSeeking
+            isSeeking = isSeeking,
+            isShuffleEnabled = playerState.isShuffleEnabled,
+            repeatMode = playerState.repeatMode
         )
     }
         .stateIn(
@@ -48,6 +62,44 @@ class PlayerViewModel(
             is PlayerAction.OnSeekTo -> onSeekTo(action.songProgressFactor)
             PlayerAction.OnSeekCancel -> onSeekCancel()
             PlayerAction.OnSeekStarted -> onSeekStarted()
+            PlayerAction.OnRepeatModeClick -> onRepeatModeClick()
+            PlayerAction.OnToggleShuffleClick -> onToggleShuffleClick()
+        }
+    }
+
+    private fun onToggleShuffleClick() = viewModelScope.launch {
+        val isShuffledEnabled = !playerState.value.isShuffleEnabled
+
+        player.setShuffleModeEnabled(isShuffledEnabled)
+        snackbarController.showSnackbar(
+            message = if (isShuffledEnabled) {
+                UiText.StringResource(R.string.shuffle_enabled)
+            } else {
+                UiText.StringResource(R.string.shuffle_disabled)
+            }
+        )
+    }
+
+    private fun onRepeatModeClick() = viewModelScope.launch {
+        when (playerState.value.repeatMode) {
+            RepeatMode.OFF -> {
+                player.setRepeatMode(RepeatMode.ALL)
+                snackbarController.showSnackbar(
+                    message = UiText.StringResource(R.string.repeat_all)
+                )
+            }
+            RepeatMode.ALL -> {
+                player.setRepeatMode(RepeatMode.ONE)
+                snackbarController.showSnackbar(
+                    message = UiText.StringResource(R.string.repeat_one)
+                )
+            }
+            RepeatMode.ONE -> {
+                player.setRepeatMode(RepeatMode.OFF)
+                snackbarController.showSnackbar(
+                    message = UiText.StringResource(R.string.repeat_off)
+                )
+            }
         }
     }
 

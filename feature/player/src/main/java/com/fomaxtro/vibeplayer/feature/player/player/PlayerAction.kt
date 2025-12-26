@@ -8,4 +8,6 @@ sealed interface PlayerAction {
     data class OnSeekTo(val songProgressFactor: Float) : PlayerAction
     data object OnSeekStarted : PlayerAction
     data object OnSeekCancel : PlayerAction
+    data object OnToggleShuffleClick : PlayerAction
+    data object OnRepeatModeClick : PlayerAction
 }
