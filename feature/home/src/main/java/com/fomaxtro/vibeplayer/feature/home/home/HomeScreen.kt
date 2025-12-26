@@ -36,7 +36,6 @@ import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryViewModel
 import com.fomaxtro.vibeplayer.feature.player.player.MiniPlayer
-import com.fomaxtro.vibeplayer.feature.player.player.PlayerAction
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -105,9 +104,6 @@ internal fun HomeScreen(
                             propagateMinConstraints = true
                         ) {
                             LibraryScreen(
-                                onPlaySong = { songIndex ->
-                                    playerViewModel.onAction(PlayerAction.PlaySong(songIndex))
-                                },
                                 songsListState = songsListState,
                                 onScanMusic = onScanMusic,
                                 onSearch = onSearch,
