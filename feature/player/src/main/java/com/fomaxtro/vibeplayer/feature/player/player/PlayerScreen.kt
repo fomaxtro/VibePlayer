@@ -30,9 +30,12 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.player.R
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
+import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
@@ -128,7 +131,27 @@ fun PlayerScreen(
                                 rememberSharedContentState("song_progress"),
                                 animatedVisibilityScope = animatedVisibilityScope
                             ),
-                        progressText = { state.playingSongLabel }
+                        progressText = { factor ->
+                            if (state.playingSong != null) {
+                                val totalDuration = state.playingSong.duration
+
+                                val currentProgress = (totalDuration.inWholeMilliseconds * factor)
+                                    .roundToInt()
+                                    .milliseconds
+
+                                "${currentProgress.formatDuration()} / ${totalDuration.formatDuration()}"
+                            } else ""
+                        },
+                        onSeek = { factor ->
+                            onAction(PlayerAction.OnSeekTo(factor))
+                        },
+                        onSeekStarted = {
+                            onAction(PlayerAction.OnSeekStarted)
+                        },
+                        onSeekCancel = {
+                            onAction(PlayerAction.OnSeekCancel)
+                        },
+                        seeking = state.isSeeking
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
