@@ -45,7 +45,6 @@ import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LibraryScreen(
@@ -53,7 +52,7 @@ fun LibraryScreen(
     onScanMusic: () -> Unit,
     onSearch: () -> Unit,
     songsListState: LazyListState,
-    viewModel: LibraryViewModel = koinViewModel()
+    viewModel: LibraryViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

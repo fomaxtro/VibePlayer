@@ -117,8 +117,4 @@ class LibraryViewModel(
     private fun onSearchClick() {
         isSearching.value = true
     }
-
-    override fun onCleared() {
-        player.clearPlaylist()
-    }
 }

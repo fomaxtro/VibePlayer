@@ -34,6 +34,7 @@ import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
+import com.fomaxtro.vibeplayer.feature.library.library.LibraryViewModel
 import com.fomaxtro.vibeplayer.feature.player.player.MiniPlayer
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerAction
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
@@ -53,8 +54,9 @@ internal fun HomeScreen(
     }
     val snackbarController = koinInject<SnackbarController>()
 
-    val viewModel = koinViewModel<PlayerViewModel>()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val playerViewModel = koinViewModel<PlayerViewModel>()
+    val libraryViewModel = koinViewModel<LibraryViewModel>()
+    val playerState by playerViewModel.state.collectAsStateWithLifecycle()
 
     var nowPlaying by rememberSaveable { mutableStateOf(false) }
     val songsListState = rememberLazyListState()
@@ -65,8 +67,8 @@ internal fun HomeScreen(
         )
     }
 
-    LaunchedEffect(state.isPlaying, state.playingSong) {
-        if (state.isPlaying && !nowPlaying) {
+    LaunchedEffect(playerState.isPlaying, playerState.playingSong) {
+        if (playerState.isPlaying && !nowPlaying) {
             nowPlaying = true
         }
     }
@@ -88,8 +90,8 @@ internal fun HomeScreen(
             ) { playerVisible ->
                 if (playerVisible) {
                     PlayerScreen(
-                        state = state,
-                        onAction = viewModel::onAction,
+                        state = playerState,
+                        onAction = playerViewModel::onAction,
                         onNavigateBack = { nowPlaying = false },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@AnimatedContent
@@ -104,22 +106,23 @@ internal fun HomeScreen(
                         ) {
                             LibraryScreen(
                                 onPlaySong = { songIndex ->
-                                    viewModel.onAction(PlayerAction.PlaySong(songIndex))
+                                    playerViewModel.onAction(PlayerAction.PlaySong(songIndex))
                                 },
                                 songsListState = songsListState,
                                 onScanMusic = onScanMusic,
-                                onSearch = onSearch
+                                onSearch = onSearch,
+                                viewModel = libraryViewModel
                             )
                         }
 
                         AnimatedVisibility(
-                            visible = state.playingSong != null,
+                            visible = playerState.playingSong != null,
                             enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
                             exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
                         ) {
                             MiniPlayer(
-                                state = state,
-                                onAction = viewModel::onAction,
+                                state = playerState,
+                                onAction = playerViewModel::onAction,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .pointerInput(Unit) {
