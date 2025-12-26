@@ -1,9 +1,11 @@
 package com.fomaxtro.vibeplayer.core.player
 
 import androidx.core.net.toUri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ShuffleOrder
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.PlayerState
@@ -55,8 +57,8 @@ class ExoPlayerMusicPlayer(
     private fun updateControlsState() {
         _playerState.update {
             it.copy(
-                canSkipPrevious = player.currentMediaItemIndex - 1 >= 0,
-                canSkipNext = player.currentMediaItemIndex + 1 <= it.playlist.lastIndex
+                canSkipPrevious = player.hasPreviousMediaItem(),
+                canSkipNext = player.hasNextMediaItem()
             )
         }
     }
@@ -74,6 +76,14 @@ class ExoPlayerMusicPlayer(
             _playerState.update { it.copy(currentSong = it.playlist[index]) }
             updateControlsState()
         }
+    }
+
+    override fun play(
+        playlist: List<Song>,
+        index: Int
+    ) {
+        setPlaylist(playlist)
+        play(index)
     }
 
     override fun pause() {
@@ -135,5 +145,29 @@ class ExoPlayerMusicPlayer(
 
     override fun seekTo(duration: Duration) {
         player.seekTo(duration.inWholeMilliseconds)
+    }
+
+    override fun setShuffleModeEnabled(isEnabled: Boolean) {
+        player.shuffleOrder = ShuffleOrder.DefaultShuffleOrder(
+            player.mediaItemCount,
+            System.currentTimeMillis()
+        )
+        player.shuffleModeEnabled = isEnabled
+    }
+
+    override fun playFirstShuffled() {
+        if (!player.shuffleModeEnabled) {
+            setShuffleModeEnabled(true)
+        }
+
+        val timeline = player.currentTimeline
+
+        if (!timeline.isEmpty) {
+            val shuffledIndex = timeline.getFirstWindowIndex(true)
+
+            if (shuffledIndex != C.INDEX_UNSET) {
+                play(shuffledIndex)
+            }
+        }
     }
 }
