@@ -30,11 +30,17 @@ object VibeIcons {
     object Outlined {
         val Play: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.play_outlined)
-        val Repeat: ImageVector
+        val RepeatAll: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.repeat)
+        val RepeatOne: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.repeat_one)
+        val RepeatOff: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.repeat_off)
         val Scan: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.scan)
         val Search: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.search)
+        val Shuffle: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.shuffle)
     }
 }
