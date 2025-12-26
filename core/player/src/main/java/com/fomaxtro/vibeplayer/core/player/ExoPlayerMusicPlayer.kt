@@ -132,4 +132,8 @@ class ExoPlayerMusicPlayer(
         player.seekToPrevious()
         updateControlsState()
     }
+
+    override fun seekTo(duration: Duration) {
+        player.seekTo(duration.inWholeMilliseconds)
+    }
 }

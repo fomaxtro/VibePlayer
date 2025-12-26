@@ -17,4 +17,5 @@ interface MusicPlayer {
     fun clearPlaylist()
     fun skipNext()
     fun skipPrevious()
+    fun seekTo(duration: Duration)
 }
