@@ -29,7 +29,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
@@ -39,6 +38,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
+import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
@@ -188,7 +188,7 @@ private fun SearchScreen(
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun SearchScreenPreview() {
     val searchQuery = rememberTextFieldState()
@@ -208,7 +208,19 @@ private fun SearchScreenPreview() {
         SearchScreen(
             state = SearchUiState(
                 searchQuery = searchQuery,
-                songs = Resource.Loading
+                songs = Resource.Success(
+                    data = listOf(
+                        Song(
+                            id = 1,
+                            title = "Song 1",
+                            artist = "Artist 1",
+                            duration = 3.minutes,
+                            albumArtUri = null,
+                            filePath = "",
+                            sizeBytes = 1024L,
+                        )
+                    )
+                )
             )
         )
     }
