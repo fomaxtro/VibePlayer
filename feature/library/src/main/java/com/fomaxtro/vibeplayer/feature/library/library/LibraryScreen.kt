@@ -8,7 +8,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +22,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
@@ -46,30 +44,13 @@ import kotlin.time.Duration.Companion.minutes
 fun LibraryScreen(
     onScanMusic: () -> Unit,
     onSearch: () -> Unit,
-    songsListState: LazyListState,
-    viewModel: LibraryViewModel
+    onSongClick: (Song) -> Unit,
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    songs: List<Song>
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val songsListState = rememberLazyListState()
 
-    LibraryScreen(
-        state = state,
-        onAction = { action ->
-            when (action) {
-                LibraryAction.OnScanMusicClick -> onScanMusic()
-                LibraryAction.OnSearchClick -> onSearch()
-                else -> viewModel.onAction(action)
-            }
-        },
-        songsListState = songsListState
-    )
-}
-
-@Composable
-private fun LibraryScreen(
-    state: LibraryUiState,
-    onAction: (LibraryAction) -> Unit = {},
-    songsListState: LazyListState
-) {
     val isShowingScrollUp by remember {
         derivedStateOf {
             songsListState.firstVisibleItemIndex > 10
@@ -82,15 +63,11 @@ private fun LibraryScreen(
             VibeMainTopAppBar(
                 actions = {
                     VibeScanIconButton(
-                        onClick = {
-                            onAction(LibraryAction.OnScanMusicClick)
-                        }
+                        onClick = onScanMusic
                     )
 
                     VibeIconButton(
-                        onClick = {
-                            onAction(LibraryAction.OnSearchClick)
-                        }
+                        onClick = onSearch
                     ) {
                         Icon(
                             imageVector = VibeIcons.Outlined.Search,
@@ -132,20 +109,16 @@ private fun LibraryScreen(
         LibraryLayoyt(
             playbackControls = {
                 PlaybackControls(
-                    onShuffleClick = {
-                        onAction(LibraryAction.OnShuffleClick)
-                    },
-                    onPlayClick = {
-                        onAction(LibraryAction.OnPlayClick)
-                    },
+                    onShuffleClick = onShuffleClick,
+                    onPlayClick = onPlayClick,
                     modifier = Modifier.fillMaxWidth()
                 )
             },
-            songs = state.songs,
+            songs = songs,
             item = { song, contentPadding ->
                 VibeSongCard(
                     onClick = {
-                        onAction(LibraryAction.OnSongClick(song))
+                        onSongClick(song)
                     },
                     title = song.title,
                     artist = song.artist,
@@ -169,8 +142,8 @@ private fun LibraryScreen(
                 Text(
                     text = pluralStringResource(
                         id = R.plurals.songs_available,
-                        count = state.songs.size,
-                        state.songs.size
+                        count = songs.size,
+                        songs.size
                     ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -190,20 +163,22 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                state = LibraryUiState(
-                    songs = listOf(
-                        Song(
-                            id = 1,
-                            title = "Song 1",
-                            artist = "Artist 1",
-                            duration = 3.minutes,
-                            albumArtUri = null,
-                            filePath = "",
-                            sizeBytes = 1024L,
-                        )
+                songs = listOf(
+                    Song(
+                        id = 1,
+                        title = "Song 1",
+                        artist = "Artist 1",
+                        duration = 3.minutes,
+                        albumArtUri = null,
+                        filePath = "",
+                        sizeBytes = 1024L,
                     )
                 ),
-                songsListState = rememberLazyListState()
+                onScanMusic = {  },
+                onSearch = {  },
+                onSongClick = {  },
+                onPlayClick = {  },
+                onShuffleClick = {  },
             )
         }
     }

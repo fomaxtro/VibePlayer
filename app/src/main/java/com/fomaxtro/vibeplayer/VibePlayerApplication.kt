@@ -6,6 +6,7 @@ import com.fomaxtro.vibeplayer.core.data.di.coreDataModule
 import com.fomaxtro.vibeplayer.core.player.di.corePlayerModule
 import com.fomaxtro.vibeplayer.core.ui.di.coreUiModule
 import com.fomaxtro.vibeplayer.domain.di.coreDomainModule
+import com.fomaxtro.vibeplayer.feature.home.di.featureHomeModule
 import com.fomaxtro.vibeplayer.feature.library.di.featureLibraryModule
 import com.fomaxtro.vibeplayer.feature.player.di.featurePlayerModule
 import com.fomaxtro.vibeplayer.feature.scanner.di.featureScannerModule
@@ -36,7 +37,8 @@ class VibePlayerApplication : Application() {
                 corePlayerModule,
                 featureLibraryModule,
                 featurePlayerModule,
-                featureScannerModule
+                featureScannerModule,
+                featureHomeModule
             )
         }
     }
