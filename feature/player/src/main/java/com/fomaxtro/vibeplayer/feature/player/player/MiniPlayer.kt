@@ -88,10 +88,12 @@ fun MiniPlayer(
                                 text = state.playingSong?.title ?: "",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.sharedElement(
-                                    rememberSharedContentState("song_title"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                )
+                                modifier = Modifier
+                                    .sharedBounds(
+                                        rememberSharedContentState("song_title"),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
+                                    )
                             )
 
                             Text(
@@ -114,7 +116,12 @@ fun MiniPlayer(
                                     onAction(PlayerAction.OnPlayPauseToggle)
                                 },
                                 playing = state.isPlaying,
-                                modifier = Modifier.size(44.dp)
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .sharedBounds(
+                                        rememberSharedContentState("play_pause"),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
                             )
 
                             IconButton(
@@ -126,20 +133,15 @@ fun MiniPlayer(
                                 ),
                                 modifier = Modifier
                                     .size(44.dp)
-                                    .sharedElement(
-                                        rememberSharedContentState("play_pause"),
+                                    .sharedBounds(
+                                        rememberSharedContentState("skip_next"),
                                         animatedVisibilityScope = animatedVisibilityScope
                                     )
                             ) {
                                 Icon(
                                     imageVector = VibeIcons.Filled.SkipNext,
                                     contentDescription = stringResource(R.string.skip_next),
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .sharedElement(
-                                            rememberSharedContentState("skip_next"),
-                                            animatedVisibilityScope = animatedVisibilityScope
-                                        )
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         }
@@ -149,11 +151,7 @@ fun MiniPlayer(
                         value = state.playingSongProgress,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(4.dp)
-                            .sharedElement(
-                                rememberSharedContentState("song_progress"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            ),
+                            .height(4.dp),
                         containerColor = MaterialTheme.colorScheme.onSurface
                     )
                 }

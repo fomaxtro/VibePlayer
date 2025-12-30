@@ -103,9 +103,10 @@ fun PlayerScreen(
                     Text(
                         text = state.playingSong?.title ?: "",
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.sharedElement(
+                        modifier = Modifier.sharedBounds(
                             rememberSharedContentState("song_title"),
-                            animatedVisibilityScope = animatedVisibilityScope
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
                         )
                     )
 
@@ -130,11 +131,7 @@ fun PlayerScreen(
                         value = state.playingSongProgress,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 5.dp)
-                            .sharedElement(
-                                rememberSharedContentState("song_progress"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            ),
+                            .padding(vertical = 5.dp),
                         progressText = { factor ->
                             if (state.playingSong != null) {
                                 val totalDuration = state.playingSong.duration
@@ -210,7 +207,7 @@ fun PlayerScreen(
                                 playing = state.isPlaying,
                                 modifier = Modifier
                                     .size(60.dp)
-                                    .sharedElement(
+                                    .sharedBounds(
                                         rememberSharedContentState("play_pause"),
                                         animatedVisibilityScope = animatedVisibilityScope
                                     ),
@@ -223,7 +220,7 @@ fun PlayerScreen(
                                 },
                                 modifier = Modifier
                                     .size(44.dp)
-                                    .sharedElement(
+                                    .sharedBounds(
                                         rememberSharedContentState("skip_next"),
                                         animatedVisibilityScope = animatedVisibilityScope
                                     ),
