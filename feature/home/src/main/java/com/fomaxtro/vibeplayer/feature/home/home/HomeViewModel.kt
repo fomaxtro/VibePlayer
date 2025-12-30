@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,9 +17,6 @@ class HomeViewModel(
     private val player: MusicPlayer
 ) : ViewModel() {
     private val songs = observeSongs()
-        .onEach { playlist ->
-            player.setPlaylist(playlist)
-        }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
@@ -64,34 +60,33 @@ class HomeViewModel(
 
     private fun onShufflePlaylistClick() {
         if (songs.value.isNotEmpty()) {
-            player.playFirstShuffled()
+            player.setPlaylist(songs.value.shuffled())
+            player.play(songs.value.indices.random())
 
             isPlayerExpanded.value = true
         }
     }
 
-    private fun onPlayPlaylistClick() {
-        if (songs.value.isNotEmpty()) {
-            player.setShuffleModeEnabled(false)
+    private fun playSongWithPlaylist(index: Int) {
+        if (index != -1) {
             player.play(
                 playlist = songs.value,
-                index = 0
+                index = index
             )
 
             onExpandPlayer()
+        }
+    }
+
+    private fun onPlayPlaylistClick() {
+        if (songs.value.isNotEmpty()) {
+            playSongWithPlaylist(0)
         }
     }
 
     private fun onSongClick(song: Song) = viewModelScope.launch {
         val songIndex = songs.value.indexOf(song)
 
-        if (songIndex != -1) {
-            player.play(
-                playlist = songs.value,
-                index = songIndex
-            )
-
-            onExpandPlayer()
-        }
+        playSongWithPlaylist(songIndex)
     }
 }

@@ -1,9 +1,10 @@
 package com.fomaxtro.vibeplayer.core.player
 
+import androidx.annotation.OptIn
 import androidx.core.net.toUri
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ShuffleOrder
 import com.fomaxtro.vibeplayer.core.player.mapper.toExoPlayerRepeatMode
@@ -142,6 +143,7 @@ class ExoPlayerMusicPlayer(
         player.seekTo(duration.inWholeMilliseconds)
     }
 
+    @OptIn(UnstableApi::class)
     override fun setShuffleModeEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             player.shuffleOrder = ShuffleOrder.DefaultShuffleOrder(
@@ -151,20 +153,6 @@ class ExoPlayerMusicPlayer(
         }
 
         player.shuffleModeEnabled = isEnabled
-    }
-
-    override fun playFirstShuffled() {
-        setShuffleModeEnabled(true)
-
-        val timeline = player.currentTimeline
-
-        if (!timeline.isEmpty) {
-            val shuffledIndex = timeline.getFirstWindowIndex(true)
-
-            if (shuffledIndex != C.INDEX_UNSET) {
-                play(shuffledIndex)
-            }
-        }
     }
 
     override fun setRepeatMode(repeatMode: RepeatMode) {
