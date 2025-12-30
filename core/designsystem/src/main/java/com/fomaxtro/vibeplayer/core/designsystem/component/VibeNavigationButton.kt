@@ -11,15 +11,15 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
 @Composable
 fun VibeNavigationButton(
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     VibeIconButton(
         onClick = onClick,
         modifier = modifier
     ) {
         Icon(
-            imageVector = VibeIcons.ArrowLeft,
+            imageVector = VibeIcons.Filled.ArrowLeft,
             contentDescription = stringResource(R.string.navigate_back)
         )
     }

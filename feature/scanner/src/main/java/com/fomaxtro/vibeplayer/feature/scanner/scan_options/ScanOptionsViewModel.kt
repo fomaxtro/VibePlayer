@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.scanner.scan_options
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.core.common.Result
@@ -12,20 +13,51 @@ import com.fomaxtro.vibeplayer.feature.scanner.model.DurationConstraint
 import com.fomaxtro.vibeplayer.feature.scanner.model.SizeConstraint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ScanOptionsViewModel(
     private val songRepository: SongRepository,
-    private val snackbarController: SnackbarController
+    private val snackbarController: SnackbarController,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private companion object {
+        const val DURATION_CONSTRAINT_KEY = "DURATION_CONSTRAINT"
+        const val SIZE_CONSTRAINT_KEY = "SIZE_CONSTRAINT"
+    }
+
+    private val durationConstraint = savedStateHandle.getMutableStateFlow(
+        key = DURATION_CONSTRAINT_KEY,
+        initialValue = DurationConstraint.THIRTY_SECONDS
+    )
+    private val sizeConstraint = savedStateHandle.getMutableStateFlow(
+        key = SIZE_CONSTRAINT_KEY,
+        initialValue = SizeConstraint.ONE_HUNDRED_KB
+    )
+    private val isScanning = MutableStateFlow(false)
+
+    val state = combine(
+        durationConstraint,
+        sizeConstraint,
+        isScanning
+    ) { durationConstraint, sizeConstraint, isScanning ->
+        ScanOptionsUiState(
+            selectedDurationConstraint = durationConstraint,
+            selectedSizeConstraint = sizeConstraint,
+            isScanning = isScanning
+        )
+    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            ScanOptionsUiState()
+        )
+
     private val eventChannel = Channel<ScanOptionsEvent>()
     val events = eventChannel.receiveAsFlow()
-
-    private val _state = MutableStateFlow(ScanOptionsUiState())
-    val state = _state.asStateFlow()
 
     fun onAction(action: ScanOptionsAction) {
         when (action) {
@@ -43,16 +75,14 @@ class ScanOptionsViewModel(
     }
 
     private fun onScanClick() = viewModelScope.launch {
-        _state.update { it.copy(isScanning = true) }
+        isScanning.value = true
 
         try {
             when (
-                val soundsCount = with(_state.value) {
-                    songRepository.scanSongs(
-                        minDurationSeconds = selectedDurationConstraint.durationSeconds,
-                        minSize = selectedSizeConstraint.size,
-                    )
-                }
+                val soundsCount = songRepository.scanSongs(
+                    minDurationSeconds = durationConstraint.value.durationSeconds,
+                    minSize = sizeConstraint.value.size,
+                )
             ) {
                 is Result.Error -> {
                     eventChannel.send(
@@ -63,8 +93,7 @@ class ScanOptionsViewModel(
                 }
 
                 is Result.Success -> {
-                    eventChannel.send(ScanOptionsEvent.NavigateBack)
-
+                    eventChannel.send(ScanOptionsEvent.OnScanResult(soundsCount.data))
                     snackbarController.showSnackbar(
                         message = UiText.StringResource(
                             resId = R.string.scan_complete,
@@ -74,19 +103,15 @@ class ScanOptionsViewModel(
                 }
             }
         } finally {
-            _state.update { it.copy(isScanning = false) }
+            isScanning.value = false
         }
     }
 
     private fun onSizeConstraintSelected(sizeConstraint: SizeConstraint) {
-        _state.update {
-            it.copy(selectedSizeConstraint = sizeConstraint)
-        }
+        this.sizeConstraint.value = sizeConstraint
     }
 
     private fun onDurationConstraintSelected(durationConstraint: DurationConstraint) {
-        _state.update {
-            it.copy(selectedDurationConstraint = durationConstraint)
-        }
+        this.durationConstraint.value = durationConstraint
     }
 }

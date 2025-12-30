@@ -71,7 +71,7 @@ private fun VibeIconButtonPreview() {
             onClick = {}
         ) {
             Icon(
-                imageVector = VibeIcons.Scan,
+                imageVector = VibeIcons.Outlined.Scan,
                 contentDescription = null
             )
         }

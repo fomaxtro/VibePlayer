@@ -9,6 +9,7 @@ interface MusicPlayer {
     val playbackPosition: Flow<Duration>
 
     fun play(index: Int)
+    fun play(playlist: List<Song>, index: Int)
     fun pause()
     fun resume()
     fun togglePlayPause()
@@ -17,4 +18,8 @@ interface MusicPlayer {
     fun clearPlaylist()
     fun skipNext()
     fun skipPrevious()
+    fun seekTo(duration: Duration)
+    fun setShuffleModeEnabled(isEnabled: Boolean)
+    fun setRepeatMode(repeatMode: RepeatMode)
+    fun toggleShuffle()
 }

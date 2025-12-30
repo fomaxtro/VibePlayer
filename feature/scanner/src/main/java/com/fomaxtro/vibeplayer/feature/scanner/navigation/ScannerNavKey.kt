@@ -12,22 +12,23 @@ data object ScanProgressNavKey : NavKey
 @Serializable
 data object ScanOptionsNavKey : NavKey
 
-fun EntryProviderScope<NavKey>.scanProgress(
-    onScanFinish: () -> Unit
+fun EntryProviderScope<NavKey>.scanner(
+    onScanFinish: () -> Unit,
+    onScanOptions: () -> Unit,
+    onNavigateBack: () -> Unit,
+    onScanFilteredResult: (songsCount: Int) -> Unit
 ) {
     entry<ScanProgressNavKey> {
         ScanProgressScreen(
-            onScanFinish = onScanFinish
+            onScanFinish = onScanFinish,
+            onScanOptions = onScanOptions
         )
     }
-}
 
-fun EntryProviderScope<NavKey>.scanOptions(
-    onNavigateBack: () -> Unit
-) {
     entry<ScanOptionsNavKey> {
         ScanOptionsScreen(
-            onNavigateBack = onNavigateBack
+            onNavigateBack = onNavigateBack,
+            onScanResult = onScanFilteredResult
         )
     }
 }

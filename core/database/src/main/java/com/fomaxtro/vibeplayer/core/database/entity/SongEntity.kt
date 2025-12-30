@@ -21,7 +21,7 @@ data class SongEntity(
     @ColumnInfo("duration_millis")
     val durationMillis: Long,
     @ColumnInfo("album_art_uri")
-    val albumArtUri: String,
+    val albumArtUri: String?,
     @ColumnInfo("file_path")
     val filePath: String,
     @ColumnInfo("size_bytes")

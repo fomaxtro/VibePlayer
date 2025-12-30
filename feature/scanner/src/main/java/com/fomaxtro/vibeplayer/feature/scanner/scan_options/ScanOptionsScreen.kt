@@ -41,6 +41,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 @Composable
 fun ScanOptionsScreen(
     onNavigateBack: () -> Unit,
+    onScanResult: (songsCount: Int) -> Unit,
     viewModel: ScanOptionsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -57,6 +58,8 @@ fun ScanOptionsScreen(
                     message = event.message.asString(context)
                 )
             }
+
+            is ScanOptionsEvent.OnScanResult -> onScanResult(event.songsCount)
         }
     }
 

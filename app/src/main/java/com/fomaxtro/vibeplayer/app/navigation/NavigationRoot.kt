@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.navigation
+package com.fomaxtro.vibeplayer.app.navigation
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,17 +11,20 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.fomaxtro.vibeplayer.feature.home.navigation.HomeNavKey
+import com.fomaxtro.vibeplayer.feature.home.navigation.home
+import com.fomaxtro.vibeplayer.feature.library.navigation.SearchNavKey
+import com.fomaxtro.vibeplayer.feature.library.navigation.library
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.OnboardingNavKey
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
-import com.fomaxtro.vibeplayer.feature.player.navigation.PlayerNavKey
-import com.fomaxtro.vibeplayer.feature.player.navigation.player
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
-import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanOptions
-import com.fomaxtro.vibeplayer.navigation.route.HomeNavKey
-import com.fomaxtro.vibeplayer.navigation.route.home
+import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanProgressNavKey
+import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanner
 
 @Composable
-fun NavigationRoot() {
+fun NavigationRoot(
+    hasSongs: Boolean
+) {
     val context = LocalContext.current
 
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -36,7 +39,11 @@ fun NavigationRoot() {
     ) == PackageManager.PERMISSION_GRANTED
 
     val backStack = rememberNavBackStack(
-        if (hasMediaPermission) HomeNavKey() else OnboardingNavKey
+        when {
+            !hasMediaPermission -> OnboardingNavKey
+            hasSongs -> HomeNavKey
+            else -> ScanProgressNavKey
+        }
     )
 
     NavDisplay(
@@ -51,7 +58,7 @@ fun NavigationRoot() {
         entryProvider = entryProvider {
             onboarding(
                 onPermissionGranted = {
-                    backStack[backStack.lastIndex] = HomeNavKey(shouldScanMusic = true)
+                    backStack[backStack.lastIndex] = ScanProgressNavKey
                 }
             )
 
@@ -59,23 +66,41 @@ fun NavigationRoot() {
                 onScanMusic = {
                     backStack.add(ScanOptionsNavKey)
                 },
-                onSongClick = { songIndex ->
-                    backStack.add(
-                        PlayerNavKey(
-                            songIndex = songIndex
-                        )
-                    )
+                onSearch = {
+                    backStack.add(SearchNavKey)
                 }
             )
 
-            scanOptions(
+            scanner(
+                onScanFinish = {
+                    backStack[backStack.lastIndex] = HomeNavKey
+                },
+                onScanOptions = {
+                    backStack.add(ScanOptionsNavKey)
+                },
                 onNavigateBack = {
                     backStack.removeLastOrNull()
+                },
+                onScanFilteredResult = { songsCount ->
+                    val previousRoute = backStack.getOrNull(backStack.lastIndex - 1)
+
+                    when {
+                        songsCount == 0 && previousRoute is ScanProgressNavKey -> {
+                            backStack.removeLastOrNull()
+                        }
+
+                        previousRoute is HomeNavKey -> backStack.removeLastOrNull()
+
+                        else -> backStack[backStack.lastIndex] = HomeNavKey
+                    }
                 }
             )
 
-            player(
-                onNavigateBack = {
+            library(
+                onCancel = {
+                    backStack.removeLastOrNull()
+                },
+                onPlaySong = {
                     backStack.removeLastOrNull()
                 }
             )

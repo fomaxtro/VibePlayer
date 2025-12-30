@@ -8,4 +8,7 @@
     <string name="scanning">Scanning</string>
     <string name="scanning_music">Scanning your device for music…</string>
     <string name="scan_complete">Scan complete — %d songs found.</string>
+    <string name="no_music_found">No music found</string>
+    <string name="no_music_found_description">Try scanning again or check your folders.</string>
+    <string name="scan_again">Scan again</string>
 </resources>

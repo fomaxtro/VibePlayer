@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,14 +32,15 @@ fun VibeSongCard(
     title: String,
     artist: String,
     duration: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     Column(
         modifier = modifier
             .height(IntrinsicSize.Max)
             .width(IntrinsicSize.Max)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp)
+            .padding(contentPadding)
     ) {
         Row(
             modifier = Modifier
@@ -64,7 +66,9 @@ fun VibeSongCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
 
                 Text(

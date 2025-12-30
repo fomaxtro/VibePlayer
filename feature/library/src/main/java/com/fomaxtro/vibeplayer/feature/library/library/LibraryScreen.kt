@@ -5,14 +5,9 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,14 +19,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -40,35 +35,22 @@ import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
+import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayoyt
+import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
-internal fun LibraryScreen(
-    onSongClick: (songIndex: Int) -> Unit,
-    onScanAgain: () -> Unit,
-    viewModel: LibraryViewModel = koinViewModel()
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LibraryScreen(
-        state = state,
-        onAction = { action ->
-            when (action) {
-                is LibraryAction.OnSongClick -> onSongClick(action.songIndex)
-                is LibraryAction.OnScanAgainClick -> onScanAgain()
-            }
-        }
-    )
-}
-
-@Composable
-private fun LibraryScreen(
-    state: LibraryUiState,
-    onAction: (LibraryAction) -> Unit = {}
+fun LibraryScreen(
+    onScanMusic: () -> Unit,
+    onSearch: () -> Unit,
+    onSongClick: (Song) -> Unit,
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    songs: List<Song>
 ) {
     val songsListState = rememberLazyListState()
+
     val isShowingScrollUp by remember {
         derivedStateOf {
             songsListState.firstVisibleItemIndex > 10
@@ -77,6 +59,24 @@ private fun LibraryScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
+        topBar = {
+            VibeMainTopAppBar(
+                actions = {
+                    VibeScanIconButton(
+                        onClick = onScanMusic
+                    )
+
+                    VibeIconButton(
+                        onClick = onSearch
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Outlined.Search,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             val animationSpec = spring<Float>(
                 stiffness = Spring.StiffnessMedium
@@ -99,76 +99,61 @@ private fun LibraryScreen(
                     }
                 ) {
                     Icon(
-                        imageVector = VibeIcons.ArrowUp,
+                        imageVector = VibeIcons.Filled.ArrowUp,
                         contentDescription = stringResource(R.string.scroll_up)
                     )
                 }
             }
         }
     ) { innerPadding ->
-        Column(
+        LibraryLayoyt(
+            playbackControls = {
+                PlaybackControls(
+                    onShuffleClick = onShuffleClick,
+                    onPlayClick = onPlayClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            songs = songs,
+            item = { song, contentPadding ->
+                VibeSongCard(
+                    onClick = {
+                        onSongClick(song)
+                    },
+                    title = song.title,
+                    artist = song.artist,
+                    duration = song.duration.formatDuration(),
+                    image = {
+                        SubcomposeAsyncImage(
+                            model = song.albumArtUri,
+                            contentDescription = null,
+                            error = {
+                                VibeSongDefaultImage()
+                            }
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateItem(),
+                    contentPadding = contentPadding
+                )
+            },
+            songsCount = {
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.songs_available,
+                        count = songs.size,
+                        songs.size
+                    ),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            if (state is LibraryUiState.Success) {
-                if (state.songs.isNotEmpty()) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = songsListState
-                    ) {
-                        items(state.songs.size) { index ->
-                            val song = state.songs[index]
-
-                            VibeSongCard(
-                                onClick = {
-                                    onAction(LibraryAction.OnSongClick(index))
-                                },
-                                title = song.title,
-                                artist = song.artist,
-                                duration = song.duration.formatDuration(),
-                                image = {
-                                    SubcomposeAsyncImage(
-                                        model = song.albumArtUri,
-                                        contentDescription = null,
-                                        error = {
-                                            VibeSongDefaultImage()
-                                        }
-                                    )
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .animateItem()
-                            )
-                        }
-                    }
-                } else {
-                    Text(
-                        text = stringResource(R.string.no_music_found),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = stringResource(R.string.no_music_found_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    VibeButton(
-                        onClick = {
-                            onAction(LibraryAction.OnScanAgainClick)
-                        },
-                        text = stringResource(R.string.scan_again)
-                    )
-                }
-            }
-        }
+            state = songsListState
+        )
     }
 }
 
@@ -178,19 +163,22 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                state = LibraryUiState.Success(
-                    songs = listOf(
-                        Song(
-                            id = 0,
-                            title = "505",
-                            artist = "Arctic Monkeys",
-                            duration = 3.minutes,
-                            filePath = "",
-                            sizeBytes = 500,
-                            albumArtUri = ""
-                        )
+                songs = listOf(
+                    Song(
+                        id = 1,
+                        title = "Song 1",
+                        artist = "Artist 1",
+                        duration = 3.minutes,
+                        albumArtUri = null,
+                        filePath = "",
+                        sizeBytes = 1024L,
                     )
-                )
+                ),
+                onScanMusic = {  },
+                onSearch = {  },
+                onSongClick = {  },
+                onPlayClick = {  },
+                onShuffleClick = {  },
             )
         }
     }

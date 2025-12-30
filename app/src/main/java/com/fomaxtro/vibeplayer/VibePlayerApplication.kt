@@ -1,10 +1,12 @@
 package com.fomaxtro.vibeplayer
 
 import android.app.Application
+import com.fomaxtro.vibeplayer.app.di.appModule
 import com.fomaxtro.vibeplayer.core.data.di.coreDataModule
 import com.fomaxtro.vibeplayer.core.player.di.corePlayerModule
 import com.fomaxtro.vibeplayer.core.ui.di.coreUiModule
 import com.fomaxtro.vibeplayer.domain.di.coreDomainModule
+import com.fomaxtro.vibeplayer.feature.home.di.featureHomeModule
 import com.fomaxtro.vibeplayer.feature.library.di.featureLibraryModule
 import com.fomaxtro.vibeplayer.feature.player.di.featurePlayerModule
 import com.fomaxtro.vibeplayer.feature.scanner.di.featureScannerModule
@@ -28,13 +30,15 @@ class VibePlayerApplication : Application() {
             analytics()
 
             modules(
+                appModule,
                 coreDataModule,
                 coreDomainModule,
                 coreUiModule,
                 corePlayerModule,
                 featureLibraryModule,
                 featurePlayerModule,
-                featureScannerModule
+                featureScannerModule,
+                featureHomeModule
             )
         }
     }

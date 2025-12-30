@@ -2,7 +2,11 @@
 <resources>
     <string name="skip_previous">Skip Previous</string>
     <string name="skip_next">Skip Next</string>
-    <string name="pause">Pause</string>
-    <string name="play">Play</string>
     <string name="song_not_found">Could not find this file.</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="repeat_off">Repeat Off</string>
+    <string name="repeat_all">Repeat All</string>
+    <string name="repeat_one">Repeat One</string>
+    <string name="shuffle_enabled">Shuffle mode enabled</string>
+    <string name="shuffle_disabled">Shuffle off</string>
 </resources>

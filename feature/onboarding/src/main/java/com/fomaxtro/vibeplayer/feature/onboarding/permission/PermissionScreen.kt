@@ -116,7 +116,7 @@ private fun PermissionScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                imageVector = VibeIcons.Logo,
+                imageVector = VibeIcons.Filled.Logo,
                 contentDescription = null
             )
 
