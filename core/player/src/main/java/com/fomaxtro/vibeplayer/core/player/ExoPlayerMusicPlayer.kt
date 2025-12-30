@@ -143,17 +143,18 @@ class ExoPlayerMusicPlayer(
     }
 
     override fun setShuffleModeEnabled(isEnabled: Boolean) {
-        player.shuffleOrder = ShuffleOrder.DefaultShuffleOrder(
-            player.mediaItemCount,
-            System.currentTimeMillis()
-        )
+        if (isEnabled) {
+            player.shuffleOrder = ShuffleOrder.DefaultShuffleOrder(
+                player.mediaItemCount,
+                System.currentTimeMillis()
+            )
+        }
+
         player.shuffleModeEnabled = isEnabled
     }
 
     override fun playFirstShuffled() {
-        if (!player.shuffleModeEnabled) {
-            setShuffleModeEnabled(true)
-        }
+        setShuffleModeEnabled(true)
 
         val timeline = player.currentTimeline
 
