@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -94,16 +95,21 @@ fun MiniPlayer(
                                         animatedVisibilityScope = animatedVisibilityScope,
                                         resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
                                     )
+                                    .basicMarquee(),
+                                maxLines = 1
                             )
 
                             Text(
                                 text = state.playingSong?.artist ?: "",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.sharedElement(
-                                    rememberSharedContentState("song_artist"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                )
+                                modifier = Modifier
+                                    .sharedElement(
+                                        rememberSharedContentState("song_artist"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
+                                    .basicMarquee(),
+                                maxLines = 1
                             )
                         }
 

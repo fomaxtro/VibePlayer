@@ -119,9 +119,8 @@ class ExoPlayerMusicPlayer(
 
         player.stop()
         player.clearMediaItems()
-        player.addMediaItems(mediaItems)
-
         _playerState.update { it.copy(playlist = playlist) }
+        player.addMediaItems(mediaItems)
     }
 
     override fun clearPlaylist() {
