@@ -2,26 +2,29 @@ package com.fomaxtro.vibeplayer.feature.player.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.PlayerState
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
 import com.fomaxtro.vibeplayer.feature.player.R
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 class PlayerViewModel(
-    private val player: MusicPlayer,
-    private val snackbarController: SnackbarController
+    private val player: MusicPlayer
 ) : ViewModel() {
+    private val eventChannel = Channel<PlayerEvent>()
+    val events = eventChannel.receiveAsFlow()
+
     private val isSeeking = MutableStateFlow(false)
     private val playerState = player.playerState
         .stateIn(
@@ -64,6 +67,7 @@ class PlayerViewModel(
             PlayerAction.OnSeekStarted -> onSeekStarted()
             PlayerAction.OnRepeatModeClick -> onRepeatModeClick()
             PlayerAction.OnToggleShuffleClick -> onToggleShuffleClick()
+            else -> Unit
         }
     }
 
@@ -71,12 +75,15 @@ class PlayerViewModel(
         val isShuffledEnabled = !playerState.value.isShuffleEnabled
 
         player.setShuffleModeEnabled(isShuffledEnabled)
-        snackbarController.showSnackbar(
-            message = if (isShuffledEnabled) {
-                UiText.StringResource(R.string.shuffle_enabled)
-            } else {
-                UiText.StringResource(R.string.shuffle_disabled)
-            }
+
+        eventChannel.send(
+            PlayerEvent.ShowSystemMessage(
+                message = if (isShuffledEnabled) {
+                    UiText.StringResource(R.string.shuffle_enabled)
+                } else {
+                    UiText.StringResource(R.string.shuffle_disabled)
+                }
+            )
         )
     }
 
@@ -84,20 +91,29 @@ class PlayerViewModel(
         when (playerState.value.repeatMode) {
             RepeatMode.OFF -> {
                 player.setRepeatMode(RepeatMode.ALL)
-                snackbarController.showSnackbar(
-                    message = UiText.StringResource(R.string.repeat_all)
+
+                eventChannel.send(
+                    PlayerEvent.ShowSystemMessage(
+                        message = UiText.StringResource(R.string.repeat_all)
+                    )
                 )
             }
             RepeatMode.ALL -> {
                 player.setRepeatMode(RepeatMode.ONE)
-                snackbarController.showSnackbar(
-                    message = UiText.StringResource(R.string.repeat_one)
+
+                eventChannel.send(
+                    PlayerEvent.ShowSystemMessage(
+                        message = UiText.StringResource(R.string.repeat_one)
+                    )
                 )
             }
             RepeatMode.ONE -> {
                 player.setRepeatMode(RepeatMode.OFF)
-                snackbarController.showSnackbar(
-                    message = UiText.StringResource(R.string.repeat_off)
+
+                eventChannel.send(
+                    PlayerEvent.ShowSystemMessage(
+                        message = UiText.StringResource(R.string.repeat_off)
+                    )
                 )
             }
         }

@@ -90,8 +90,7 @@ private fun HomeScreen(
             ) { playerVisible ->
                 if (playerVisible) {
                     PlayerScreen(
-                        state = playerState,
-                        onAction = playerViewModel::onAction,
+                        viewModel = playerViewModel,
                         onNavigateBack = {
                             onAction(HomeAction.OnCollapsePlayer)
                         },
