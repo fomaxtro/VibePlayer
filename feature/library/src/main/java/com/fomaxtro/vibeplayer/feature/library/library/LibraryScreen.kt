@@ -24,9 +24,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -42,8 +39,6 @@ import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun LibraryScreen(
-    onScanMusic: () -> Unit,
-    onSearch: () -> Unit,
     onSongClick: (Song) -> Unit,
     onPlayClick: () -> Unit,
     onShuffleClick: () -> Unit,
@@ -59,24 +54,6 @@ fun LibraryScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = {
-            VibeMainTopAppBar(
-                actions = {
-                    VibeScanIconButton(
-                        onClick = onScanMusic
-                    )
-
-                    VibeIconButton(
-                        onClick = onSearch
-                    ) {
-                        Icon(
-                            imageVector = VibeIcons.Outlined.Search,
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        },
         floatingActionButton = {
             val animationSpec = spring<Float>(
                 stiffness = Spring.StiffnessMedium
@@ -174,8 +151,6 @@ private fun ScanMusicScreenPreview() {
                         sizeBytes = 1024L,
                     )
                 ),
-                onScanMusic = {  },
-                onSearch = {  },
                 onSongClick = {  },
                 onPlayClick = {  },
                 onShuffleClick = {  },

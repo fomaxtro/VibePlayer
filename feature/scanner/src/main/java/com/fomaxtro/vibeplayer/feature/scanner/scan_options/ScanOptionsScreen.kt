@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeNavigationButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
@@ -85,8 +86,12 @@ private fun ScanOptionsScreen(
         topBar = {
             VibeInnerTopAppBar(
                 title = stringResource(R.string.scan_music),
-                onNavigateBackClick = {
-                    onAction(ScanOptionsAction.OnNavigateBackClick)
+                navigationIcon = {
+                    VibeNavigationButton(
+                        onClick = {
+                            onAction(ScanOptionsAction.OnNavigateBackClick)
+                        }
+                    )
                 }
             )
         },

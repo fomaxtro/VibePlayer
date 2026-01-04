@@ -6,5 +6,6 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 @Immutable
 data class HomeUiState(
     val songs: List<Song> = emptyList(),
-    val isPlayerExpanded: Boolean = false
+    val isPlayerExpanded: Boolean = false,
+    val selectedTabIndex: Int = 0
 )

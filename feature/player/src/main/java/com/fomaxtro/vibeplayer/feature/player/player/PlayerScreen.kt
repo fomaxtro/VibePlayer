@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAlbumArt
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefaults
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibePlayPauseButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
@@ -95,16 +96,20 @@ private fun PlayerScreen(
 ) {
     Scaffold(
         topBar = {
-            VibeIconButton(
-                onClick = {
-                    onAction(PlayerAction.OnNavigateBackClick)
+            VibeInnerTopAppBar(
+                navigationIcon = {
+                    VibeIconButton(
+                        onClick = {
+                            onAction(PlayerAction.OnNavigateBackClick)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Filled.ChevronDown,
+                            contentDescription = stringResource(DesignR.string.navigate_back)
+                        )
+                    }
                 }
-            ) {
-                Icon(
-                    imageVector = VibeIcons.Filled.ChevronDown,
-                    contentDescription = stringResource(DesignR.string.navigate_back)
-                )
-            }
+            )
         }
     ) { innerPadding ->
         Column(

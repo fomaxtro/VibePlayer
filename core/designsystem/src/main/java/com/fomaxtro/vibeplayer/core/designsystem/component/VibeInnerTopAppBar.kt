@@ -13,7 +13,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VibeInnerTopAppBar(
-    onNavigateBackClick: () -> Unit,
+    navigationIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null
 ) {
@@ -26,11 +26,7 @@ fun VibeInnerTopAppBar(
                 )
             }
         },
-        navigationIcon = {
-            VibeNavigationButton(
-                onClick = onNavigateBackClick
-            )
-        },
+        navigationIcon = navigationIcon,
         colors = TopAppBarDefaults.topAppBarColors(
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
@@ -44,7 +40,11 @@ private fun VibeInnerTopAppBarPreview() {
     VibePlayerTheme {
         VibeInnerTopAppBar(
             title = "Scan Music",
-            onNavigateBackClick = {}
+            navigationIcon = {
+                VibeNavigationButton(
+                    onClick = {}
+                )
+            }
         )
     }
 }

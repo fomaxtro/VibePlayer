@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -22,6 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
@@ -74,31 +79,53 @@ private fun HomeScreen(
         )
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        }
-    ) { innerPadding ->
-        SharedTransitionLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-        ) {
-            AnimatedContent(
-                targetState = state.isPlayerExpanded
-            ) { playerVisible ->
-                if (playerVisible) {
-                    PlayerScreen(
-                        viewModel = playerViewModel,
-                        onNavigateBack = {
-                            onAction(HomeAction.OnCollapsePlayer)
-                        },
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        animatedVisibilityScope = this@AnimatedContent
-                    )
-                } else {
+    SharedTransitionLayout(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        AnimatedContent(
+            targetState = state.isPlayerExpanded
+        ) { playerVisible ->
+            if (playerVisible) {
+                PlayerScreen(
+                    viewModel = playerViewModel,
+                    onNavigateBack = {
+                        onAction(HomeAction.OnCollapsePlayer)
+                    },
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@AnimatedContent
+                )
+            } else {
+                Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(snackbarHostState)
+                    },
+                    topBar = {
+                        VibeMainTopAppBar(
+                            actions = {
+                                VibeScanIconButton(
+                                    onClick = {
+                                        onAction(HomeAction.OnScanMusicClick)
+                                    }
+                                )
+
+                                VibeIconButton(
+                                    onClick = {
+                                        onAction(HomeAction.OnSearchClick)
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = VibeIcons.Outlined.Search,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        )
+                    },
+                ) { innerPadding ->
                     HomeLayout(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding),
                         player = {
                             AnimatedVisibility(
                                 visible = playerState.playingSong != null,
@@ -122,12 +149,6 @@ private fun HomeScreen(
                         }
                     ) {
                         LibraryScreen(
-                            onScanMusic = {
-                                onAction(HomeAction.OnScanMusicClick)
-                            },
-                            onSearch = {
-                                onAction(HomeAction.OnSearchClick)
-                            },
                             onSongClick = {
                                 onAction(HomeAction.OnSongClick(it))
                             },
