@@ -8,20 +8,28 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
@@ -30,7 +38,8 @@ import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.notification.SnackbarController
 import com.fomaxtro.vibeplayer.core.ui.util.asString
-import com.fomaxtro.vibeplayer.feature.home.home.components.HomeLayout
+import com.fomaxtro.vibeplayer.feature.home.home.components.LibraryLayout
+import com.fomaxtro.vibeplayer.feature.home.model.Destination
 import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
 import com.fomaxtro.vibeplayer.feature.player.player.MiniPlayer
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
@@ -122,44 +131,77 @@ private fun HomeScreen(
                         )
                     },
                 ) { innerPadding ->
-                    HomeLayout(
+                    Column(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .consumeWindowInsets(innerPadding),
-                        player = {
-                            AnimatedVisibility(
-                                visible = playerState.playingSong != null,
-                                enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
-                                exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
-                            ) {
-                                MiniPlayer(
-                                    state = playerState,
-                                    onAction = playerViewModel::onAction,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .pointerInput(Unit) {
-                                            detectTapGestures {
-                                                onAction(HomeAction.OnExpandPlayer)
-                                            }
-                                        },
-                                    sharedTransitionScope = this@SharedTransitionLayout,
-                                    animatedVisibilityScope = this@AnimatedContent
+                            .consumeWindowInsets(innerPadding)
+                    ) {
+                        PrimaryTabRow(
+                            selectedTabIndex = state.selectedTabIndex,
+                            indicator = {
+                                TabRowDefaults.PrimaryIndicator(
+                                    modifier = Modifier.tabIndicatorOffset(
+                                        state.selectedTabIndex,
+                                        matchContentSize = true
+                                    ),
+                                    width = Dp.Unspecified,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        ) {
+                            Destination.entries.forEachIndexed { index, destination ->
+                                Tab(
+                                    selected = state.selectedTabIndex == index,
+                                    onClick = {},
+                                    text = {
+                                        Text(
+                                            text = stringResource(destination.labelRes),
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    },
+                                    selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
-                    ) {
-                        LibraryScreen(
-                            onSongClick = {
-                                onAction(HomeAction.OnSongClick(it))
-                            },
-                            onPlayClick = {
-                                onAction(HomeAction.OnPlayPlaylistClick)
-                            },
-                            onShuffleClick = {
-                                onAction(HomeAction.OnShufflePlaylistClick)
-                            },
-                            songs = state.songs
-                        )
+
+                        LibraryLayout(
+                            modifier = Modifier.weight(1f),
+                            player = {
+                                AnimatedVisibility(
+                                    visible = playerState.playingSong != null,
+                                    enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
+                                    exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+                                ) {
+                                    MiniPlayer(
+                                        state = playerState,
+                                        onAction = playerViewModel::onAction,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .pointerInput(Unit) {
+                                                detectTapGestures {
+                                                    onAction(HomeAction.OnExpandPlayer)
+                                                }
+                                            },
+                                        sharedTransitionScope = this@SharedTransitionLayout,
+                                        animatedVisibilityScope = this@AnimatedContent
+                                    )
+                                }
+                            }
+                        ) {
+                            LibraryScreen(
+                                onSongClick = {
+                                    onAction(HomeAction.OnSongClick(it))
+                                },
+                                onPlayClick = {
+                                    onAction(HomeAction.OnPlayPlaylistClick)
+                                },
+                                onShuffleClick = {
+                                    onAction(HomeAction.OnShufflePlaylistClick)
+                                },
+                                songs = state.songs
+                            )
+                        }
                     }
                 }
             }

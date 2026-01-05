@@ -29,7 +29,7 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun LibraryLayoyt(
+fun LibraryLayout(
     playbackControls: @Composable () -> Unit,
     item: @Composable LazyItemScope.(item: Song, contentPadding: PaddingValues) -> Unit,
     songsCount: @Composable () -> Unit,
@@ -93,8 +93,8 @@ fun LibraryLayoyt(
 
 @DevicePreviews
 @Composable
-private fun LibraryLayoytPreview() {
-    LibraryLayoyt(
+private fun LibraryLayoutPreview() {
+    LibraryLayout(
         playbackControls = {
             PlaybackControls(
                 onShuffleClick = {},

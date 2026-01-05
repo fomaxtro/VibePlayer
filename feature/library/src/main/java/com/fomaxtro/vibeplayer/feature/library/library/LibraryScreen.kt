@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
@@ -32,7 +33,7 @@ import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayoyt
+import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayout
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.minutes
@@ -83,7 +84,7 @@ fun LibraryScreen(
             }
         }
     ) { innerPadding ->
-        LibraryLayoyt(
+        LibraryLayout(
             playbackControls = {
                 PlaybackControls(
                     onShuffleClick = onShuffleClick,
@@ -128,7 +129,8 @@ fun LibraryScreen(
             },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .padding(top = 16.dp),
             state = songsListState
         )
     }
