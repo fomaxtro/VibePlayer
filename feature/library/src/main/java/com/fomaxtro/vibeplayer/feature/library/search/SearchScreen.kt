@@ -31,10 +31,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedTextField
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
@@ -165,15 +163,7 @@ private fun SearchScreen(
                                     title = song.title,
                                     artist = song.artist,
                                     duration = song.duration.formatDuration(),
-                                    image = {
-                                        SubcomposeAsyncImage(
-                                            model = song.albumArtUri,
-                                            contentDescription = null,
-                                            error = {
-                                                VibeSongDefaultImage()
-                                            }
-                                        )
-                                    },
+                                    imageUrl = song.albumArtUri,
                                     modifier = Modifier.fillMaxWidth(),
                                     contentPadding = PaddingValues(horizontal = 16.dp)
                                 )
@@ -209,17 +199,7 @@ private fun SearchScreenPreview() {
             state = SearchUiState(
                 searchQuery = searchQuery,
                 songs = Resource.Success(
-                    data = listOf(
-                        Song(
-                            id = 1,
-                            title = "Song 1",
-                            artist = "Artist 1",
-                            duration = 3.minutes,
-                            albumArtUri = null,
-                            filePath = "",
-                            sizeBytes = 1024L,
-                        )
-                    )
+                    data = songs
                 )
             )
         )

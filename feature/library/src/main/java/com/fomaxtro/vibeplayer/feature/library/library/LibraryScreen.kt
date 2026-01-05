@@ -23,10 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
@@ -101,15 +99,7 @@ fun LibraryScreen(
                     title = song.title,
                     artist = song.artist,
                     duration = song.duration.formatDuration(),
-                    image = {
-                        SubcomposeAsyncImage(
-                            model = song.albumArtUri,
-                            contentDescription = null,
-                            error = {
-                                VibeSongDefaultImage()
-                            }
-                        )
-                    },
+                    imageUrl = song.albumArtUri,
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateItem(),
