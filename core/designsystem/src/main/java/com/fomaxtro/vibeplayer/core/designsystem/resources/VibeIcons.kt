@@ -42,5 +42,7 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.search)
         val Shuffle: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.shuffle)
+        val Music: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.music)
     }
 }

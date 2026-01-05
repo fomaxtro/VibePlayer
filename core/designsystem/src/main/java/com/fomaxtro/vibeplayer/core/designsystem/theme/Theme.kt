@@ -4,7 +4,6 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val DarkColorScheme = darkColorScheme(
@@ -24,9 +23,6 @@ val ColorScheme.buttonPrimary30: Color
 
 val ColorScheme.buttonHover: Color
     get() = ButtonHover
-
-val ColorScheme.accentGradient: Brush
-    get() = AccentGradient
 
 val ColorScheme.surfaceOutline: Color
     get() = SurfaceOutline
