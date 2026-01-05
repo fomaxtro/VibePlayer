@@ -1,6 +1,5 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -28,14 +27,11 @@ fun VibeAlbumArt(
             .aspectRatio(1f)
             .clip(shape),
         error = {
-            VibeGradientImage(
+            VibeGradientIcon(
+                icon = VibeIcons.Duotone.Music,
+                contentDescription = null,
                 color = MaterialTheme.colorScheme.secondary
-            ) {
-                Image(
-                    imageVector = VibeIcons.Outlined.Music,
-                    contentDescription = null
-                )
-            }
+            )
         }
     )
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -36,61 +35,53 @@ fun VibeMediaCard(
     action: @Composable (() -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-    Column(
+    Row(
         modifier = modifier
             .height(IntrinsicSize.Max)
             .width(IntrinsicSize.Max)
             .clickable(onClick = onClick)
-            .padding(contentPadding)
+            .padding(vertical = 16.dp)
+            .padding(contentPadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        Box(
+            modifier = Modifier.size(64.dp),
+            contentAlignment = Alignment.Center,
+            propagateMinConstraints = true
         ) {
-            Box(
-                modifier = Modifier.size(64.dp),
-                contentAlignment = Alignment.Center,
-                propagateMinConstraints = true
-            ) {
-                image()
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-
-            if (action != null) {
-                CompositionLocalProvider(
-                    LocalTextStyle provides MaterialTheme.typography.bodyMedium,
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
-                ) {
-                    action()
-                }
-            }
+            image()
         }
 
-        HorizontalDivider()
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        if (action != null) {
+            CompositionLocalProvider(
+                LocalTextStyle provides MaterialTheme.typography.bodyMedium,
+                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
+            ) {
+                action()
+            }
+        }
     }
 }
 
