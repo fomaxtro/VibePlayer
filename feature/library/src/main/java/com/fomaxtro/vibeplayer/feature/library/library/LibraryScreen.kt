@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -105,6 +106,10 @@ fun LibraryScreen(
                         .animateItem(),
                     contentPadding = contentPadding
                 )
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(contentPadding)
+                )
             },
             songsCount = {
                 Text(
@@ -129,20 +134,22 @@ fun LibraryScreen(
 @DevicePreviews
 @Composable
 private fun ScanMusicScreenPreview() {
+    val songs = (1L..3L).map {
+        Song(
+            id = it,
+            title = "Song $it",
+            artist = "Artist $it",
+            duration = 3.minutes,
+            albumArtUri = null,
+            filePath = "",
+            sizeBytes = 1024L
+        )
+    }
+
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                songs = listOf(
-                    Song(
-                        id = 1,
-                        title = "Song 1",
-                        artist = "Artist 1",
-                        duration = 3.minutes,
-                        albumArtUri = null,
-                        filePath = "",
-                        sizeBytes = 1024L,
-                    )
-                ),
+                songs = songs,
                 onSongClick = {  },
                 onPlayClick = {  },
                 onShuffleClick = {  },
