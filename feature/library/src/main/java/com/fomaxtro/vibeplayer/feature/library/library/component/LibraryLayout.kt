@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
@@ -113,7 +112,7 @@ private fun LibraryLayoutPreview() {
             )
         ),
         item = { song, contentPadding ->
-            VibeSongCard(
+            SongCard(
                 onClick = {},
                 title = song.title,
                 artist = song.artist,

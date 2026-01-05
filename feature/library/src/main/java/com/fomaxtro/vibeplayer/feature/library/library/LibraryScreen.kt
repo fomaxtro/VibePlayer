@@ -24,7 +24,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
@@ -33,6 +32,7 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayout
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
+import com.fomaxtro.vibeplayer.feature.library.library.component.SongCard
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.minutes
 
@@ -92,7 +92,7 @@ fun LibraryScreen(
             },
             songs = songs,
             item = { song, contentPadding ->
-                VibeSongCard(
+                SongCard(
                     onClick = {
                         onSongClick(song)
                     },
