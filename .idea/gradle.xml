@@ -36,6 +36,7 @@
             <option value="$PROJECT_DIR$/feature/library" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/player" />
+            <option value="$PROJECT_DIR$/feature/playlist" />
             <option value="$PROJECT_DIR$/feature/scanner" />
           </set>
         </option>
