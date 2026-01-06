@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.preview.SongPreviewFactory
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
@@ -35,7 +36,6 @@ import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayout
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
 import com.fomaxtro.vibeplayer.feature.library.library.component.SongCard
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun LibraryScreen(
@@ -134,22 +134,10 @@ fun LibraryScreen(
 @DevicePreviews
 @Composable
 private fun ScanMusicScreenPreview() {
-    val songs = (1L..3L).map {
-        Song(
-            id = it,
-            title = "Song $it",
-            artist = "Artist $it",
-            duration = 3.minutes,
-            albumArtUri = null,
-            filePath = "",
-            sizeBytes = 1024L
-        )
-    }
-
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                songs = songs,
+                songs = SongPreviewFactory.defaultList,
                 onSongClick = {  },
                 onPlayClick = {  },
                 onShuffleClick = {  },

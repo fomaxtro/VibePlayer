@@ -30,12 +30,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedTextField
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
+import com.fomaxtro.vibeplayer.core.ui.preview.SongListPreviewProvider
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
@@ -43,7 +45,6 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.library.component.SongCard
 import org.koin.androidx.compose.koinViewModel
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 internal fun SearchScreen(
@@ -187,19 +188,10 @@ private fun SearchScreen(
 
 @DevicePreviews
 @Composable
-private fun SearchScreenPreview() {
+private fun SearchScreenPreview(
+    @PreviewParameter(SongListPreviewProvider::class) songs: List<Song>
+) {
     val searchQuery = rememberTextFieldState()
-    val songs = (1L..3L).map {
-        Song(
-            id = it,
-            title = "Song $it",
-            artist = "Artist $it",
-            duration = 3.minutes,
-            albumArtUri = null,
-            filePath = "",
-            sizeBytes = 1024L
-        )
-    }
 
     VibePlayerTheme {
         SearchScreen(
