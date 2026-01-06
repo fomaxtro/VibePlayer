@@ -37,7 +37,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedTextField
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
-import com.fomaxtro.vibeplayer.core.ui.preview.SongListPreviewProvider
+import com.fomaxtro.vibeplayer.core.ui.preview.SongListPreviewParameterProvider
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
@@ -189,7 +189,7 @@ private fun SearchScreen(
 @DevicePreviews
 @Composable
 private fun SearchScreenPreview(
-    @PreviewParameter(SongListPreviewProvider::class) songs: List<Song>
+    @PreviewParameter(SongListPreviewParameterProvider::class) songs: List<Song>
 ) {
     val searchQuery = rememberTextFieldState()
 

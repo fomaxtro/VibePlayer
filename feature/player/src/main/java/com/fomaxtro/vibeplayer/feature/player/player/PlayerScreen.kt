@@ -1,6 +1,5 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
-import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAlbumArt
@@ -41,15 +41,12 @@ import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
-import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
 import com.fomaxtro.vibeplayer.feature.player.R
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
@@ -316,28 +313,18 @@ private fun PlayerScreen(
     }
 }
 
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @DevicePreviews
 @Composable
-private fun PLayerScreenPreview() {
+private fun PLayerScreenPreview(
+    @PreviewParameter(PlayerPreviewParameterProvider::class) state: PlayerUiState
+) {
     VibePlayerTheme {
         SharedTransitionLayout {
             AnimatedContent(
                 targetState = true
             ) {
                 PlayerScreen(
-                    state = PlayerUiState(
-                        playingSong = Song(
-                            id = 1,
-                            title = "505",
-                            artist = "Arctic Monkeys",
-                            duration = 2.minutes,
-                            filePath = "",
-                            sizeBytes = 100 * 1024,
-                            albumArtUri = ""
-                        ),
-                        playingSongPosition = 30.seconds
-                    ),
+                    state = state,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@AnimatedContent
                 )
