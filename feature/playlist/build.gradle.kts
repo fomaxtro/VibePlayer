@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.fomaxtro.vibeplayer.feature.playlist"
 }
+
+dependencies {
+    implementation(libs.bundles.coil)
+}
