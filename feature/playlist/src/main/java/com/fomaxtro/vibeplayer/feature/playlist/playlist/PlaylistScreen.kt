@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,8 +32,10 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMediaCard
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.feature.playlist.R
+import com.fomaxtro.vibeplayer.feature.playlist.component.MenuIconButton
 import com.fomaxtro.vibeplayer.feature.playlist.component.PlaylistOutlinedButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen(
     state: PlaylistUiState
@@ -111,14 +113,9 @@ fun PlaylistScreen(
                             modifier = Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             action = {
-                                IconButton(
+                                MenuIconButton(
                                     onClick = {}
-                                ) {
-                                    Icon(
-                                        imageVector = VibeIcons.Outlined.Menu,
-                                        contentDescription = null
-                                    )
-                                }
+                                )
                             }
                         )
                     }
@@ -184,7 +181,12 @@ fun PlaylistScreen(
                                     playlist.songsCount
                                 ),
                                 modifier = Modifier.fillMaxWidth(),
-                                contentPadding = padding
+                                contentPadding = padding,
+                                action = {
+                                    MenuIconButton(
+                                        onClick = {}
+                                    )
+                                }
                             )
 
                             HorizontalDivider(

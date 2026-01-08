@@ -12,6 +12,7 @@ internal val TextDisabled = Color(0xFF4C647C)
 internal val SurfaceBg = Color(0xFF0A131D)
 internal val Accent = Color(0xFFF1FF95)
 internal val SurfaceHigher = Color(0xFF1A2735)
+internal val SurfaceHighest = Color(0xFF0A131D)
 internal val Outline = SurfaceHigher
 internal val OnSurface = TextPrimary.copy(alpha = 0.15f)
 internal val DropShadow = Color(0xFFC277FF).copy(alpha = 0.25f)

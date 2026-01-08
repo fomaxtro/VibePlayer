@@ -3,6 +3,9 @@
     <string name="create_playlist">Create Playlist</string>
     <string name="favourites">Favourites</string>
     <string name="my_playlists">My Playlists (%d)</string>
+    <string name="menu">Menu</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="enter_playlist_name">Enter playlist name</string>
     <plurals name="playlist_count">
         <item quantity="one">1 Playlist</item>
         <item quantity="other">%d Playlists</item>

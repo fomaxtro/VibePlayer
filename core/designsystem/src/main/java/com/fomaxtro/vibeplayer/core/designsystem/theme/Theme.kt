@@ -15,7 +15,8 @@ val DarkColorScheme = darkColorScheme(
     outline = Outline,
     secondary = Accent,
     background = SurfaceBg,
-    surface = SurfaceBg
+    surface = SurfaceBg,
+    surfaceContainerHighest = SurfaceHighest
 )
 
 val ColorScheme.buttonPrimary30: Color

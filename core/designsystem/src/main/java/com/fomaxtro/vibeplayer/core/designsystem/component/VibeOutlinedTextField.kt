@@ -1,36 +1,24 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
-import com.fomaxtro.vibeplayer.core.designsystem.theme.textDisabled
+import com.fomaxtro.vibeplayer.core.designsystem.theme.surfaceOutline
 
 @Composable
 fun VibeOutlinedTextField(
@@ -41,89 +29,30 @@ fun VibeOutlinedTextField(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    colors: VibeTextFieldColors = VibeOutlinedTextFieldDefaults.colors(),
     lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine
 ) {
-    BasicTextField(
+    OutlinedTextField(
         state = state,
-        decorator = { innerTextField ->
-            Surface(
-                shape = shape,
-                border = BorderStroke(
-                    color = colors.borderColor,
-                    width = 1.dp
+        modifier = modifier,
+        shape = shape,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.buttonHover,
+            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceOutline
+        ),
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        placeholder = placeholder?.let { placeholder ->
+            @Composable {
+                Text(
+                    text = placeholder,
+                    style = textStyle
                 )
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    if (leadingIcon != null) {
-                        CompositionLocalProvider(
-                            LocalContentColor provides colors.leadingIconColor,
-                            content = leadingIcon
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        propagateMinConstraints = true
-                    ) {
-                        if (placeholder != null && state.text.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                style = textStyle,
-                                color = colors.placeholderColor
-                            )
-                        }
-
-                        innerTextField()
-                    }
-
-                    if (trailingIcon != null) {
-                        CompositionLocalProvider(
-                            LocalContentColor provides colors.trailingIconColor,
-                            content = trailingIcon
-                        )
-                    }
-                }
             }
         },
-        modifier = modifier.height(44.dp),
         textStyle = textStyle.merge(
-            color = colors.textColor
+            color = MaterialTheme.colorScheme.onPrimary
         ),
-        cursorBrush = SolidColor(colors.textColor),
         lineLimits = lineLimits
-    )
-}
-
-data class VibeTextFieldColors(
-    val containerColor: Color,
-    val textColor: Color,
-    val leadingIconColor: Color,
-    val trailingIconColor: Color,
-    val borderColor: Color,
-    val placeholderColor: Color
-)
-
-object VibeOutlinedTextFieldDefaults {
-    @Composable
-    fun colors(
-        containerColor: Color = MaterialTheme.colorScheme.buttonHover,
-        textColor: Color = MaterialTheme.colorScheme.onPrimary,
-        leadingIconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-        trailingIconColor: Color = MaterialTheme.colorScheme.textDisabled,
-        borderColor: Color = MaterialTheme.colorScheme.outline,
-        placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
-    ) = VibeTextFieldColors(
-        containerColor = containerColor,
-        textColor = textColor,
-        leadingIconColor = leadingIconColor,
-        trailingIconColor = trailingIconColor,
-        borderColor = borderColor,
-        placeholderColor = placeholderColor
     )
 }
 

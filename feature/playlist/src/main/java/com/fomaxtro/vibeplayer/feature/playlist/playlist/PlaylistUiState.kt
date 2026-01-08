@@ -8,6 +8,7 @@ sealed interface PlaylistUiState {
     data object Loading : PlaylistUiState
 
     data class Success(
-        val playlists: List<Playlist> = emptyList()
+        val playlists: List<Playlist> = emptyList(),
+        val isCreatePlaylistSheetOpen: Boolean = false
     ) : PlaylistUiState
 }
