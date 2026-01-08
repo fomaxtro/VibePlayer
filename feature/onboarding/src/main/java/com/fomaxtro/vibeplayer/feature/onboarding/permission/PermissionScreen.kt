@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFilledButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
@@ -138,7 +138,7 @@ private fun PermissionScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            VibeButton(
+            VibeFilledButton(
                 onClick = {
                     onAction(PermissionAction.OnAllowAccessClick)
                 },

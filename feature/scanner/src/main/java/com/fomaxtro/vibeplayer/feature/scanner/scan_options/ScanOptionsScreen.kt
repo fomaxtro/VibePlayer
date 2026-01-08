@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFilledButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeNavigationButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIndicator
@@ -162,7 +162,7 @@ private fun ScanOptionsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            VibeButton(
+            VibeFilledButton(
                 onClick = {
                     onAction(ScanOptionsAction.OnScanClick)
                 },
