@@ -17,7 +17,6 @@ dependencies {
 
     implementation(projects.feature.onboarding)
     implementation(projects.feature.library)
-    implementation(projects.feature.player)
     implementation(projects.feature.scanner)
     implementation(projects.feature.home)
 
