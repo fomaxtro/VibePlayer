@@ -9,4 +9,5 @@ android {
 dependencies {
     implementation(projects.feature.library)
     implementation(projects.feature.player)
+    implementation(projects.feature.playlist)
 }

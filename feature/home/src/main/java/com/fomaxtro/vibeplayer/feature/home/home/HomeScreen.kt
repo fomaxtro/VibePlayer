@@ -3,10 +3,14 @@ package com.fomaxtro.vibeplayer.feature.home.home
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -44,6 +48,7 @@ import com.fomaxtro.vibeplayer.feature.library.library.LibraryScreen
 import com.fomaxtro.vibeplayer.feature.player.player.MiniPlayer
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerScreen
 import com.fomaxtro.vibeplayer.feature.player.player.PlayerViewModel
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.PlaylistScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -152,7 +157,9 @@ private fun HomeScreen(
                             Destination.entries.forEachIndexed { index, destination ->
                                 Tab(
                                     selected = state.selectedTabIndex == index,
-                                    onClick = {},
+                                    onClick = {
+                                        onAction(HomeAction.OnTabSelected(index))
+                                    },
                                     text = {
                                         Text(
                                             text = stringResource(destination.labelRes),
@@ -165,42 +172,61 @@ private fun HomeScreen(
                             }
                         }
 
-                        LibraryLayout(
-                            modifier = Modifier.weight(1f),
-                            player = {
-                                AnimatedVisibility(
-                                    visible = playerState.playingSong != null,
-                                    enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
-                                    exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
-                                ) {
-                                    MiniPlayer(
-                                        state = playerState,
-                                        onAction = playerViewModel::onAction,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .pointerInput(Unit) {
-                                                detectTapGestures {
-                                                    onAction(HomeAction.OnExpandPlayer)
-                                                }
+                        AnimatedContent(
+                            targetState = state.selectedTabIndex,
+                            transitionSpec = {
+                                fadeIn(
+                                    animationSpec = tween()
+                                ) togetherWith fadeOut(
+                                    animationSpec = tween()
+                                )
+                            }
+                        ) { selectedTabIndex ->
+                            when (selectedTabIndex) {
+                                Destination.SONGS.ordinal -> {
+                                    LibraryLayout(
+                                        modifier = Modifier.weight(1f),
+                                        player = {
+                                            AnimatedVisibility(
+                                                visible = playerState.playingSong != null,
+                                                enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
+                                                exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+                                            ) {
+                                                MiniPlayer(
+                                                    state = playerState,
+                                                    onAction = playerViewModel::onAction,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .pointerInput(Unit) {
+                                                            detectTapGestures {
+                                                                onAction(HomeAction.OnExpandPlayer)
+                                                            }
+                                                        },
+                                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                                    animatedVisibilityScope = this@AnimatedContent
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        LibraryScreen(
+                                            onSongClick = {
+                                                onAction(HomeAction.OnSongClick(it))
                                             },
-                                        sharedTransitionScope = this@SharedTransitionLayout,
-                                        animatedVisibilityScope = this@AnimatedContent
-                                    )
+                                            onPlayClick = {
+                                                onAction(HomeAction.OnPlayPlaylistClick)
+                                            },
+                                            onShuffleClick = {
+                                                onAction(HomeAction.OnShufflePlaylistClick)
+                                            },
+                                            songs = state.songs
+                                        )
+                                    }
+                                }
+
+                                Destination.PLAYLIST.ordinal -> {
+                                    PlaylistScreen()
                                 }
                             }
-                        ) {
-                            LibraryScreen(
-                                onSongClick = {
-                                    onAction(HomeAction.OnSongClick(it))
-                                },
-                                onPlayClick = {
-                                    onAction(HomeAction.OnPlayPlaylistClick)
-                                },
-                                onShuffleClick = {
-                                    onAction(HomeAction.OnShufflePlaylistClick)
-                                },
-                                songs = state.songs
-                            )
                         }
                     }
                 }

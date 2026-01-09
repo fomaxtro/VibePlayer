@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
+import com.fomaxtro.vibeplayer.feature.home.model.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,14 +24,17 @@ class HomeViewModel(
             emptyList()
         )
     private val isPlayerExpanded = MutableStateFlow(false)
+    private val selectedTabIndex = MutableStateFlow(Destination.SONGS.ordinal)
 
     val state = combine(
         songs,
-        isPlayerExpanded
-    ) { songs, isPlayerExpanded ->
+        isPlayerExpanded,
+        selectedTabIndex
+    ) { songs, isPlayerExpanded, selectedTabIndex ->
         HomeUiState(
             songs = songs,
-            isPlayerExpanded = isPlayerExpanded
+            isPlayerExpanded = isPlayerExpanded,
+            selectedTabIndex = selectedTabIndex
         )
     }.stateIn(
         viewModelScope,
@@ -45,8 +49,13 @@ class HomeViewModel(
             HomeAction.OnPlayPlaylistClick -> onPlayPlaylistClick()
             HomeAction.OnShufflePlaylistClick -> onShufflePlaylistClick()
             is HomeAction.OnSongClick -> onSongClick(action.song)
+            is HomeAction.OnTabSelected -> onTabSelected(action.index)
             else -> Unit
         }
+    }
+
+    private fun onTabSelected(index: Int) {
+        selectedTabIndex.value = index
     }
 
     private fun onExpandPlayer() = viewModelScope.launch {
