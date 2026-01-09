@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.maxLength
@@ -27,11 +28,16 @@ import com.fomaxtro.vibeplayer.feature.playlist.R
 fun PlaylistCreateSheetContent(
     playlistName: TextFieldState,
     canCreatePlaylist: Boolean,
+    onCreateClick: () -> Unit,
+    onCancelClick: () -> Unit,
     maxPlaylistNameLength: Int = 40
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 24.dp)
     ) {
         Text(
             text = stringResource(R.string.create_new_playlist),
@@ -55,14 +61,14 @@ fun PlaylistCreateSheetContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             VibeOutlinedButton(
-                onClick = {},
+                onClick = onCancelClick,
                 modifier = Modifier.weight(1f)
             ) {
                 Text(stringResource(R.string.cancel))
             }
 
             VibeFilledButton(
-                onClick = {},
+                onClick = onCreateClick,
                 text = stringResource(R.string.create),
                 modifier = Modifier.weight(1f),
                 enabled = canCreatePlaylist
@@ -80,7 +86,9 @@ private fun PlaylistCreateSheetContentPreview() {
         ) {
             PlaylistCreateSheetContent(
                 playlistName = rememberTextFieldState(),
-                canCreatePlaylist = true
+                canCreatePlaylist = true,
+                onCreateClick = {},
+                onCancelClick = {}
             )
         }
     }

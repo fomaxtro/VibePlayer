@@ -14,9 +14,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -24,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCircularProgressIndicator
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeGradientIcon
@@ -34,11 +39,27 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.feature.playlist.R
 import com.fomaxtro.vibeplayer.feature.playlist.component.MenuIconButton
 import com.fomaxtro.vibeplayer.feature.playlist.component.PlaylistOutlinedButton
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistCreateSheetContent
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun PlaylistScreen(
+    viewModel: PlaylistViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    PlaylistScreen(
+        state = state,
+        onAction = viewModel::onAction
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistScreen(
-    state: PlaylistUiState
+internal fun PlaylistScreen(
+    state: PlaylistUiState,
+    onAction: (PlaylistAction) -> Unit = {}
 ) {
     Scaffold { innerPadding ->
         when (state) {
@@ -83,7 +104,9 @@ fun PlaylistScreen(
                             )
 
                             VibeIconButton(
-                                onClick = {}
+                                onClick = {
+                                    onAction(PlaylistAction.OnCreatePlaylistClick)
+                                }
                             ) {
                                 Icon(
                                     imageVector = VibeIcons.Filled.Plus,
@@ -137,7 +160,9 @@ fun PlaylistScreen(
                     if (state.playlists.isEmpty()) {
                         item {
                             PlaylistOutlinedButton(
-                                onClick = {},
+                                onClick = {
+                                    onAction(PlaylistAction.OnCreatePlaylistClick)
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp)
@@ -193,6 +218,30 @@ fun PlaylistScreen(
                                 modifier = Modifier.padding(padding)
                             )
                         }
+                    }
+                }
+
+                val sheetState = rememberModalBottomSheetState()
+                val scope = rememberCoroutineScope()
+
+                if (state.isCreatePlaylistSheetOpen) {
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
+                        },
+                        sheetState = sheetState,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                    ) {
+                        PlaylistCreateSheetContent(
+                            playlistName = state.playlistName,
+                            canCreatePlaylist = state.canCreatePlaylist,
+                            onCreateClick = {},
+                            onCancelClick = {
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
+                                }
+                            }
+                        )
                     }
                 }
             }
