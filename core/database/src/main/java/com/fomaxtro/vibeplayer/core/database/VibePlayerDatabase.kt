@@ -3,6 +3,7 @@ package com.fomaxtro.vibeplayer.core.database
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.fomaxtro.vibeplayer.core.database.dao.PlaylistDao
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
 import com.fomaxtro.vibeplayer.core.database.entity.PlaylistEntity
 import com.fomaxtro.vibeplayer.core.database.entity.PlaylistSongCrossRef
@@ -21,4 +22,5 @@ import com.fomaxtro.vibeplayer.core.database.entity.SongEntity
 )
 abstract class VibePlayerDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
+    abstract fun playlistDao(): PlaylistDao
 }

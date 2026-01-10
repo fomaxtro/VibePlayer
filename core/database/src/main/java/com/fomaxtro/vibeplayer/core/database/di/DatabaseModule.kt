@@ -2,6 +2,7 @@ package com.fomaxtro.vibeplayer.core.database.di
 
 import androidx.room.Room
 import com.fomaxtro.vibeplayer.core.database.VibePlayerDatabase
+import com.fomaxtro.vibeplayer.core.database.dao.PlaylistDao
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -15,4 +16,5 @@ val databaseModule = module(createdAtStart = true) {
         ).build()
     }
     single<SongDao> { get<VibePlayerDatabase>().songDao() }
+    single<PlaylistDao> { get<VibePlayerDatabase>().playlistDao() }
 }
