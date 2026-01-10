@@ -224,7 +224,11 @@ private fun HomeScreen(
                                 }
 
                                 Destination.PLAYLIST.ordinal -> {
-                                    PlaylistScreen()
+                                    PlaylistScreen(
+                                        onPlaylistCreated = {
+
+                                        }
+                                    )
                                 }
                             }
                         }

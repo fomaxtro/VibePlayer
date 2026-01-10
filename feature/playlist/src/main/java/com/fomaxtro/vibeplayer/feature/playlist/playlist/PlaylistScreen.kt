@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.playlist.playlist
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +38,8 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMediaCard
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
+import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.playlist.R
 import com.fomaxtro.vibeplayer.feature.playlist.component.MenuIconButton
 import com.fomaxtro.vibeplayer.feature.playlist.component.PlaylistOutlinedButton
@@ -45,9 +49,25 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PlaylistScreen(
+    onPlaylistCreated: (playlistId: Long) -> Unit,
     viewModel: PlaylistViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is PlaylistEvent.PlaylistCreated -> onPlaylistCreated(event.playlistId)
+
+            is PlaylistEvent.ShowSystemMessage -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 
     PlaylistScreen(
         state = state,
@@ -105,7 +125,7 @@ internal fun PlaylistScreen(
 
                             VibeIconButton(
                                 onClick = {
-                                    onAction(PlaylistAction.OnCreatePlaylistClick)
+                                    onAction(PlaylistAction.OnAddPlaylistClick)
                                 }
                             ) {
                                 Icon(
@@ -161,7 +181,7 @@ internal fun PlaylistScreen(
                         item {
                             PlaylistOutlinedButton(
                                 onClick = {
-                                    onAction(PlaylistAction.OnCreatePlaylistClick)
+                                    onAction(PlaylistAction.OnAddPlaylistClick)
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
