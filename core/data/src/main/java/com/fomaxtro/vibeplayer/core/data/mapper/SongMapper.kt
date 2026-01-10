@@ -4,7 +4,7 @@ import com.fomaxtro.vibeplayer.core.database.entity.SongEntity
 import com.fomaxtro.vibeplayer.domain.model.Song
 import kotlin.time.Duration.Companion.milliseconds
 
-fun SongEntity.toSong() = Song(
+fun SongEntity.toDomain() = Song(
     id = id,
     title = title,
     artist = artist,

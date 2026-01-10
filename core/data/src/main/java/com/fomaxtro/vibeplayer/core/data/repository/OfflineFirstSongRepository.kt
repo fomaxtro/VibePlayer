@@ -7,7 +7,7 @@ import androidx.core.net.toUri
 import androidx.room.withTransaction
 import com.fomaxtro.vibeplayer.core.common.Result
 import com.fomaxtro.vibeplayer.core.common.map
-import com.fomaxtro.vibeplayer.core.data.mapper.toSong
+import com.fomaxtro.vibeplayer.core.data.mapper.toDomain
 import com.fomaxtro.vibeplayer.core.data.util.safeDatabaseCall
 import com.fomaxtro.vibeplayer.core.database.VibePlayerDatabase
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
@@ -162,7 +162,7 @@ class OfflineFirstSongRepository(
     override fun getSongsStream(): Flow<List<Song>> {
         return songDao.getAll()
             .map { songs ->
-                songs.map { it.toSong() }
+                songs.map { it.toDomain() }
             }
     }
 
@@ -176,11 +176,11 @@ class OfflineFirstSongRepository(
     }
 
     override suspend fun getSongById(id: Long): Song? {
-        return songDao.findById(id)?.toSong()
+        return songDao.findById(id)?.toDomain()
     }
 
     override suspend fun findSongsByTitleOrArtist(query: String): List<Song> {
         return songDao.findByTitleOrArtist(query)
-            .map { it.toSong() }
+            .map { it.toDomain() }
     }
 }
