@@ -172,6 +172,8 @@ private fun HomeScreen(
                             }
                         }
 
+                        val sharedAnimatedContent = this@AnimatedContent
+
                         AnimatedContent(
                             targetState = state.selectedTabIndex,
                             transitionSpec = {
@@ -203,7 +205,7 @@ private fun HomeScreen(
                                                             }
                                                         },
                                                     sharedTransitionScope = this@SharedTransitionLayout,
-                                                    animatedVisibilityScope = this@AnimatedContent
+                                                    animatedVisibilityScope = sharedAnimatedContent
                                                 )
                                             }
                                         }

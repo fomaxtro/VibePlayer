@@ -80,7 +80,8 @@ fun MiniPlayer(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(2.dp),

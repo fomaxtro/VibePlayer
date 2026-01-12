@@ -2,7 +2,9 @@ package com.fomaxtro.vibeplayer.core.designsystem.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.KeyboardActionHandler
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
@@ -32,7 +34,9 @@ fun VibeOutlinedTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     suffix: @Composable (() -> Unit)? = null,
     lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine,
-    inputTransformation: InputTransformation? = null
+    inputTransformation: InputTransformation? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: KeyboardActionHandler? = null
 ) {
     OutlinedTextField(
         state = state,
@@ -57,7 +61,9 @@ fun VibeOutlinedTextField(
         ),
         lineLimits = lineLimits,
         suffix = suffix,
-        inputTransformation = inputTransformation
+        inputTransformation = inputTransformation,
+        keyboardOptions = keyboardOptions,
+        onKeyboardAction = onKeyboardAction
     )
 }
 

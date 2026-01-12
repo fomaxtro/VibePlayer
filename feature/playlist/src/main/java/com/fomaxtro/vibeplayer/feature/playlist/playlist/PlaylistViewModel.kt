@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.playlist.playlist
 
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -68,41 +69,40 @@ class PlaylistViewModel(
     }
 
     private fun createPlaylist() = viewModelScope.launch {
-        try {
-            when (
-                val result = playlistRepository.createPlaylist(
-                    NewPlaylist(
-                        name = playlistName.text.toString()
-                    )
+        when (
+            val result = playlistRepository.createPlaylist(
+                NewPlaylist(
+                    name = playlistName.text.toString()
                 )
-            ) {
-                is Result.Error -> {
-                    val message = when (result.error) {
-                        DataError.Resource.ALREADY_EXISTS -> {
-                            UiText.StringResource(R.string.error_playlist_already_exists)
-                        }
-
-                        else -> result.error.toUiText()
+            )
+        ) {
+            is Result.Error -> {
+                val message = when (result.error) {
+                    DataError.Resource.ALREADY_EXISTS -> {
+                        UiText.StringResource(R.string.error_playlist_already_exists)
                     }
 
-                    eventChannel.send(PlaylistEvent.ShowMessage(message))
+                    else -> result.error.toUiText()
                 }
 
-                is Result.Success -> {
-                    eventChannel.send(
-                        PlaylistEvent.PlaylistCreated(
-                            playlistId = result.data
-                        )
-                    )
-                }
+                eventChannel.send(PlaylistEvent.ShowMessage(message))
             }
-        } finally {
-            dismissCreatePlaylistSheet()
+
+            is Result.Success -> {
+                dismissCreatePlaylistSheet()
+
+                eventChannel.send(
+                    PlaylistEvent.PlaylistCreated(
+                        playlistId = result.data
+                    )
+                )
+            }
         }
     }
 
     private fun dismissCreatePlaylistSheet() {
         isCreatePlaylistSheetOpen.value = false
+        playlistName.clearText()
     }
 
     private fun showCreatePlaylistSheet() {
