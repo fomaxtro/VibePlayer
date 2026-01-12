@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="disk_full">Not enough storage space.</string>
-    <string name="unknown">Something went wrong.</string>
+    <string name="error_disk_full">Not enough storage space.</string>
+    <string name="error_unknown">Something went wrong.</string>
+    <string name="error_generic">An error was occurred</string>
 </resources>

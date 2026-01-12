@@ -2,6 +2,7 @@ package com.fomaxtro.vibeplayer.core.designsystem.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -58,6 +59,7 @@ fun VibeOutlinedButton(
                         horizontal = 24.dp,
                         vertical = 11.dp
                     ),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = content
             )
         }

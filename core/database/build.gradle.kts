@@ -13,6 +13,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.domain)
     implementation(libs.androidx.room.runtime)
     api(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

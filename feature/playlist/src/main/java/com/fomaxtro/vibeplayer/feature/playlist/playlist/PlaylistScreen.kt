@@ -1,6 +1,5 @@
 package com.fomaxtro.vibeplayer.feature.playlist.playlist
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,10 +16,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,24 +56,24 @@ fun PlaylistScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PlaylistEvent.PlaylistCreated -> onPlaylistCreated(event.playlistId)
 
-            is PlaylistEvent.ShowSystemMessage -> {
-                Toast.makeText(
-                    context,
-                    event.message.asString(context),
-                    Toast.LENGTH_LONG
-                ).show()
+            is PlaylistEvent.ShowMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = event.message.asString(context)
+                )
             }
         }
     }
 
     PlaylistScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -79,9 +81,14 @@ fun PlaylistScreen(
 @Composable
 internal fun PlaylistScreen(
     state: PlaylistUiState,
-    onAction: (PlaylistAction) -> Unit = {}
+    onAction: (PlaylistAction) -> Unit = {},
+    snackbarHostState: SnackbarHostState
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
+    ) { innerPadding ->
         when (state) {
             PlaylistUiState.Loading -> {
                 VibeCircularProgressIndicator(
@@ -255,7 +262,9 @@ internal fun PlaylistScreen(
                         PlaylistCreateSheetContent(
                             playlistName = state.playlistName,
                             canCreatePlaylist = state.canCreatePlaylist,
-                            onCreateClick = {},
+                            onCreateClick = {
+                                onAction(PlaylistAction.OnConfirmCreatePlaylist)
+                            },
                             onCancelClick = {
                                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                                     onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
@@ -276,7 +285,8 @@ private fun PlaylistScreenPreview(
 ) {
     VibePlayerTheme {
         PlaylistScreen(
-            state = state
+            state = state,
+            snackbarHostState = SnackbarHostState()
         )
     }
 }

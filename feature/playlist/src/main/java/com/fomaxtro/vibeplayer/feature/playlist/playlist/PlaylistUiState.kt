@@ -11,8 +11,7 @@ sealed interface PlaylistUiState {
     data class Success(
         val playlists: List<Playlist> = emptyList(),
         val isCreatePlaylistSheetOpen: Boolean = false,
-        val playlistName: TextFieldState
-    ) : PlaylistUiState {
-        val canCreatePlaylist: Boolean = playlistName.text.isNotBlank()
-    }
+        val playlistName: TextFieldState,
+        val canCreatePlaylist: Boolean = false
+    ) : PlaylistUiState
 }

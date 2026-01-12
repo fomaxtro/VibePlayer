@@ -1,17 +1,21 @@
 package com.fomaxtro.vibeplayer.feature.playlist.playlist
 
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.core.common.Result
 import com.fomaxtro.vibeplayer.core.ui.mapper.toUiText
+import com.fomaxtro.vibeplayer.core.ui.util.UiText
 import com.fomaxtro.vibeplayer.core.ui.util.getTextFieldState
+import com.fomaxtro.vibeplayer.domain.error.DataError
 import com.fomaxtro.vibeplayer.domain.model.NewPlaylist
 import com.fomaxtro.vibeplayer.domain.repository.PlaylistRepository
+import com.fomaxtro.vibeplayer.feature.playlist.R
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,14 +42,17 @@ class PlaylistViewModel(
         initialValue = ""
     )
 
-    val state: StateFlow<PlaylistUiState> = isCreatePlaylistSheetOpen
-        .map { isCreatePlaylistSheetOpen ->
-            PlaylistUiState.Success(
-                playlistName = playlistName,
-                isCreatePlaylistSheetOpen = isCreatePlaylistSheetOpen,
-                playlists = emptyList()
-            )
-        }
+    val state: StateFlow<PlaylistUiState> = combine(
+        isCreatePlaylistSheetOpen,
+        snapshotFlow { playlistName.text.toString() }
+    ) { isCreatePlaylistSheetOpen, playlistNameText ->
+        PlaylistUiState.Success(
+            playlistName = playlistName,
+            isCreatePlaylistSheetOpen = isCreatePlaylistSheetOpen,
+            playlists = emptyList(),
+            canCreatePlaylist = playlistNameText.isNotBlank()
+        )
+    }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
@@ -61,30 +68,36 @@ class PlaylistViewModel(
     }
 
     private fun createPlaylist() = viewModelScope.launch {
-        when (
-            val result = playlistRepository.createPlaylist(
-                NewPlaylist(
-                    name = playlistName.text.toString()
-                )
-            )
-        ) {
-            is Result.Error -> {
-                eventChannel.send(
-                    PlaylistEvent.ShowSystemMessage(
-                        message = result.error.toUiText()
+        try {
+            when (
+                val result = playlistRepository.createPlaylist(
+                    NewPlaylist(
+                        name = playlistName.text.toString()
                     )
                 )
-            }
+            ) {
+                is Result.Error -> {
+                    val message = when (result.error) {
+                        DataError.Resource.ALREADY_EXISTS -> {
+                            UiText.StringResource(R.string.error_playlist_already_exists)
+                        }
 
-            is Result.Success -> {
-                dismissCreatePlaylistSheet()
+                        else -> result.error.toUiText()
+                    }
 
-                eventChannel.send(
-                    PlaylistEvent.PlaylistCreated(
-                        playlistId = result.data
+                    eventChannel.send(PlaylistEvent.ShowMessage(message))
+                }
+
+                is Result.Success -> {
+                    eventChannel.send(
+                        PlaylistEvent.PlaylistCreated(
+                            playlistId = result.data
+                        )
                     )
-                )
+                }
             }
+        } finally {
+            dismissCreatePlaylistSheet()
         }
     }
 

@@ -8,6 +8,7 @@
     <string name="enter_playlist_name">Enter playlist name</string>
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
+    <string name="error_playlist_already_exists">Playlist with this name already exists.</string>
     <plurals name="playlist_count">
         <item quantity="one">1 Playlist</item>
         <item quantity="other">%d Playlists</item>

@@ -8,7 +8,7 @@ import androidx.room.withTransaction
 import com.fomaxtro.vibeplayer.core.common.Result
 import com.fomaxtro.vibeplayer.core.common.map
 import com.fomaxtro.vibeplayer.core.data.mapper.toDomain
-import com.fomaxtro.vibeplayer.core.data.util.safeDatabaseCall
+import com.fomaxtro.vibeplayer.core.database.util.safeDatabaseCall
 import com.fomaxtro.vibeplayer.core.database.VibePlayerDatabase
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
 import com.fomaxtro.vibeplayer.core.database.entity.SongEntity
