@@ -27,6 +27,8 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.close)
         val Plus: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.plus)
+        val Check: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.check)
     }
 
     object Outlined {

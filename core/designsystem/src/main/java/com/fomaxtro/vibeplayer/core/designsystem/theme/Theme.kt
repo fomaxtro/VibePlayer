@@ -4,6 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val DarkColorScheme = darkColorScheme(
@@ -36,6 +37,14 @@ val ColorScheme.textDisabled: Color
 
 val ColorScheme.surfaceBg30: Color
     get() = SurfaceBg.copy(alpha = 0.3f)
+
+val ColorScheme.backgroundGradient: Brush
+    get() = Brush.verticalGradient(
+        colors = listOf(
+            SurfaceBg.copy(alpha = 0f),
+            SurfaceBg
+        )
+    )
 
 @Composable
 fun VibePlayerTheme(
