@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.playlist.component
+package com.fomaxtro.vibeplayer.feature.playlist.playlist.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

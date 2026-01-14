@@ -1,4 +1,4 @@
-package com.fomaxtro.vibeplayer.feature.playlist.component
+package com.fomaxtro.vibeplayer.feature.playlist.playlist.component
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
