@@ -14,8 +14,6 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,14 +25,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedTextField
-import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSearchBar
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.preview.SongListPreviewParameterProvider
@@ -43,8 +39,9 @@ import com.fomaxtro.vibeplayer.core.ui.util.Resource
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.library.component.SongCard
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import org.koin.androidx.compose.koinViewModel
+import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
 internal fun SearchScreen(
@@ -88,30 +85,8 @@ private fun SearchScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    VibeOutlinedTextField(
-                        state = state.searchQuery,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(searchFocusRequester),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = VibeIcons.Outlined.Search,
-                                contentDescription = stringResource(R.string.search)
-                            )
-                        },
-                        placeholder = stringResource(R.string.search),
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    onAction(SearchAction.OnClearClick)
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = VibeIcons.Filled.Close,
-                                    contentDescription = stringResource(R.string.close)
-                                )
-                            }
-                        },
+                    VibeSearchBar(
+                        state = state.searchQuery
                     )
                 },
                 actions = {
@@ -146,7 +121,7 @@ private fun SearchScreen(
                 is Resource.Success -> {
                     if (songs.data.isEmpty()) {
                         Text(
-                            text = stringResource(R.string.no_results_found),
+                            text = stringResource(DesignR.string.no_results_found),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentWidth(),
@@ -159,7 +134,7 @@ private fun SearchScreen(
                             items(songs.data) { song ->
                                 val contentPadding = PaddingValues(horizontal = 16.dp)
 
-                                SongCard(
+                                VibeSongCard(
                                     onClick = {
                                         keyboardController?.hide()
                                         onAction(SearchAction.OnSongClick(song))

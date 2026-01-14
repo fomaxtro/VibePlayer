@@ -34,7 +34,7 @@ import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
 import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayout
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
-import com.fomaxtro.vibeplayer.feature.library.library.component.SongCard
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import kotlinx.coroutines.launch
 
 @Composable
@@ -93,7 +93,7 @@ fun LibraryScreen(
             },
             songs = songs,
             item = { song, contentPadding ->
-                SongCard(
+                VibeSongCard(
                     onClick = {
                         onSongClick(song)
                     },

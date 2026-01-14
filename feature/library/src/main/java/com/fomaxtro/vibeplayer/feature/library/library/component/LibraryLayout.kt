@@ -25,6 +25,7 @@ import com.fomaxtro.vibeplayer.core.ui.preview.SongPreviewFactory
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 
 @Composable
 fun LibraryLayout(
@@ -102,7 +103,7 @@ private fun LibraryLayoutPreview() {
         },
         songs = SongPreviewFactory.defaultList,
         item = { song, contentPadding ->
-            SongCard(
+            VibeSongCard(
                 onClick = {},
                 title = song.title,
                 artist = song.artist,

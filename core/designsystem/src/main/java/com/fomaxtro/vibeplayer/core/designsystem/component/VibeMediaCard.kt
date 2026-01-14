@@ -33,7 +33,8 @@ fun VibeMediaCard(
     subtitle: String,
     modifier: Modifier = Modifier,
     action: @Composable (() -> Unit)? = null,
-    contentPadding: PaddingValues = PaddingValues()
+    contentPadding: PaddingValues = PaddingValues(),
+    leadingContent: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -45,6 +46,8 @@ fun VibeMediaCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        leadingContent?.invoke()
+
         Box(
             modifier = Modifier.size(64.dp),
             contentAlignment = Alignment.Center,
@@ -91,11 +94,22 @@ private fun VibeMediaCardPreview() {
     VibePlayerTheme {
         VibeMediaCard(
             modifier = Modifier.fillMaxWidth(),
-            image = {},
+            image = {
+                VibeAlbumArt(
+                    imageUrl = null,
+                    contentDescription = null
+                )
+            },
             title = "505",
             subtitle = "Arctic Monkeys",
             action = null,
-            onClick = {}
+            onClick = {},
+            leadingContent = {
+                VibeCheckbox(
+                    checked = true,
+                    onCheckedChange = {}
+                )
+            }
         )
     }
 }
