@@ -5,14 +5,14 @@ import androidx.compose.runtime.Immutable
 import com.fomaxtro.vibeplayer.feature.playlist.add_songs.model.SelectableSong
 
 @Immutable
-sealed interface AddSongsState {
-    data object Loading : AddSongsState
+sealed interface AddSongsUiState {
+    data object Loading : AddSongsUiState
 
     data class Success(
         val search: TextFieldState,
-        val songs: List<SelectableSong> = emptyList()
-    ) : AddSongsState {
-        val selectAll: Boolean = songs.isNotEmpty() && songs.all { it.selected }
-        val canSubmit: Boolean = songs.any { it.selected }
-    }
+        val songs: List<SelectableSong> = emptyList(),
+        val selectedSongsCount: Int = 0,
+        val isSelectedAll: Boolean = false,
+        val canSubmit: Boolean = false
+    ) : AddSongsUiState
 }

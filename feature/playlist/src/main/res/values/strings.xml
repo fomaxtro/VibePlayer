@@ -11,6 +11,8 @@
     <string name="error_playlist_already_exists">Playlist with this name already exists.</string>
     <string name="add_songs">Add Songs</string>
     <string name="select_all">Select All</string>
+    <string name="selected">%d Selected</string>
+    <string name="songs_added_to_playlist">%d songs added to playlist.</string>
     <plurals name="playlist_count">
         <item quantity="one">1 Playlist</item>
         <item quantity="other">%d Playlists</item>

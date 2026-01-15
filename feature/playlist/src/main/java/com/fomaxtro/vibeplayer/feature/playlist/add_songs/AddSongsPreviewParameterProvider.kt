@@ -5,23 +5,26 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.fomaxtro.vibeplayer.core.ui.preview.SongPreviewFactory
 import com.fomaxtro.vibeplayer.feature.playlist.add_songs.model.SelectableSong
 
-class AddSongsPreviewParameterProvider : PreviewParameterProvider<AddSongsState> {
-    override val values: Sequence<AddSongsState> = sequenceOf(
-        AddSongsState.Loading,
-        AddSongsState.Success(
+class AddSongsPreviewParameterProvider : PreviewParameterProvider<AddSongsUiState> {
+    override val values: Sequence<AddSongsUiState> = sequenceOf(
+        AddSongsUiState.Loading,
+        AddSongsUiState.Success(
             search = TextFieldState(),
             songs = emptyList()
         ),
-        AddSongsState.Success(
+        AddSongsUiState.Success(
             search = TextFieldState(),
             songs = SongPreviewFactory.defaultList.map { song ->
                 SelectableSong(
                     song = song,
                     selected = true
                 )
-            }
+            },
+            isSelectedAll = true,
+            canSubmit = true,
+            selectedSongsCount = SongPreviewFactory.defaultList.size
         ),
-        AddSongsState.Success(
+        AddSongsUiState.Success(
             search = TextFieldState(),
             songs = SongPreviewFactory.defaultList.map { song ->
                 SelectableSong(
