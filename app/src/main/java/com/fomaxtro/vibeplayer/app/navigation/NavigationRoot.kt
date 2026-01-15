@@ -11,12 +11,15 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.fomaxtro.vibeplayer.core.ui.addSafe
 import com.fomaxtro.vibeplayer.feature.home.navigation.HomeNavKey
 import com.fomaxtro.vibeplayer.feature.home.navigation.home
 import com.fomaxtro.vibeplayer.feature.library.navigation.SearchNavKey
 import com.fomaxtro.vibeplayer.feature.library.navigation.library
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.OnboardingNavKey
 import com.fomaxtro.vibeplayer.feature.onboarding.navigation.onboarding
+import com.fomaxtro.vibeplayer.feature.playlist.navigation.AddSongsNavKey
+import com.fomaxtro.vibeplayer.feature.playlist.navigation.playlist
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanOptionsNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.ScanProgressNavKey
 import com.fomaxtro.vibeplayer.feature.scanner.navigation.scanner
@@ -64,10 +67,17 @@ fun NavigationRoot(
 
             home(
                 onScanMusic = {
-                    backStack.add(ScanOptionsNavKey)
+                    backStack.addSafe(ScanOptionsNavKey)
                 },
                 onSearch = {
-                    backStack.add(SearchNavKey)
+                    backStack.addSafe(SearchNavKey)
+                },
+                onPlaylistCreated = { playlistId ->
+                    backStack.addSafe(
+                        AddSongsNavKey(
+                            playlistId = playlistId
+                        )
+                    )
                 }
             )
 
@@ -76,7 +86,7 @@ fun NavigationRoot(
                     backStack[backStack.lastIndex] = HomeNavKey
                 },
                 onScanOptions = {
-                    backStack.add(ScanOptionsNavKey)
+                    backStack.addSafe(ScanOptionsNavKey)
                 },
                 onNavigateBack = {
                     backStack.removeLastOrNull()
@@ -101,6 +111,12 @@ fun NavigationRoot(
                     backStack.removeLastOrNull()
                 },
                 onPlaySong = {
+                    backStack.removeLastOrNull()
+                }
+            )
+
+            playlist(
+                onNavigateBack = {
                     backStack.removeLastOrNull()
                 }
             )
