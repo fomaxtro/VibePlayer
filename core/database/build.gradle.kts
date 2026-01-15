@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = "com.fomaxtro.vibeplayer.core.database"
+}
 
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
