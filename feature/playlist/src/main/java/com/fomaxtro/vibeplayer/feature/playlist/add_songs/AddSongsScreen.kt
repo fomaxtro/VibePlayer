@@ -120,104 +120,103 @@ internal fun AddSongsScreen(
                 Box(
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    LazyColumn(
+                    Column(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        stickyHeader {
-                            Column(
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                            ) {
-                                VibeSearchBar(
-                                    state = state.search,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(bottom = 8.dp)
-                                )
+                        VibeSearchBar(
+                            state = state.search,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 8.dp)
+                        )
 
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            onAction(AddSongsAction.OnSelectAllToggle)
-                                        }
-                                        .padding(
-                                            horizontal = 16.dp,
-                                            vertical = 14.dp
-                                        ),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    VibeCheckbox(
-                                        checked = state.isSelectedAll,
-                                        onCheckedChange = {}
-                                    )
-
-                                    Spacer(modifier = Modifier.width(12.dp))
-
-                                    Text(
-                                        text = stringResource(R.string.select_all),
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onAction(AddSongsAction.OnSelectAllToggle)
                                 }
+                                .padding(
+                                    horizontal = 16.dp,
+                                    vertical = 14.dp
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            VibeCheckbox(
+                                checked = state.isSelectedAll,
+                                onCheckedChange = {}
+                            )
 
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(horizontal = 16.dp)
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Text(
+                                text = stringResource(R.string.select_all),
+                                style = MaterialTheme.typography.titleMedium
+                            )
                         }
-                        
-                        if (state.songs.isNotEmpty()) {
-                            items(state.songs, key = { it.song.id }) { selectableSong ->
-                                val song = selectableSong.song
-                                val padding = PaddingValues(horizontal = 16.dp)
 
-                                VibeSongCard(
-                                    onClick = {
-                                        onAction(AddSongsAction.OnSongClick(selectableSong))
-                                    },
-                                    imageUrl = song.albumArtUri,
-                                    title = song.title,
-                                    artist = song.artist,
-                                    duration = song.duration.formatDuration(),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateItem(),
-                                    leadingContent = {
-                                        VibeCheckbox(
-                                            checked = selectableSong.selected,
-                                            onCheckedChange = {
-                                                onAction(AddSongsAction.OnSongClick(selectableSong))
-                                            }
-                                        )
-                                    },
-                                    contentPadding = padding
-                                )
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
 
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(padding)
-                                )
-                            }
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        ) {
+                            if (state.songs.isNotEmpty()) {
+                                items(state.songs, key = { it.song.id }) { selectableSong ->
+                                    val song = selectableSong.song
+                                    val padding = PaddingValues(horizontal = 16.dp)
 
-                            if (state.canSubmit) {
-                                item {
-                                    Spacer(
+                                    VibeSongCard(
+                                        onClick = {
+                                            onAction(AddSongsAction.OnSongClick(selectableSong))
+                                        },
+                                        imageUrl = song.albumArtUri,
+                                        title = song.title,
+                                        artist = song.artist,
+                                        duration = song.duration.formatDuration(),
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(100.dp)
+                                            .animateItem(),
+                                        leadingContent = {
+                                            VibeCheckbox(
+                                                checked = selectableSong.selected,
+                                                onCheckedChange = {
+                                                    onAction(AddSongsAction.OnSongClick(selectableSong))
+                                                }
+                                            )
+                                        },
+                                        contentPadding = padding
+                                    )
+
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(padding)
                                     )
                                 }
-                            }
-                        } else {
-                            item {
-                                Text(
-                                    text = stringResource(DesignR.string.no_results_found),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentWidth()
-                                        .padding(16.dp),
 
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                if (state.canSubmit) {
+                                    item {
+                                        Spacer(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(100.dp)
+                                        )
+                                    }
+                                }
+                            } else {
+                                item {
+                                    Text(
+                                        text = stringResource(DesignR.string.no_results_found),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentWidth()
+                                            .padding(16.dp),
+
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
                         }
                     }

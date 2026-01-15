@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -48,8 +49,8 @@ import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.playlist.R
 import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.MenuIconButton
-import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistOutlinedButton
 import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistCreateSheetContent
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistOutlinedButton
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -219,10 +220,10 @@ internal fun PlaylistScreen(
                                             VibeGradientIcon(
                                                 icon = VibeIcons.Duotone.Playlist,
                                                 contentDescription = null,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = CircleShape
+                                                color = MaterialTheme.colorScheme.primary
                                             )
-                                        }
+                                        },
+                                        modifier = Modifier.clip(CircleShape)
                                     )
                                 },
                                 title = playlist.name,
