@@ -56,6 +56,7 @@ import org.koin.compose.koinInject
 internal fun HomeScreen(
     onScanMusic: () -> Unit,
     onSearch: () -> Unit,
+    onPlaylistCreated: (playlistId: Long) -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -66,6 +67,7 @@ internal fun HomeScreen(
             when (action) {
                 HomeAction.OnScanMusicClick -> onScanMusic()
                 HomeAction.OnSearchClick -> onSearch()
+                is HomeAction.OnPlaylistCreated -> onPlaylistCreated(action.playlistId)
                 else -> viewModel.onAction(action)
             }
         }
@@ -228,7 +230,7 @@ private fun HomeScreen(
                                 Destination.PLAYLIST.ordinal -> {
                                     PlaylistScreen(
                                         onPlaylistCreated = {
-
+                                            onAction(HomeAction.OnPlaylistCreated(it))
                                         }
                                     )
                                 }

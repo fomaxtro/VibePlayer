@@ -11,4 +11,5 @@ sealed interface HomeAction {
     data object OnPlayPlaylistClick : HomeAction
     data object OnShufflePlaylistClick : HomeAction
     data class OnTabSelected(val index: Int) : HomeAction
+    data class OnPlaylistCreated(val playlistId: Long) : HomeAction
 }
