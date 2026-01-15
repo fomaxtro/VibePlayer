@@ -3,6 +3,7 @@ package com.fomaxtro.vibeplayer.feature.playlist.playlist
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,148 +99,151 @@ internal fun PlaylistScreen(
         }
 
         is PlaylistUiState.Success -> {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = 16.dp,
-                                end = 12.dp,
-                                top = 12.dp,
-                                bottom = 4.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        val playlistCount = state.playlists.size + 1
-
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.playlist_count,
-                                count = playlistCount,
-                                playlistCount
-                            ),
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        VibeIconButton(
-                            onClick = {
-                                onAction(PlaylistAction.OnAddPlaylistClick)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = VibeIcons.Filled.Plus,
-                                contentDescription = stringResource(R.string.create_playlist)
-                            )
-                        }
-                    }
-                }
-
-                item {
-                    VibeMediaCard(
-                        onClick = {},
-                        image = {
-                            VibeGradientIcon(
-                                icon = VibeIcons.Duotone.Favourite,
-                                contentDescription = null,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            )
-                        },
-                        title = stringResource(R.string.favourites),
-                        subtitle = pluralStringResource(
-                            id = R.plurals.song_count,
-                            count = 2,
-                            2
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 12.dp,
+                            top = 12.dp,
+                            bottom = 4.dp
                         ),
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        action = {
-                            MenuIconButton(
-                                onClick = {}
-                            )
-                        }
-                    )
-                }
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    val playlistCount = state.playlists.size + 1
 
-                item {
                     Text(
-                        text = stringResource(R.string.my_playlists, state.playlists.size),
+                        text = pluralStringResource(
+                            id = R.plurals.playlist_count,
+                            count = playlistCount,
+                            playlistCount
+                        ),
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 16.dp,
-                                bottom = 8.dp
-                            )
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+
+                    VibeIconButton(
+                        onClick = {
+                            onAction(PlaylistAction.OnAddPlaylistClick)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Filled.Plus,
+                            contentDescription = stringResource(R.string.create_playlist)
+                        )
+                    }
                 }
 
-                if (state.playlists.isEmpty()) {
-                    item {
-                        PlaylistOutlinedButton(
-                            onClick = {
-                                onAction(PlaylistAction.OnAddPlaylistClick)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = VibeIcons.Filled.Plus,
-                                contentDescription = null
-                            )
-
-                            Text(
-                                text = stringResource(R.string.create_playlist),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        }
+                VibeMediaCard(
+                    onClick = {},
+                    image = {
+                        VibeGradientIcon(
+                            icon = VibeIcons.Duotone.Favourite,
+                            contentDescription = null,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                    },
+                    title = stringResource(R.string.favourites),
+                    subtitle = pluralStringResource(
+                        id = R.plurals.song_count,
+                        count = 2,
+                        2
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    action = {
+                        MenuIconButton(
+                            onClick = {}
+                        )
                     }
-                } else {
-                    items(state.playlists) { playlist ->
-                        val padding = PaddingValues(horizontal = 16.dp)
+                )
 
-                        VibeMediaCard(
-                            onClick = {},
-                            image = {
-                                SubcomposeAsyncImage(
-                                    model = playlist.albumArtUri,
-                                    contentDescription = null,
-                                    error = {
-                                        VibeGradientIcon(
-                                            icon = VibeIcons.Duotone.Playlist,
-                                            contentDescription = null,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            shape = CircleShape
-                                        )
-                                    }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.my_playlists, state.playlists.size),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .padding(
+                                    start = 16.dp,
+                                    top = 16.dp,
+                                    bottom = 8.dp
                                 )
-                            },
-                            title = playlist.name,
-                            subtitle = pluralStringResource(
-                                id = R.plurals.song_count,
-                                count = playlist.songsCount,
-                                playlist.songsCount
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            contentPadding = padding,
-                            action = {
-                                MenuIconButton(
-                                    onClick = {}
+                        )
+                    }
+
+                    if (state.playlists.isEmpty()) {
+                        item {
+                            PlaylistOutlinedButton(
+                                onClick = {
+                                    onAction(PlaylistAction.OnAddPlaylistClick)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .padding(top = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = VibeIcons.Filled.Plus,
+                                    contentDescription = null
+                                )
+
+                                Text(
+                                    text = stringResource(R.string.create_playlist),
+                                    style = MaterialTheme.typography.labelLarge
                                 )
                             }
-                        )
+                        }
+                    } else {
+                        items(state.playlists, key = { it.id }) { playlist ->
+                            val padding = PaddingValues(horizontal = 16.dp)
 
-                        HorizontalDivider(
-                            modifier = Modifier.padding(padding)
-                        )
+                            VibeMediaCard(
+                                onClick = {},
+                                image = {
+                                    SubcomposeAsyncImage(
+                                        model = playlist.albumArtUri,
+                                        contentDescription = null,
+                                        error = {
+                                            VibeGradientIcon(
+                                                icon = VibeIcons.Duotone.Playlist,
+                                                contentDescription = null,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = CircleShape
+                                            )
+                                        }
+                                    )
+                                },
+                                title = playlist.name,
+                                subtitle = pluralStringResource(
+                                    id = R.plurals.song_count,
+                                    count = playlist.songsCount,
+                                    playlist.songsCount
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = padding,
+                                action = {
+                                    MenuIconButton(
+                                        onClick = {}
+                                    )
+                                }
+                            )
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(padding)
+                            )
+                        }
                     }
                 }
             }

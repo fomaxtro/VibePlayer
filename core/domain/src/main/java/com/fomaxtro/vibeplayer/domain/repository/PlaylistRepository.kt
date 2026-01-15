@@ -10,5 +10,5 @@ import kotlinx.coroutines.flow.Flow
 interface PlaylistRepository {
     suspend fun createPlaylist(playlist: NewPlaylist): Result<Long, DataError>
     suspend fun addSongsToPlaylist(playlistId: Long, songIds: List<Long>): EmptyResult<DataError>
-    suspend fun getPlaylistsStream(): Flow<List<Playlist>>
+    fun getPlaylistsStream(): Flow<List<Playlist>>
 }

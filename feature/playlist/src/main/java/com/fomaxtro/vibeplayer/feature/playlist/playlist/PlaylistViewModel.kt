@@ -33,6 +33,8 @@ class PlaylistViewModel(
     private val eventChannel = Channel<PlaylistEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private val playlist = playlistRepository.getPlaylistsStream()
+
     private val isCreatePlaylistSheetOpen = savedStateHandle.getMutableStateFlow(
         key = PLAYLIST_SHEET_VISIBLE_KEY,
         initialValue = false
@@ -44,13 +46,14 @@ class PlaylistViewModel(
     )
 
     val state: StateFlow<PlaylistUiState> = combine(
+        playlist,
         isCreatePlaylistSheetOpen,
         snapshotFlow { playlistName.text.toString() }
-    ) { isCreatePlaylistSheetOpen, playlistNameText ->
+    ) { playlist, isCreatePlaylistSheetOpen, playlistNameText ->
         PlaylistUiState.Success(
             playlistName = playlistName,
             isCreatePlaylistSheetOpen = isCreatePlaylistSheetOpen,
-            playlists = emptyList(),
+            playlists = playlist,
             canCreatePlaylist = playlistNameText.isNotBlank()
         )
     }

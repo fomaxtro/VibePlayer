@@ -35,7 +35,7 @@ class OfflineFirstPlaylistRepository(
         return safeDatabaseCall { playlistDao.addSongs(crossRefs) }
     }
 
-    override suspend fun getPlaylistsStream(): Flow<List<Playlist>> {
+    override fun getPlaylistsStream(): Flow<List<Playlist>> {
         return playlistDao.getPlaylistsWithMetadata()
             .map { playlists ->
                 playlists.map { it.toDomain() }
