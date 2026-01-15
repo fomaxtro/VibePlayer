@@ -89,7 +89,7 @@ internal fun PermissionScreen(
                 TextButton(
                     onClick = { showPermissionRationale = false }
                 ) {
-                    Text(text = stringResource(R.string.ok))
+                    Text(text = stringResource(DesignR.string.ok))
                 }
             }
         )
