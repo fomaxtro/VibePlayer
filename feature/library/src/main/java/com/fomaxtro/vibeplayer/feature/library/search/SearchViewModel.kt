@@ -1,6 +1,5 @@
 package com.fomaxtro.vibeplayer.feature.library.search
 
-import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -83,7 +82,6 @@ class SearchViewModel(
 
     fun onAction(action: SearchAction) {
         when (action) {
-            SearchAction.OnClearClick -> onClearClick()
             is SearchAction.OnSongClick -> onSongClick(action.song)
             else -> Unit
         }
@@ -96,9 +94,5 @@ class SearchViewModel(
             musicPlayer.play(songIndex)
             eventChannel.send(SearchEvent.PlaySong)
         }
-    }
-
-    private fun onClearClick() {
-        searchQuery.clearText()
     }
 }

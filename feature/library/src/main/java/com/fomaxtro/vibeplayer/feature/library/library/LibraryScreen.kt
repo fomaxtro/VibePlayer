@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,28 +23,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import coil3.compose.SubcomposeAsyncImage
+import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFloatingActionButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMainTopAppBar
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.preview.SongPreviewFactory
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.feature.library.R
-import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayoyt
+import com.fomaxtro.vibeplayer.feature.library.library.component.LibraryLayout
 import com.fomaxtro.vibeplayer.feature.library.library.component.PlaybackControls
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun LibraryScreen(
-    onScanMusic: () -> Unit,
-    onSearch: () -> Unit,
     onSongClick: (Song) -> Unit,
     onPlayClick: () -> Unit,
     onShuffleClick: () -> Unit,
@@ -59,24 +54,6 @@ fun LibraryScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = {
-            VibeMainTopAppBar(
-                actions = {
-                    VibeScanIconButton(
-                        onClick = onScanMusic
-                    )
-
-                    VibeIconButton(
-                        onClick = onSearch
-                    ) {
-                        Icon(
-                            imageVector = VibeIcons.Outlined.Search,
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        },
         floatingActionButton = {
             val animationSpec = spring<Float>(
                 stiffness = Spring.StiffnessMedium
@@ -106,7 +83,7 @@ fun LibraryScreen(
             }
         }
     ) { innerPadding ->
-        LibraryLayoyt(
+        LibraryLayout(
             playbackControls = {
                 PlaybackControls(
                     onShuffleClick = onShuffleClick,
@@ -123,19 +100,15 @@ fun LibraryScreen(
                     title = song.title,
                     artist = song.artist,
                     duration = song.duration.formatDuration(),
-                    image = {
-                        SubcomposeAsyncImage(
-                            model = song.albumArtUri,
-                            contentDescription = null,
-                            error = {
-                                VibeSongDefaultImage()
-                            }
-                        )
-                    },
+                    imageUrl = song.albumArtUri,
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateItem(),
                     contentPadding = contentPadding
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(contentPadding)
                 )
             },
             songsCount = {
@@ -151,7 +124,8 @@ fun LibraryScreen(
             },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .padding(top = 16.dp),
             state = songsListState
         )
     }
@@ -163,19 +137,7 @@ private fun ScanMusicScreenPreview() {
     VibePlayerTheme {
         Surface {
             LibraryScreen(
-                songs = listOf(
-                    Song(
-                        id = 1,
-                        title = "Song 1",
-                        artist = "Artist 1",
-                        duration = 3.minutes,
-                        albumArtUri = null,
-                        filePath = "",
-                        sizeBytes = 1024L,
-                    )
-                ),
-                onScanMusic = {  },
-                onSearch = {  },
+                songs = SongPreviewFactory.defaultList,
                 onSongClick = {  },
                 onPlayClick = {  },
                 onShuffleClick = {  },

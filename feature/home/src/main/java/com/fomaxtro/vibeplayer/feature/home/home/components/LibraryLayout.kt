@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 
 @Composable
-fun HomeLayout(
+fun LibraryLayout(
     player: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit

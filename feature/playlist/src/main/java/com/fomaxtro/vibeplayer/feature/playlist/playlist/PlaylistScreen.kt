@@ -1,0 +1,308 @@
+package com.fomaxtro.vibeplayer.feature.playlist.playlist
+
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.SubcomposeAsyncImage
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCircularProgressIndicator
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeGradientIcon
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMediaCard
+import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
+import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
+import com.fomaxtro.vibeplayer.core.ui.util.asString
+import com.fomaxtro.vibeplayer.feature.playlist.R
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.MenuIconButton
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistCreateSheetContent
+import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistOutlinedButton
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun PlaylistScreen(
+    onPlaylistCreated: (playlistId: Long) -> Unit,
+    viewModel: PlaylistViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is PlaylistEvent.PlaylistCreated -> onPlaylistCreated(event.playlistId)
+
+            is PlaylistEvent.ShowMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = event.message.asString(context)
+                )
+            }
+        }
+    }
+
+    PlaylistScreen(
+        state = state,
+        onAction = viewModel::onAction,
+        snackbarHostState = snackbarHostState
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun PlaylistScreen(
+    state: PlaylistUiState,
+    onAction: (PlaylistAction) -> Unit = {},
+    snackbarHostState: SnackbarHostState
+) {
+    when (state) {
+        PlaylistUiState.Loading -> {
+            VibeCircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(),
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        is PlaylistUiState.Success -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 12.dp,
+                            top = 12.dp,
+                            bottom = 4.dp
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    val playlistCount = state.playlists.size + 1
+
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.playlist_count,
+                            count = playlistCount,
+                            playlistCount
+                        ),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    VibeIconButton(
+                        onClick = {
+                            onAction(PlaylistAction.OnAddPlaylistClick)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Filled.Plus,
+                            contentDescription = stringResource(R.string.create_playlist)
+                        )
+                    }
+                }
+
+                VibeMediaCard(
+                    onClick = {},
+                    image = {
+                        VibeGradientIcon(
+                            icon = VibeIcons.Duotone.Favourite,
+                            contentDescription = null,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                    },
+                    title = stringResource(R.string.favourites),
+                    subtitle = pluralStringResource(
+                        id = R.plurals.song_count,
+                        count = 2,
+                        2
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    action = {
+                        MenuIconButton(
+                            onClick = {}
+                        )
+                    }
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.my_playlists, state.playlists.size),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .padding(
+                                    start = 16.dp,
+                                    top = 16.dp,
+                                    bottom = 8.dp
+                                )
+                        )
+                    }
+
+                    if (state.playlists.isEmpty()) {
+                        item {
+                            PlaylistOutlinedButton(
+                                onClick = {
+                                    onAction(PlaylistAction.OnAddPlaylistClick)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .padding(top = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = VibeIcons.Filled.Plus,
+                                    contentDescription = null
+                                )
+
+                                Text(
+                                    text = stringResource(R.string.create_playlist),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                        }
+                    } else {
+                        items(state.playlists, key = { it.id }) { playlist ->
+                            val padding = PaddingValues(horizontal = 16.dp)
+
+                            VibeMediaCard(
+                                onClick = {},
+                                image = {
+                                    SubcomposeAsyncImage(
+                                        model = playlist.albumArtUri,
+                                        contentDescription = null,
+                                        error = {
+                                            VibeGradientIcon(
+                                                icon = VibeIcons.Duotone.Playlist,
+                                                contentDescription = null,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        },
+                                        modifier = Modifier.clip(CircleShape)
+                                    )
+                                },
+                                title = playlist.name,
+                                subtitle = pluralStringResource(
+                                    id = R.plurals.song_count,
+                                    count = playlist.songsCount,
+                                    playlist.songsCount
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = padding,
+                                action = {
+                                    MenuIconButton(
+                                        onClick = {}
+                                    )
+                                }
+                            )
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(padding)
+                            )
+                        }
+                    }
+                }
+            }
+
+            val sheetState = rememberModalBottomSheetState()
+            val scope = rememberCoroutineScope()
+
+            if (state.isCreatePlaylistSheetOpen) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
+                    },
+                    sheetState = sheetState,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                ) {
+                    val focusManager = LocalFocusManager.current
+
+                    Box(
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectTapGestures {
+                                    focusManager.clearFocus()
+                                }
+                            }
+                    ) {
+                        PlaylistCreateSheetContent(
+                            playlistName = state.playlistName,
+                            canCreatePlaylist = state.canCreatePlaylist,
+                            onCreateClick = {
+                                onAction(PlaylistAction.OnConfirmCreatePlaylist)
+                            },
+                            onCancelClick = {
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
+                                }
+                            }
+                        )
+
+                        SnackbarHost(
+                            hostState = snackbarHostState,
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PlaylistScreenPreview(
+    @PreviewParameter(PlaylistPreviewParameterProvider::class) state: PlaylistUiState
+) {
+    VibePlayerTheme {
+        PlaylistScreen(
+            state = state,
+            snackbarHostState = SnackbarHostState()
+        )
+    }
+}

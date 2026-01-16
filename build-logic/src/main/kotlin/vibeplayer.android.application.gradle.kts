@@ -1,14 +1,14 @@
 import com.android.build.api.dsl.ApplicationExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 
 plugins {
     id("com.android.application")
     id("vibeplayer.android.compose")
-    kotlin("android")
 }
 
-configure<KotlinAndroidExtension> {
-    jvmToolchain(21)
+configure<JavaPluginExtension> {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configure<ApplicationExtension> {

@@ -25,6 +25,10 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.logo)
         val Close: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.close)
+        val Plus: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.plus)
+        val Check: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.check)
     }
 
     object Outlined {
@@ -42,5 +46,16 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.search)
         val Shuffle: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.shuffle)
+        val Menu: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.menu_dots)
+    }
+
+    object Duotone {
+        val Music: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.music_duotone)
+        val Favourite: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.favourite_duotone)
+        val Playlist: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.playlist_duotone)
     }
 }

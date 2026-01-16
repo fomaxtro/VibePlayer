@@ -7,4 +7,8 @@ sealed interface DataError : Error {
         DISK_FULL,
         UNKNOWN
     }
+
+    enum class Resource : DataError {
+        ALREADY_EXISTS
+    }
 }

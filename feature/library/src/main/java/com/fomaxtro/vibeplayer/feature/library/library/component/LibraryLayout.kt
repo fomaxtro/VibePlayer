@@ -20,16 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongDefaultImage
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
+import com.fomaxtro.vibeplayer.core.ui.preview.SongPreviewFactory
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.model.Song
-import kotlin.time.Duration.Companion.minutes
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSongCard
 
 @Composable
-fun LibraryLayoyt(
+fun LibraryLayout(
     playbackControls: @Composable () -> Unit,
     item: @Composable LazyItemScope.(item: Song, contentPadding: PaddingValues) -> Unit,
     songsCount: @Composable () -> Unit,
@@ -93,8 +92,8 @@ fun LibraryLayoyt(
 
 @DevicePreviews
 @Composable
-private fun LibraryLayoytPreview() {
-    LibraryLayoyt(
+private fun LibraryLayoutPreview() {
+    LibraryLayout(
         playbackControls = {
             PlaybackControls(
                 onShuffleClick = {},
@@ -102,26 +101,14 @@ private fun LibraryLayoytPreview() {
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        songs = listOf(
-            Song(
-                id = 1,
-                title = "Song 1",
-                artist = "Artist 1",
-                duration = 3.minutes,
-                albumArtUri = null,
-                filePath = "",
-                sizeBytes = 1024L,
-            )
-        ),
+        songs = SongPreviewFactory.defaultList,
         item = { song, contentPadding ->
             VibeSongCard(
                 onClick = {},
                 title = song.title,
                 artist = song.artist,
                 duration = song.duration.formatDuration(),
-                image = {
-                    VibeSongDefaultImage()
-                },
+                imageUrl = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateItem(),

@@ -1,5 +1,6 @@
-package com.fomaxtro.vibeplayer.core.data.util
+package com.fomaxtro.vibeplayer.core.database.util
 
+import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteFullException
 import com.fomaxtro.vibeplayer.core.common.Result
 import com.fomaxtro.vibeplayer.domain.error.DataError
@@ -15,6 +16,10 @@ inline fun <D> safeDatabaseCall(
         Timber.tag("safeDatabaseCall").e(e)
 
         Result.Error(DataError.Local.DISK_FULL)
+    } catch (e: SQLiteConstraintException) {
+        Timber.tag("safeDatabaseCall").e(e)
+
+        Result.Error(DataError.Resource.ALREADY_EXISTS)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
 

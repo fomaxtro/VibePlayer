@@ -26,7 +26,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
 import com.fomaxtro.vibeplayer.core.designsystem.theme.textDisabled
 
 @Composable
-fun VibeButton(
+fun VibeFilledButton(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier = Modifier,
@@ -105,12 +105,12 @@ object VibeButtonDefaults {
 
 @Preview
 @Composable
-private fun VibeButtonPreview() {
+private fun VibeFilledButtonPreview() {
     VibePlayerTheme {
-        VibeButton(
+        VibeFilledButton(
             onClick = {},
             text = "Button",
-            loading = true,
+            loading = false,
             modifier = Modifier.fillMaxWidth()
         )
     }

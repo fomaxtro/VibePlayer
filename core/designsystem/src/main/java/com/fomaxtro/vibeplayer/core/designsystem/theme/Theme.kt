@@ -16,7 +16,8 @@ val DarkColorScheme = darkColorScheme(
     outline = Outline,
     secondary = Accent,
     background = SurfaceBg,
-    surface = SurfaceBg
+    surface = SurfaceBg,
+    surfaceContainerHighest = SurfaceHighest
 )
 
 val ColorScheme.buttonPrimary30: Color
@@ -24,9 +25,6 @@ val ColorScheme.buttonPrimary30: Color
 
 val ColorScheme.buttonHover: Color
     get() = ButtonHover
-
-val ColorScheme.accentGradient: Brush
-    get() = AccentGradient
 
 val ColorScheme.surfaceOutline: Color
     get() = SurfaceOutline
@@ -39,6 +37,14 @@ val ColorScheme.textDisabled: Color
 
 val ColorScheme.surfaceBg30: Color
     get() = SurfaceBg.copy(alpha = 0.3f)
+
+val ColorScheme.backgroundGradient: Brush
+    get() = Brush.verticalGradient(
+        colors = listOf(
+            SurfaceBg.copy(alpha = 0f),
+            SurfaceBg
+        )
+    )
 
 @Composable
 fun VibePlayerTheme(

@@ -1,13 +1,13 @@
 import com.android.build.api.dsl.LibraryExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 
 plugins {
     id("com.android.library")
-    kotlin("android")
 }
 
-configure<KotlinAndroidExtension> {
-    jvmToolchain(21)
+configure<JavaPluginExtension> {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 extensions.configure<LibraryExtension> {

@@ -17,9 +17,9 @@ dependencies {
 
     implementation(projects.feature.onboarding)
     implementation(projects.feature.library)
-    implementation(projects.feature.player)
     implementation(projects.feature.scanner)
     implementation(projects.feature.home)
+    implementation(projects.feature.playlist)
 
     implementation(libs.kotzilla.sdk.compose)
     implementation(libs.androidx.core.splashscreen)

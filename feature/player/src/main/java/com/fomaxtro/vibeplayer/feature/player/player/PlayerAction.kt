@@ -10,4 +10,5 @@ sealed interface PlayerAction {
     data object OnSeekCancel : PlayerAction
     data object OnToggleShuffleClick : PlayerAction
     data object OnRepeatModeClick : PlayerAction
+    data object OnNavigateBackClick : PlayerAction
 }

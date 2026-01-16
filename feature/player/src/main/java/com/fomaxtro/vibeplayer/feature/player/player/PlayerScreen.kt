@@ -1,6 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
-import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionLayout
@@ -19,34 +19,73 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAlbumArt
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefaults
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibePlayPauseButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
+import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
 import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
+import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
-import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
 import com.fomaxtro.vibeplayer.feature.player.R
 import com.fomaxtro.vibeplayer.feature.player.component.PlaybackSlider
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 import com.fomaxtro.vibeplayer.core.designsystem.R as DesignR
 
 @Composable
 fun PlayerScreen(
     onNavigateBack: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    viewModel: PlayerViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is PlayerEvent.ShowSystemMessage -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    PlayerScreen(
+        state = state,
+        onAction = { action ->
+            when (action) {
+                PlayerAction.OnNavigateBackClick -> onNavigateBack()
+                else -> viewModel.onAction(action)
+            }
+        },
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope
+    )
+}
+
+    @Composable
+private fun PlayerScreen(
     state: PlayerUiState,
     onAction: (PlayerAction) -> Unit = {},
     sharedTransitionScope: SharedTransitionScope,
@@ -54,14 +93,20 @@ fun PlayerScreen(
 ) {
     Scaffold(
         topBar = {
-            VibeIconButton(
-                onClick = onNavigateBack
-            ) {
-                Icon(
-                    imageVector = VibeIcons.Filled.ChevronDown,
-                    contentDescription = stringResource(DesignR.string.navigate_back)
-                )
-            }
+            VibeInnerTopAppBar(
+                navigationIcon = {
+                    VibeIconButton(
+                        onClick = {
+                            onAction(PlayerAction.OnNavigateBackClick)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = VibeIcons.Filled.ChevronDown,
+                            contentDescription = stringResource(DesignR.string.navigate_back)
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(
@@ -268,29 +313,18 @@ fun PlayerScreen(
     }
 }
 
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @DevicePreviews
 @Composable
-private fun PLayerScreenPreview() {
+private fun PLayerScreenPreview(
+    @PreviewParameter(PlayerPreviewParameterProvider::class) state: PlayerUiState
+) {
     VibePlayerTheme {
         SharedTransitionLayout {
             AnimatedContent(
                 targetState = true
             ) {
                 PlayerScreen(
-                    state = PlayerUiState(
-                        playingSong = Song(
-                            id = 1,
-                            title = "505",
-                            artist = "Arctic Monkeys",
-                            duration = 2.minutes,
-                            filePath = "",
-                            sizeBytes = 100 * 1024,
-                            albumArtUri = ""
-                        ),
-                        playingSongPosition = 30.seconds
-                    ),
-                    onNavigateBack = {},
+                    state = state,
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this@AnimatedContent
                 )
