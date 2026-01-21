@@ -9,5 +9,6 @@ data class Song(
     val duration: Duration,
     val filePath: String,
     val sizeBytes: Long,
-    val albumArtUri: String?
+    val albumArtUri: String?,
+    val isFavourite: Boolean
 )
