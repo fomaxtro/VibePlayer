@@ -38,7 +38,7 @@ class SearchViewModel(
         .distinctUntilChanged()
         .stateIn(
             viewModelScope,
-            SharingStarted.Eagerly,
+            SharingStarted.WhileSubscribed(5_000),
             emptyList()
         )
 
@@ -88,7 +88,7 @@ class SearchViewModel(
     }
 
     private fun onSongClick(song: Song) = viewModelScope.launch {
-        val songIndex = playlist.value.indexOf(song)
+        val songIndex = playlist.value.indexOfFirst { it.id == song.id }
 
         if (songIndex != -1) {
             musicPlayer.play(songIndex)
