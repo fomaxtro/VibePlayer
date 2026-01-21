@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import com.fomaxtro.vibeplayer.core.common.Result
 import com.fomaxtro.vibeplayer.core.common.map
 import com.fomaxtro.vibeplayer.core.data.mapper.toDomain
+import com.fomaxtro.vibeplayer.core.data.mapper.toEntity
 import com.fomaxtro.vibeplayer.core.database.util.safeDatabaseCall
 import com.fomaxtro.vibeplayer.core.database.VibePlayerDatabase
 import com.fomaxtro.vibeplayer.core.database.dao.SongDao
@@ -137,7 +138,7 @@ class OfflineFirstSongRepository(
         minDurationSeconds:Int,
         minSize: Long
     ): Result<Int, DataError> {
-        val existingSongs = songDao.getAll().first()
+        val existingSongs = songDao.getAllStream().first()
         val newSongs = getSongsQueryResult(
             minDurationSeconds = minDurationSeconds,
             minSize = minSize
@@ -160,14 +161,12 @@ class OfflineFirstSongRepository(
     }
 
     override fun getSongsStream(): Flow<List<Song>> {
-        return songDao.getAll()
-            .map { songs ->
-                songs.map { it.toDomain() }
-            }
+        return songDao.getAllStream()
+            .map { it.toDomain() }
     }
 
     override suspend fun syncLibrary() {
-        val songs = songDao.getAll().first()
+        val songs = songDao.getAllStream().first()
         val deleteSongs = withContext(Dispatchers.IO) {
             songs.filterNot { File(it.filePath).exists() }
         }
@@ -181,6 +180,15 @@ class OfflineFirstSongRepository(
 
     override suspend fun findSongsByTitleOrArtist(query: String): List<Song> {
         return songDao.findByTitleOrArtist(query)
+            .map { it.toDomain() }
+    }
+
+    override suspend fun updateSong(song: Song) {
+        songDao.updateSong(song.toEntity())
+    }
+
+    override fun getSongsByIdsStream(ids: List<Long>): Flow<List<Song>> {
+        return songDao.findByIdsStream(ids)
             .map { it.toDomain() }
     }
 }

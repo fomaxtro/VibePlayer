@@ -9,7 +9,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ShuffleOrder
 import com.fomaxtro.vibeplayer.core.player.mapper.toExoPlayerRepeatMode
 import com.fomaxtro.vibeplayer.core.player.mapper.toRepeatMode
-import com.fomaxtro.vibeplayer.domain.model.Song
+import com.fomaxtro.vibeplayer.domain.player.MediaTrack
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.PlayerState
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
@@ -81,7 +81,7 @@ class ExoPlayerMusicPlayer(
     }
 
     override fun play(
-        playlist: List<Song>,
+        playlist: List<MediaTrack>,
         index: Int
     ) {
         setPlaylist(playlist)
@@ -112,7 +112,7 @@ class ExoPlayerMusicPlayer(
         player.stop()
     }
 
-    override fun setPlaylist(playlist: List<Song>) {
+    override fun setPlaylist(playlist: List<MediaTrack>) {
         val mediaItems = playlist.map {
             MediaItem.fromUri(it.filePath.toUri())
         }

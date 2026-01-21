@@ -15,3 +15,5 @@ fun PlaylistWithMetadata.toDomain() = Playlist(
     songsCount = songCount,
     albumArtUri = albumArtUri,
 )
+
+fun List<PlaylistWithMetadata>.toDomain(): List<Playlist> = map { it.toDomain() }

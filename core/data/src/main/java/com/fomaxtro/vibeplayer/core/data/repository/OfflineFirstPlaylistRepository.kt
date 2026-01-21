@@ -36,9 +36,7 @@ class OfflineFirstPlaylistRepository(
     }
 
     override fun getPlaylistsStream(): Flow<List<Playlist>> {
-        return playlistDao.getPlaylistsWithMetadata()
-            .map { playlists ->
-                playlists.map { it.toDomain() }
-            }
+        return playlistDao.getPlaylistsWithMetadataStream()
+            .map { it.toDomain() }
     }
 }

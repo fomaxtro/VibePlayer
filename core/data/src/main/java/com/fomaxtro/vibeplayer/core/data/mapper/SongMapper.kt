@@ -11,5 +11,19 @@ fun SongEntity.toDomain() = Song(
     duration = durationMillis.milliseconds,
     filePath = filePath,
     sizeBytes = sizeBytes,
-    albumArtUri = albumArtUri
+    albumArtUri = albumArtUri,
+    isFavourite = isFavourite
 )
+
+fun Song.toEntity() = SongEntity(
+    id = id,
+    title = title,
+    artist = artist,
+    durationMillis = duration.inWholeMilliseconds,
+    albumArtUri = albumArtUri,
+    filePath = filePath,
+    sizeBytes = sizeBytes,
+    isFavourite = isFavourite,
+)
+
+fun List<SongEntity>.toDomain(): List<Song> = map { it.toDomain() }
