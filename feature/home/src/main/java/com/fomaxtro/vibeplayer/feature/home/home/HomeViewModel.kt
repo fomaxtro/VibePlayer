@@ -2,6 +2,7 @@ package com.fomaxtro.vibeplayer.feature.home.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.vibeplayer.domain.mapper.toMediaTrack
 import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.use_case.ObserveSongs
@@ -9,6 +10,7 @@ import com.fomaxtro.vibeplayer.feature.home.model.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,12 +19,13 @@ class HomeViewModel(
     observeSongs: ObserveSongs,
     private val player: MusicPlayer
 ) : ViewModel() {
-    private val songs = observeSongs()
+    private val songs: StateFlow<List<Song>> = observeSongs()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             emptyList()
         )
+
     private val isPlayerExpanded = MutableStateFlow(false)
     private val selectedTabIndex = MutableStateFlow(Destination.SONGS.ordinal)
 
@@ -69,8 +72,10 @@ class HomeViewModel(
 
     private fun shufflePlaylist() {
         if (songs.value.isNotEmpty()) {
-            player.setPlaylist(songs.value.shuffled())
-            player.play(songs.value.indices.random())
+            val playlist = songs.value.toMediaTrack()
+
+            player.setPlaylist(playlist.shuffled())
+            player.play(playlist.indices.random())
 
             isPlayerExpanded.value = true
         }
@@ -79,7 +84,7 @@ class HomeViewModel(
     private fun playSongWithPlaylist(index: Int) {
         if (index != -1) {
             player.play(
-                playlist = songs.value,
+                playlist = songs.value.toMediaTrack(),
                 index = index
             )
 
@@ -94,7 +99,8 @@ class HomeViewModel(
     }
 
     private fun playSong(song: Song) = viewModelScope.launch {
-        val songIndex = songs.value.indexOf(song)
+        val songIndex = songs.value.toMediaTrack()
+            .indexOfFirst { it.id == song.id }
 
         playSongWithPlaylist(songIndex)
     }
