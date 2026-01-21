@@ -90,7 +90,7 @@ internal fun AddSongsScreen(
                 },
                 title = if (state is AddSongsUiState.Success && state.selectedSongsCount > 0) {
                     stringResource(
-                        id = R.string.selected,
+                        id = R.string.selected_count,
                         state.selectedSongsCount
                     )
                 } else {
