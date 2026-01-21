@@ -9,4 +9,6 @@
     <string name="repeat_one">Repeat One</string>
     <string name="shuffle_enabled">Shuffle mode enabled</string>
     <string name="shuffle_disabled">Shuffle off</string>
+    <string name="remove_from_favourites">Remove from favorites</string>
+    <string name="add_to_favourites">Add to favorites</string>
 </resources>

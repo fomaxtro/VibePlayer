@@ -8,7 +8,9 @@ import kotlin.time.Duration.Companion.seconds
 class PlayerPreviewParameterProvider : PreviewParameterProvider<PlayerUiState> {
     override val values: Sequence<PlayerUiState> = sequenceOf(
         PlayerUiState(
-            playingSong = SongPreviewFactory.makeSong()
+            playingSong = SongPreviewFactory.makeSong(
+                isFavourite = true
+            )
         ),
         PlayerUiState(
             playingSong = SongPreviewFactory.makeSong(),

@@ -3,16 +3,22 @@ package com.fomaxtro.vibeplayer.feature.player.player
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.vibeplayer.core.ui.util.UiText
+import com.fomaxtro.vibeplayer.domain.model.Song
 import com.fomaxtro.vibeplayer.domain.player.MusicPlayer
 import com.fomaxtro.vibeplayer.domain.player.PlayerState
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
+import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import com.fomaxtro.vibeplayer.feature.player.R
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -20,7 +26,8 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 class PlayerViewModel(
-    private val player: MusicPlayer
+    private val player: MusicPlayer,
+    private val songRepository: SongRepository
 ) : ViewModel() {
     private val eventChannel = Channel<PlayerEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -33,14 +40,36 @@ class PlayerViewModel(
             PlayerState()
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val playlist = playerState
+        .map { state -> state.playlist.map { it.id } }
+        .distinctUntilChanged()
+        .flatMapLatest { ids ->
+            songRepository.getSongsByIdsStream(ids)
+        }
+
+    private val playingSong: StateFlow<Song?> = playerState
+        .map { it.currentSong }
+        .distinctUntilChanged()
+        .combine(playlist) { playingSong, playlist ->
+            playlist.find { it.id == playingSong?.id }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            null
+        )
+
     val state: StateFlow<PlayerUiState> = combine(
         playerState,
         player.playbackPosition,
-        isSeeking
-    ) { playerState, playbackPosition, isSeeking ->
+        isSeeking,
+        playlist,
+        playingSong
+    ) { playerState, playbackPosition, isSeeking, playlist, playingSong ->
         PlayerUiState(
-            playlist = playerState.playlist,
-            playingSong = playerState.currentSong,
+            playlist = playlist,
+            playingSong = playingSong,
             isPlaying = playerState.isPlaying,
             playingSongPosition = playbackPosition,
             canSkipPrevious = playerState.canSkipPrevious,
@@ -66,9 +95,20 @@ class PlayerViewModel(
             PlayerAction.OnSeekCancel -> onSeekCancel()
             PlayerAction.OnSeekStarted -> onSeekStarted()
             PlayerAction.OnRepeatModeClick -> onRepeatModeClick()
-            PlayerAction.OnToggleShuffleClick -> onToggleShuffleClick()
+            PlayerAction.OnShuffleToggle -> onToggleShuffleClick()
+            PlayerAction.OnFavouriteToggle -> toggleFavourite()
             else -> Unit
         }
+    }
+
+    private fun toggleFavourite() = viewModelScope.launch {
+        val playingSong = playingSong.value ?: return@launch
+
+        songRepository.updateSong(
+            playingSong.copy(
+                isFavourite = !playingSong.isFavourite
+            )
+        )
     }
 
     private fun onToggleShuffleClick() = viewModelScope.launch {

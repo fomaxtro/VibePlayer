@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.player.player
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -25,12 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeAlbumArt
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButtonDefaults
+import com.fomaxtro.vibeplayer.core.designsystem.component.defaults.VibeIconButtonDefaults
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibePlayPauseButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
@@ -38,7 +40,6 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
 import com.fomaxtro.vibeplayer.core.designsystem.util.isWideScreen
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
-import com.fomaxtro.vibeplayer.core.ui.util.DevicePreviews
 import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.core.ui.util.formatDuration
 import com.fomaxtro.vibeplayer.domain.player.RepeatMode
@@ -103,6 +104,28 @@ private fun PlayerScreen(
                         Icon(
                             imageVector = VibeIcons.Filled.ChevronDown,
                             contentDescription = stringResource(DesignR.string.navigate_back)
+                        )
+                    }
+                },
+                actions = {
+                    VibeIconButton(
+                        onClick = {
+                            onAction(PlayerAction.OnFavouriteToggle)
+                        }
+                    ) {
+                        val isFavourite = state.playingSong?.isFavourite ?: false
+
+                        Icon(
+                            imageVector = if (isFavourite) {
+                                VibeIcons.Filled.Favourite
+                            } else {
+                                VibeIcons.Outlined.Favourite
+                            },
+                            contentDescription = if (isFavourite) {
+                                stringResource(R.string.remove_from_favourites)
+                            } else {
+                                stringResource(R.string.add_to_favourites)
+                            }
                         )
                     }
                 }
@@ -209,7 +232,7 @@ private fun PlayerScreen(
                     ) {
                         VibeIconButton(
                             onClick = {
-                                onAction(PlayerAction.OnToggleShuffleClick)
+                                onAction(PlayerAction.OnShuffleToggle)
                             },
                             modifier = Modifier.size(44.dp),
                             colors = VibeIconButtonDefaults.colors(
@@ -313,7 +336,8 @@ private fun PlayerScreen(
     }
 }
 
-@DevicePreviews
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
+@Preview
 @Composable
 private fun PLayerScreenPreview(
     @PreviewParameter(PlayerPreviewParameterProvider::class) state: PlayerUiState
