@@ -25,5 +25,7 @@ data class SongEntity(
     @ColumnInfo("file_path")
     val filePath: String,
     @ColumnInfo("size_bytes")
-    val sizeBytes: Long
+    val sizeBytes: Long,
+    @ColumnInfo(name = "is_favourite", defaultValue = "0")
+    val isFavourite: Boolean = false
 )

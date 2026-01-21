@@ -35,5 +35,5 @@ interface PlaylistDao {
             ) AS album_art_uri
         FROM playlists p
     """)
-    fun getPlaylistsWithMetadata(): Flow<List<PlaylistWithMetadata>>
+    fun getPlaylistsWithMetadataStream(): Flow<List<PlaylistWithMetadata>>
 }
