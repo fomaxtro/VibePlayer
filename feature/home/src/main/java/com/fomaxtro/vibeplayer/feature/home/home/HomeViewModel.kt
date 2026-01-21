@@ -44,30 +44,30 @@ class HomeViewModel(
 
     fun onAction(action: HomeAction) {
         when (action) {
-            HomeAction.OnCollapsePlayer -> onCollapsePlayer()
-            HomeAction.OnExpandPlayer -> onExpandPlayer()
-            HomeAction.OnPlayPlaylistClick -> onPlayPlaylistClick()
-            HomeAction.OnShufflePlaylistClick -> onShufflePlaylistClick()
-            is HomeAction.OnSongClick -> onSongClick(action.song)
-            is HomeAction.OnTabSelected -> onTabSelected(action.index)
+            HomeAction.OnCollapsePlayer -> collapsePlayer()
+            HomeAction.OnExpandPlayer -> expandPlayer()
+            HomeAction.OnPlayPlaylistClick -> playPlaylist()
+            HomeAction.OnShufflePlaylistClick -> shufflePlaylist()
+            is HomeAction.OnSongClick -> playSong(action.song)
+            is HomeAction.OnTabSelected -> selectTab(action.index)
             else -> Unit
         }
     }
 
-    private fun onTabSelected(index: Int) {
+    private fun selectTab(index: Int) {
         selectedTabIndex.value = index
     }
 
-    private fun onExpandPlayer() = viewModelScope.launch {
+    private fun expandPlayer() = viewModelScope.launch {
         delay(100)
         isPlayerExpanded.value = true
     }
 
-    private fun onCollapsePlayer() {
+    private fun collapsePlayer() {
         isPlayerExpanded.value = false
     }
 
-    private fun onShufflePlaylistClick() {
+    private fun shufflePlaylist() {
         if (songs.value.isNotEmpty()) {
             player.setPlaylist(songs.value.shuffled())
             player.play(songs.value.indices.random())
@@ -83,17 +83,17 @@ class HomeViewModel(
                 index = index
             )
 
-            onExpandPlayer()
+            expandPlayer()
         }
     }
 
-    private fun onPlayPlaylistClick() {
+    private fun playPlaylist() {
         if (songs.value.isNotEmpty()) {
             playSongWithPlaylist(0)
         }
     }
 
-    private fun onSongClick(song: Song) = viewModelScope.launch {
+    private fun playSong(song: Song) = viewModelScope.launch {
         val songIndex = songs.value.indexOf(song)
 
         playSongWithPlaylist(songIndex)
