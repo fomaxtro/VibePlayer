@@ -17,7 +17,8 @@ object SongPreviewFactory {
         id: Long = 1,
         title: String = "Midnight City",
         artist: String = "M83",
-        duration: Duration = 4.minutes
+        duration: Duration = 4.minutes,
+        isFavourite: Boolean = false
     ): Song {
         return Song(
             id = id,
@@ -26,7 +27,8 @@ object SongPreviewFactory {
             duration = duration,
             albumArtUri = null,
             filePath = "/storage/emulated/0/Music/song_$id.mp3",
-            sizeBytes = 1024 * 1024 * 5 // 5MB
+            sizeBytes = 1024 * 1024 * 5,
+            isFavourite = isFavourite
         )
     }
 }

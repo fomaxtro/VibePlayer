@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +16,7 @@ import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 fun VibeInnerTopAppBar(
     navigationIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
     title: String? = null
 ) {
     CenterAlignedTopAppBar(
@@ -30,7 +32,8 @@ fun VibeInnerTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        modifier = modifier
+        modifier = modifier,
+        actions = actions
     )
 }
 

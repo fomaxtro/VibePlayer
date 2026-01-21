@@ -14,6 +14,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fomaxtro.vibeplayer.core.designsystem.R
+import com.fomaxtro.vibeplayer.core.designsystem.component.defaults.VibeIconButtonColors
+import com.fomaxtro.vibeplayer.core.designsystem.component.defaults.VibeIconButtonDefaults
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 
