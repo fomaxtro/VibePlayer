@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,6 +34,7 @@ fun VibeButton(
     enabled: Boolean = true,
     colors: VibeButtonColors = VibeButtonDefaults.colors(),
     loading: Boolean = false,
+    border: BorderStroke? = null,
     content: @Composable RowScope.() -> Unit
 ) {
     Surface(
@@ -48,7 +51,8 @@ fun VibeButton(
             ),
         shape = shape,
         color = if (enabled) colors.containerColor else colors.disabledContainerColor,
-        contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
+        contentColor = if (enabled) colors.contentColor else colors.disabledContentColor,
+        border = border
     ) {
         CompositionLocalProvider(
             LocalTextStyle provides MaterialTheme.typography.labelLarge
@@ -77,7 +81,7 @@ private fun VibeButtonPreview() {
         VibeButton(
             onClick = {}
         ) {
-
+            Text("Button")
         }
     }
 }

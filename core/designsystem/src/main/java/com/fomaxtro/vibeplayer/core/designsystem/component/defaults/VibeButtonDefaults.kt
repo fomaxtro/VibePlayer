@@ -1,5 +1,6 @@
 package com.fomaxtro.vibeplayer.core.designsystem.component.defaults
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -8,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.vibeplayer.core.designsystem.theme.buttonHover
+import com.fomaxtro.vibeplayer.core.designsystem.theme.surfaceOutline
 import com.fomaxtro.vibeplayer.core.designsystem.theme.textDisabled
 
 data class VibeButtonColors(
@@ -28,14 +30,42 @@ object VibeButtonDefaults {
 
     @Composable
     fun colors(
-        containerColor: Color = MaterialTheme.colorScheme.primary,
-        contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-        disabledContainerColor: Color = MaterialTheme.colorScheme.buttonHover,
-        disabledContentColor: Color = MaterialTheme.colorScheme.textDisabled
+        containerColor: Color = VibeButtonTokens.containerColor,
+        contentColor: Color = VibeButtonTokens.contentColor,
+        disabledContainerColor: Color = VibeButtonTokens.disabledContainerColor,
+        disabledContentColor: Color = VibeButtonTokens.disabledContentColor
     ) = VibeButtonColors(
         containerColor = containerColor,
         contentColor = contentColor,
         disabledContainerColor = disabledContainerColor,
         disabledContentColor = disabledContentColor
     )
+
+    @Composable
+    fun outlinedButtonColors(
+        contentColor: Color = VibeButtonTokens.contentColor,
+        disabledContentColor: Color = VibeButtonTokens.disabledContentColor
+    ) = VibeButtonColors(
+        containerColor = Color.Transparent,
+        contentColor = contentColor,
+        disabledContainerColor = Color.Transparent,
+        disabledContentColor = disabledContentColor
+    )
+
+    @Composable
+    fun outlinedButtonBorder() = BorderStroke(
+        width = 1.dp,
+        color = MaterialTheme.colorScheme.surfaceOutline
+    )
+
+    private object VibeButtonTokens {
+        val containerColor: Color
+            @Composable get() = MaterialTheme.colorScheme.primary
+        val contentColor: Color
+            @Composable get() = MaterialTheme.colorScheme.onPrimary
+        val disabledContainerColor: Color
+            @Composable get() = MaterialTheme.colorScheme.buttonHover
+        val disabledContentColor: Color
+            @Composable get() = MaterialTheme.colorScheme.textDisabled
+    }
 }
