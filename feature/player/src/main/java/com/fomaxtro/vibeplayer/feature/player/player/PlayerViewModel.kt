@@ -87,15 +87,15 @@ class PlayerViewModel(
 
     fun onAction(action: PlayerAction) {
         when (action) {
-            PlayerAction.OnPlayPauseToggle -> onPlayPauseToggle()
-            PlayerAction.OnSkipNextClick -> onSkipNextClick()
-            PlayerAction.OnSkipPreviousClick -> onSkipPreviousClick()
+            PlayerAction.OnPlayPauseToggle -> togglePlayPause()
+            PlayerAction.OnSkipNextClick -> skipNext()
+            PlayerAction.OnSkipPreviousClick -> skipPrevious()
             is PlayerAction.PlaySong -> playSong(action.songIndex)
-            is PlayerAction.OnSeekTo -> onSeekTo(action.songProgressFactor)
-            PlayerAction.OnSeekCancel -> onSeekCancel()
-            PlayerAction.OnSeekStarted -> onSeekStarted()
-            PlayerAction.OnRepeatModeClick -> onRepeatModeClick()
-            PlayerAction.OnShuffleToggle -> onToggleShuffleClick()
+            is PlayerAction.OnSeekTo -> seekTo(action.songProgressFactor)
+            PlayerAction.OnSeekCancel -> seekCancel()
+            PlayerAction.OnSeekStarted -> seekStarted()
+            PlayerAction.OnCycleRepeatMode -> cycleRepeatMode()
+            PlayerAction.OnShuffleToggle -> toggleShuffle()
             PlayerAction.OnFavouriteToggle -> toggleFavourite()
             else -> Unit
         }
@@ -111,7 +111,7 @@ class PlayerViewModel(
         )
     }
 
-    private fun onToggleShuffleClick() = viewModelScope.launch {
+    private fun toggleShuffle() = viewModelScope.launch {
         val isShuffledEnabled = !playerState.value.isShuffleEnabled
 
         player.setShuffleModeEnabled(isShuffledEnabled)
@@ -127,7 +127,7 @@ class PlayerViewModel(
         )
     }
 
-    private fun onRepeatModeClick() = viewModelScope.launch {
+    private fun cycleRepeatMode() = viewModelScope.launch {
         when (playerState.value.repeatMode) {
             RepeatMode.OFF -> {
                 player.setRepeatMode(RepeatMode.ALL)
@@ -159,15 +159,15 @@ class PlayerViewModel(
         }
     }
 
-    private fun onSeekStarted() {
+    private fun seekStarted() {
         isSeeking.value = true
     }
 
-    private fun onSeekCancel() {
+    private fun seekCancel() {
         isSeeking.value = false
     }
 
-    private fun onSeekTo(songProgressFactor: Float) = viewModelScope.launch {
+    private fun seekTo(songProgressFactor: Float) = viewModelScope.launch {
         state.value.playingSong?.let { song ->
             val duration = (song.duration.inWholeMilliseconds * songProgressFactor)
                 .roundToInt()
@@ -184,15 +184,15 @@ class PlayerViewModel(
         player.play(songIndex)
     }
 
-    private fun onSkipPreviousClick() {
+    private fun skipPrevious() {
         player.skipPrevious()
     }
 
-    private fun onSkipNextClick() {
+    private fun skipNext() {
         player.skipNext()
     }
 
-    private fun onPlayPauseToggle() {
+    private fun togglePlayPause() {
         player.togglePlayPause()
     }
 }

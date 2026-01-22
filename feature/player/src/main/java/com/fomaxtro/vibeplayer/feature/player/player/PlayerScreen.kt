@@ -304,7 +304,7 @@ private fun PlayerScreen(
 
                         VibeIconButton(
                             onClick = {
-                                onAction(PlayerAction.OnRepeatModeClick)
+                                onAction(PlayerAction.OnCycleRepeatMode)
                             },
                             modifier = Modifier.size(44.dp),
                             colors = VibeIconButtonDefaults.colors(

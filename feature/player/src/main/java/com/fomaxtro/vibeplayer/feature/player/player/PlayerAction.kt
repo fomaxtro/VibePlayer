@@ -9,7 +9,7 @@ sealed interface PlayerAction {
     data object OnSeekStarted : PlayerAction
     data object OnSeekCancel : PlayerAction
     data object OnShuffleToggle : PlayerAction
-    data object OnRepeatModeClick : PlayerAction
+    data object OnCycleRepeatMode : PlayerAction
     data object OnNavigateBackClick : PlayerAction
     data object OnFavouriteToggle : PlayerAction
 }
