@@ -191,4 +191,8 @@ class OfflineFirstSongRepository(
         return songDao.findByIdsStream(ids)
             .map { it.toDomain() }
     }
+
+    override fun getFavouriteSongsCountStream(): Flow<Int> {
+        return songDao.getFavouriteSongsCountStream()
+    }
 }

@@ -30,4 +30,7 @@ interface SongDao {
 
     @Query("SELECT * FROM songs WHERE title LIKE '%' || :query || '%' OR artist LIKE '%' || :query || '%'")
     suspend fun findByTitleOrArtist(query: String): List<SongEntity>
+
+    @Query("SELECT COUNT(*) FROM songs WHERE is_favourite = true")
+    fun getFavouriteSongsCountStream(): Flow<Int>
 }
