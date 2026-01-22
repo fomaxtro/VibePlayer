@@ -82,12 +82,12 @@ class SearchViewModel(
 
     fun onAction(action: SearchAction) {
         when (action) {
-            is SearchAction.OnSongClick -> onSongClick(action.song)
+            is SearchAction.OnSongClick -> playSong(action.song)
             else -> Unit
         }
     }
 
-    private fun onSongClick(song: Song) = viewModelScope.launch {
+    private fun playSong(song: Song) = viewModelScope.launch {
         val songIndex = playlist.value.indexOfFirst { it.id == song.id }
 
         if (songIndex != -1) {

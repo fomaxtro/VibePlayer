@@ -12,6 +12,7 @@ sealed interface PlaylistUiState {
         val playlists: List<Playlist> = emptyList(),
         val isCreatePlaylistSheetOpen: Boolean = false,
         val playlistName: TextFieldState,
-        val canCreatePlaylist: Boolean = false
+        val canCreatePlaylist: Boolean = false,
+        val favouriteSongs: Int = 0
     ) : PlaylistUiState
 }

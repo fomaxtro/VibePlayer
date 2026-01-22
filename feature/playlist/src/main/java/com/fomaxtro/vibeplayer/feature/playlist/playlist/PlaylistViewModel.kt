@@ -12,6 +12,7 @@ import com.fomaxtro.vibeplayer.core.ui.util.getTextFieldState
 import com.fomaxtro.vibeplayer.domain.error.DataError
 import com.fomaxtro.vibeplayer.domain.model.NewPlaylist
 import com.fomaxtro.vibeplayer.domain.repository.PlaylistRepository
+import com.fomaxtro.vibeplayer.domain.repository.SongRepository
 import com.fomaxtro.vibeplayer.feature.playlist.R
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +24,8 @@ import kotlinx.coroutines.launch
 
 class PlaylistViewModel(
     savedStateHandle: SavedStateHandle,
-    private val playlistRepository: PlaylistRepository
+    private val playlistRepository: PlaylistRepository,
+    songRepository: SongRepository
 ) : ViewModel() {
     private companion object {
         const val PLAYLIST_SHEET_VISIBLE_KEY = "playlist_sheet_visible"
@@ -48,13 +50,15 @@ class PlaylistViewModel(
     val state: StateFlow<PlaylistUiState> = combine(
         playlist,
         isCreatePlaylistSheetOpen,
-        snapshotFlow { playlistName.text.toString() }
-    ) { playlist, isCreatePlaylistSheetOpen, playlistNameText ->
+        snapshotFlow { playlistName.text.toString() },
+        songRepository.getFavouriteSongsCountStream()
+    ) { playlist, isCreatePlaylistSheetOpen, playlistNameText, favouriteSongs ->
         PlaylistUiState.Success(
             playlistName = playlistName,
             isCreatePlaylistSheetOpen = isCreatePlaylistSheetOpen,
             playlists = playlist,
-            canCreatePlaylist = playlistNameText.isNotBlank()
+            canCreatePlaylist = playlistNameText.isNotBlank(),
+            favouriteSongs = favouriteSongs
         )
     }
         .stateIn(

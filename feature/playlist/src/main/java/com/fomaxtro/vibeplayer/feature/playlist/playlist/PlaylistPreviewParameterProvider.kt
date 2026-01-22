@@ -8,11 +8,13 @@ class PlaylistPreviewParameterProvider : PreviewParameterProvider<PlaylistUiStat
     override val values: Sequence<PlaylistUiState> = sequenceOf(
         PlaylistUiState.Loading,
         PlaylistUiState.Success(
-            playlistName = TextFieldState()
+            playlistName = TextFieldState(),
+            favouriteSongs = 1
         ),
         PlaylistUiState.Success(
             playlists = PlaylistPreviewFactory.defaultList,
-            playlistName = TextFieldState()
+            playlistName = TextFieldState(),
+            favouriteSongs = 3
         )
     )
 }
