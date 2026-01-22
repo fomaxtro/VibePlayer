@@ -22,7 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFilledButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedTextField
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
@@ -81,12 +81,13 @@ fun PlaylistCreateSheetContent(
                 Text(stringResource(R.string.cancel))
             }
 
-            VibeFilledButton(
+            VibeButton(
                 onClick = onCreateClick,
-                text = stringResource(R.string.create),
                 modifier = Modifier.weight(1f),
                 enabled = canCreatePlaylist
-            )
+            ) {
+                Text(text = stringResource(R.string.create))
+            }
         }
     }
 }

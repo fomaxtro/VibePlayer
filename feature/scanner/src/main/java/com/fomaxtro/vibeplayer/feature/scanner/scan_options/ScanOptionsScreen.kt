@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFilledButton
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeNavigationButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeScanIndicator
@@ -162,18 +163,21 @@ private fun ScanOptionsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            VibeFilledButton(
+            VibeButton(
                 onClick = {
                     onAction(ScanOptionsAction.OnScanClick)
                 },
-                text = if (state.isScanning) {
-                    stringResource(R.string.scanning)
-                } else {
-                    stringResource(DesignR.string.scan)
-                },
                 modifier = Modifier.fillMaxWidth(),
                 loading = state.isScanning
-            )
+            ) {
+                Text(
+                    text = if (state.isScanning) {
+                        stringResource(R.string.scanning)
+                    } else {
+                        stringResource(DesignR.string.scan)
+                    }
+                )
+            }
         }
     }
 }

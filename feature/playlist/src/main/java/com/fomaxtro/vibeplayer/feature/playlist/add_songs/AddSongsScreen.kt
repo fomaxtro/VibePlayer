@@ -33,9 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCheckbox
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCircularProgressIndicator
-import com.fomaxtro.vibeplayer.core.designsystem.component.VibeFilledButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeInnerTopAppBar
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeNavigationButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeSearchBar
@@ -230,18 +230,19 @@ internal fun AddSongsScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         if (state.canSubmit) {
-                            VibeFilledButton(
+                            VibeButton(
                                 onClick = {
                                     onAction(AddSongsAction.OnSubmitClick)
                                 },
-                                text = stringResource(DesignR.string.ok),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
                                         horizontal = 16.dp,
                                         vertical = 8.dp
                                     )
-                            )
+                            ) {
+                                Text(text = stringResource(DesignR.string.ok))
+                            }
                         }
                     }
                 }
