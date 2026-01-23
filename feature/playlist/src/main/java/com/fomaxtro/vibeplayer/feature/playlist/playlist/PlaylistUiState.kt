@@ -10,6 +10,6 @@ sealed interface PlaylistUiState {
     data class Success(
         val playlists: List<Playlist> = emptyList(),
         val isCreatePlaylistSheetOpen: Boolean = false,
-        val favouriteSongs: Int = 0
+        val favouriteSongsCount: Int = 0
     ) : PlaylistUiState
 }

@@ -130,8 +130,8 @@ internal fun PlaylistScreen(
                     title = stringResource(R.string.favourites),
                     subtitle = pluralStringResource(
                         id = R.plurals.song_count,
-                        count = state.favouriteSongs,
-                        state.favouriteSongs
+                        count = state.favouriteSongsCount,
+                        state.favouriteSongsCount
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(horizontal = 16.dp),

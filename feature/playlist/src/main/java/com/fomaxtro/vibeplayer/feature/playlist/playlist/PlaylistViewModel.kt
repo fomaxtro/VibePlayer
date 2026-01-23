@@ -3,8 +3,7 @@ package com.fomaxtro.vibeplayer.feature.playlist.playlist
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fomaxtro.vibeplayer.domain.repository.PlaylistRepository
-import com.fomaxtro.vibeplayer.domain.repository.SongRepository
+import com.fomaxtro.vibeplayer.domain.use_case.ObservePlaylistSummary
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +14,7 @@ import kotlinx.coroutines.launch
 
 class PlaylistViewModel(
     savedStateHandle: SavedStateHandle,
-    playlistRepository: PlaylistRepository,
-    songRepository: SongRepository
+    observePlaylistSummary: ObservePlaylistSummary
 ) : ViewModel() {
     private companion object {
         const val PLAYLIST_SHEET_VISIBLE_KEY = "playlist_sheet_visible"
@@ -25,22 +23,19 @@ class PlaylistViewModel(
     private val eventChannel = Channel<PlaylistEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val playlist = playlistRepository.getPlaylistsStream()
-
     private val isCreatePlaylistSheetOpen = savedStateHandle.getMutableStateFlow(
         key = PLAYLIST_SHEET_VISIBLE_KEY,
         initialValue = false
     )
 
     val state: StateFlow<PlaylistUiState> = combine(
-        playlist,
-        isCreatePlaylistSheetOpen,
-        songRepository.getFavouriteSongsCountStream()
-    ) { playlist, isCreatePlaylistSheetOpen, favouriteSongs ->
+        observePlaylistSummary(),
+        isCreatePlaylistSheetOpen
+    ) { playlistSummary, isCreatePlaylistSheetOpen ->
         PlaylistUiState.Success(
             isCreatePlaylistSheetOpen = isCreatePlaylistSheetOpen,
-            playlists = playlist,
-            favouriteSongs = favouriteSongs
+            playlists = playlistSummary.playlists,
+            favouriteSongsCount = playlistSummary.favouriteSongsCount
         )
     }
         .stateIn(

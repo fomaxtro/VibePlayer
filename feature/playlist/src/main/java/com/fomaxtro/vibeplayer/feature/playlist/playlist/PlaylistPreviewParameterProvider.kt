@@ -7,11 +7,11 @@ class PlaylistPreviewParameterProvider : PreviewParameterProvider<PlaylistUiStat
     override val values: Sequence<PlaylistUiState> = sequenceOf(
         PlaylistUiState.Loading,
         PlaylistUiState.Success(
-            favouriteSongs = 1
+            favouriteSongsCount = 1
         ),
         PlaylistUiState.Success(
             playlists = PlaylistPreviewFactory.defaultList,
-            favouriteSongs = 3
+            favouriteSongsCount = 3
         )
     )
 }
