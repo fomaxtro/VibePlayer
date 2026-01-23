@@ -30,8 +30,8 @@ fun VibeMediaCard(
     onClick: () -> Unit,
     image: @Composable () -> Unit,
     title: String,
-    subtitle: String,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
     action: @Composable (() -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(),
     leadingContent: @Composable (() -> Unit)? = null
@@ -68,13 +68,15 @@ fun VibeMediaCard(
                 maxLines = 1
             )
 
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
         if (action != null) {
@@ -102,6 +104,31 @@ private fun VibeMediaCardPreview() {
             },
             title = "505",
             subtitle = "Arctic Monkeys",
+            action = null,
+            onClick = {},
+            leadingContent = {
+                VibeCheckbox(
+                    checked = true,
+                    onCheckedChange = {}
+                )
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun VibeMediaCardTitleOnlyPreview() {
+    VibePlayerTheme {
+        VibeMediaCard(
+            modifier = Modifier.fillMaxWidth(),
+            image = {
+                VibeAlbumArt(
+                    imageUrl = null,
+                    contentDescription = null
+                )
+            },
+            title = "505",
             action = null,
             onClick = {},
             leadingContent = {

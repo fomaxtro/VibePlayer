@@ -52,6 +52,8 @@ object VibeIcons {
             @Composable get() = ImageVector.vectorResource(R.drawable.menu_dots)
         val Favourite: ImageVector
             @Composable get() = ImageVector.vectorResource(R.drawable.favourite_outlined)
+        val Playlist: ImageVector
+            @Composable get() = ImageVector.vectorResource(R.drawable.playlist_outlined)
     }
 
     object Duotone {
