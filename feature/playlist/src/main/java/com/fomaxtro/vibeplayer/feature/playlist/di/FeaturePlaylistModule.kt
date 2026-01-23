@@ -1,6 +1,7 @@
 package com.fomaxtro.vibeplayer.feature.playlist.di
 
 import com.fomaxtro.vibeplayer.feature.playlist.add_songs.AddSongsViewModel
+import com.fomaxtro.vibeplayer.feature.playlist.create_playlist.CreatePlaylistViewModel
 import com.fomaxtro.vibeplayer.feature.playlist.playlist.PlaylistViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -18,4 +19,5 @@ val featurePlaylistModule = module {
             snackbarController = get()
         )
     }
+    viewModelOf(::CreatePlaylistViewModel)
 }
