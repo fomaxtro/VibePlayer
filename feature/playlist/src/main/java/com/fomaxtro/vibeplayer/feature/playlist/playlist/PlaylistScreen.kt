@@ -1,8 +1,6 @@
 package com.fomaxtro.vibeplayer.feature.playlist.playlist
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,21 +15,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,15 +32,13 @@ import com.fomaxtro.vibeplayer.core.designsystem.component.VibeCircularProgressI
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeGradientIcon
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeIconButton
 import com.fomaxtro.vibeplayer.core.designsystem.component.VibeMediaCard
+import com.fomaxtro.vibeplayer.core.designsystem.component.VibeOutlinedButton
 import com.fomaxtro.vibeplayer.core.designsystem.resources.VibeIcons
 import com.fomaxtro.vibeplayer.core.designsystem.theme.VibePlayerTheme
 import com.fomaxtro.vibeplayer.core.ui.ObserveAsEvents
-import com.fomaxtro.vibeplayer.core.ui.util.asString
 import com.fomaxtro.vibeplayer.feature.playlist.R
+import com.fomaxtro.vibeplayer.feature.playlist.create_playlist.CreatePlaylistSheet
 import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.MenuIconButton
-import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistCreateSheetContent
-import com.fomaxtro.vibeplayer.feature.playlist.playlist.component.PlaylistOutlinedButton
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -60,25 +47,16 @@ fun PlaylistScreen(
     viewModel: PlaylistViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is PlaylistEvent.PlaylistCreated -> onPlaylistCreated(event.playlistId)
-
-            is PlaylistEvent.ShowMessage -> {
-                snackbarHostState.showSnackbar(
-                    message = event.message.asString(context)
-                )
-            }
         }
     }
 
     PlaylistScreen(
         state = state,
-        onAction = viewModel::onAction,
-        snackbarHostState = snackbarHostState
+        onAction = viewModel::onAction
     )
 }
 
@@ -86,8 +64,7 @@ fun PlaylistScreen(
 @Composable
 internal fun PlaylistScreen(
     state: PlaylistUiState,
-    onAction: (PlaylistAction) -> Unit = {},
-    snackbarHostState: SnackbarHostState
+    onAction: (PlaylistAction) -> Unit = {}
 ) {
     when (state) {
         PlaylistUiState.Loading -> {
@@ -186,7 +163,7 @@ internal fun PlaylistScreen(
 
                     if (state.playlists.isEmpty()) {
                         item {
-                            PlaylistOutlinedButton(
+                            VibeOutlinedButton(
                                 onClick = {
                                     onAction(PlaylistAction.OnAddPlaylistClick)
                                 },
@@ -249,46 +226,15 @@ internal fun PlaylistScreen(
                 }
             }
 
-            val sheetState = rememberModalBottomSheetState()
-            val scope = rememberCoroutineScope()
-
             if (state.isCreatePlaylistSheetOpen) {
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
+                CreatePlaylistSheet(
+                    onPlaylistCreated = {
+                        onAction(PlaylistAction.OnPlaylistCreated(it))
                     },
-                    sheetState = sheetState,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
-                ) {
-                    val focusManager = LocalFocusManager.current
-
-                    Box(
-                        modifier = Modifier
-                            .pointerInput(Unit) {
-                                detectTapGestures {
-                                    focusManager.clearFocus()
-                                }
-                            }
-                    ) {
-                        PlaylistCreateSheetContent(
-                            playlistName = state.playlistName,
-                            canCreatePlaylist = state.canCreatePlaylist,
-                            onCreateClick = {
-                                onAction(PlaylistAction.OnConfirmCreatePlaylist)
-                            },
-                            onCancelClick = {
-                                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                    onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
-                                }
-                            }
-                        )
-
-                        SnackbarHost(
-                            hostState = snackbarHostState,
-                            modifier = Modifier.align(Alignment.BottomCenter)
-                        )
+                    onDismiss = {
+                        onAction(PlaylistAction.OnDismissPlaylistCreateSheet)
                     }
-                }
+                )
             }
         }
     }
@@ -301,8 +247,7 @@ private fun PlaylistScreenPreview(
 ) {
     VibePlayerTheme {
         PlaylistScreen(
-            state = state,
-            snackbarHostState = SnackbarHostState()
+            state = state
         )
     }
 }
